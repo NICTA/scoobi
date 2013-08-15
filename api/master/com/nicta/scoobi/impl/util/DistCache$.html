@@ -39,9 +39,10 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Faciliate making an object available to all tasks (mappers, reducers, etc). Use
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Facilitate making an object available to all tasks (mappers, reducers, etc). Use
 XStream to serialise objects to XML strings and then send out via Hadoop's
-distributed cache. Two APIs are provided for pushing and pulling objects.</p></div><div class="toggleContainer block">
+distributed cache. Two APIs are provided for pushing and pulling objects.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -184,20 +185,6 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#deserialise" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="deserialise[T](configuration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path=&gt;Option[T]"></a>
-      <a id="deserialise[T](Configuration):(Path)⇒Option[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deserialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.deserialise.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">deserialise an object from a path file
-</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -282,20 +269,6 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#mkPath" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkPath(configuration:org.apache.hadoop.conf.Configuration,tag:String):org.apache.hadoop.fs.Path"></a>
-      <a id="mkPath(Configuration,String):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkPath</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Make a local filesystem path based on a 'tag' to temporarily store the
-serialised object.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -349,6 +322,20 @@ serialised object.</p>
       </h4>
       <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
 the current job.</p>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#pullPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pullPath[T](configuration:org.apache.hadoop.conf.Configuration,path:org.apache.hadoop.fs.Path)(f:org.apache.hadoop.fs.FSDataInputStream=&gt;T):Option[T]"></a>
+      <a id="pullPath[T](Configuration,Path)((FSDataInputStream)⇒T):Option[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pullPath</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.apache.hadoop.fs.FSDataInputStream">FSDataInputStream</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Pulling an object from a given path.</p><div class="fullcomment"><div class="comment cmt"><p>Pulling an object from a given path.</p><p>We first try paths from:</p><ul><li>the local cache then</li><li>the distributed cache then</li><li>the passed path itself (this is useful if we are on the client)</li></ul><p>Once a FSDataInputStream is successfully opened, the function f can do its job to recreate the object:</p><ul><li>use the Serialiser to deserialise the object</li><li>use a WireFormat to deserialise the object
+</li></ul></div></div>
     </li><li name="com.nicta.scoobi.impl.util.DistCache#pushObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="pushObject[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,tag:String,check:Boolean):org.apache.hadoop.fs.Path"></a>
       <a id="pushObject[T](Configuration,T,String,Boolean):Path"></a>
@@ -363,20 +350,6 @@ the current job.</p>
       </h4>
       <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job</p><div class="fullcomment"><div class="comment cmt"><p>Distribute an object to be available for tasks in the current job</p><p>By default check right away if the object can be deserialised
 </p></div></div>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#serialise" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="serialise[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,tag:String)(action:org.apache.hadoop.fs.Path=&gt;Unit):org.apache.hadoop.fs.Path"></a>
-      <a id="serialise[T](Configuration,T,String)((Path)⇒Unit):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">serialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="obj">obj: <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.serialise.T">T</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="action">action: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">serialise an object to a path
-</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -390,6 +363,20 @@ the current job.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#tagToPath" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="tagToPath(configuration:org.apache.hadoop.conf.Configuration,tag:String):org.apache.hadoop.fs.Path"></a>
+      <a id="tagToPath(Configuration,String):Path"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tagToPath</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Make a local filesystem path based on a 'tag' to temporarily store the
+serialised object.</p>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>

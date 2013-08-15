@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>TaggedGroupingComparator - com.nicta.scoobi.impl.rtt.TaggedGroupingComparator</title>
-          <meta name="description" content="TaggedGroupingComparator - com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" />
-          <meta name="keywords" content="TaggedGroupingComparator com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" />
+          <title>ConfiguredWritableComparator - com.nicta.scoobi.impl.exec.ConfiguredWritableComparator</title>
+          <meta name="description" content="ConfiguredWritableComparator - com.nicta.scoobi.impl.exec.ConfiguredWritableComparator" />
+          <meta name="keywords" content="ConfiguredWritableComparator com.nicta.scoobi.impl.exec.ConfiguredWritableComparator" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.impl.rtt.TaggedGroupingComparator$';
+            var hash = 'com.nicta.scoobi.impl.exec.ConfiguredWritableComparator';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,29 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="TaggedGroupingComparator.html" title="Go to companion"><img src="../../../../../lib/object_to_trait_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.rtt">rtt</a></p>
-        <h1><a href="TaggedGroupingComparator.html" title="Go to companion">TaggedGroupingComparator</a></h1>
+        <img src="../../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.exec">exec</a></p>
+        <h1>ConfiguredWritableComparator</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">TaggedGroupingComparator</span>
+        <span class="name">ConfiguredWritableComparator</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.io.RawComparator">RawComparator</span>[<span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]] with <a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion object for dynamically constructing a subclass of TaggedGroupingComparator.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This Comparator delegates comparisons to the WritableComparator for the MapOutputKeyClass
+but first it instantiate keys using the configuration (instead of null in the original version)
+so that the TaggedKey can be set up with the proper metadata
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a>, <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span>, <span class="extype" name="org.apache.hadoop.io.RawComparator">RawComparator</span>[<span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]], <span class="extype" name="java.util.Comparator">Comparator</span>[<span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]], <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator"><span>TaggedGroupingComparator</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator"><span>ConfiguredWritableComparator</span></li><li class="in" name="com.nicta.scoobi.impl.rtt.Configured"><span>Configured</span></li><li class="in" name="org.apache.hadoop.conf.Configurable"><span>Configurable</span></li><li class="in" name="org.apache.hadoop.io.RawComparator"><span>RawComparator</span></li><li class="in" name="java.util.Comparator"><span>Comparator</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -77,7 +80,23 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():com.nicta.scoobi.impl.exec.ConfiguredWritableComparator"></a>
+      <a id="&lt;init&gt;:ConfiguredWritableComparator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ConfiguredWritableComparator</span><span class="params">()</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -150,19 +169,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(name:String,tags:Map[Int,(com.nicta.scoobi.core.WireReaderWriter,com.nicta.scoobi.core.KeyGrouping)],classLoader:ClassLoader,configuration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.impl.rtt.RuntimeClass"></a>
-      <a id="apply(String,Map[Int,(WireReaderWriter,KeyGrouping)],ClassLoader,Configuration):RuntimeClass"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="tags">tags: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, (<a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a>, <span class="extype" name="com.nicta.scoobi.core.KeyGrouping">KeyGrouping</span>)]</span>, <span name="classLoader">classLoader: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>, <span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <a href="RuntimeClass.html" class="extype" name="com.nicta.scoobi.impl.rtt.RuntimeClass">RuntimeClass</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -195,6 +201,45 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator#compare" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compare(a:org.apache.hadoop.io.WritableComparable[_],b:org.apache.hadoop.io.WritableComparable[_]):Int"></a>
+      <a id="compare(WritableComparable[_],WritableComparable[_]):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compare</span><span class="params">(<span name="a">a: <span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]</span>, <span name="b">b: <span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator">ConfiguredWritableComparator</a> → Comparator</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator#compare" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compare(b1:Array[Byte],s1:Int,l1:Int,b2:Array[Byte],s2:Int,l2:Int):Int"></a>
+      <a id="compare(Array[Byte],Int,Int,Array[Byte],Int,Int):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compare</span><span class="params">(<span name="b1">b1: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="s1">s1: <span class="extype" name="scala.Int">Int</span></span>, <span name="l1">l1: <span class="extype" name="scala.Int">Int</span></span>, <span name="b2">b2: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="s2">s2: <span class="extype" name="scala.Int">Int</span></span>, <span name="l2">l2: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator">ConfiguredWritableComparator</a> → RawComparator</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.rtt.Configured#configuration" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configuration:org.apache.hadoop.conf.Configuration"></a>
+      <a id="configuration:Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configuration</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -253,6 +298,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.rtt.Configured#getConf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getConf():org.apache.hadoop.conf.Configuration"></a>
+      <a id="getConf():Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getConf</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a> → Configurable</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -279,6 +337,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator#keyClass" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="keyClass:Class[_&lt;:org.apache.hadoop.io.WritableComparable[_]]"></a>
+      <a id="keyClass:Class[_&lt;:WritableComparable[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">keyClass</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_ &lt;: <span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -318,6 +389,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator#setConf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setConf(conf:org.apache.hadoop.conf.Configuration):Unit"></a>
+      <a id="setConf(Configuration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setConf</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator">ConfiguredWritableComparator</a> → <a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a> → Configurable</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -410,7 +494,15 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="com.nicta.scoobi.impl.rtt.Configured">
+              <h3>Inherited from <a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></h3>
+            </div><div class="parent" name="org.apache.hadoop.conf.Configurable">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span></h3>
+            </div><div class="parent" name="org.apache.hadoop.io.RawComparator">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.io.RawComparator">RawComparator</span>[<span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]]</h3>
+            </div><div class="parent" name="java.util.Comparator">
+              <h3>Inherited from <span class="extype" name="java.util.Comparator">Comparator</span>[<span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]]</h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
