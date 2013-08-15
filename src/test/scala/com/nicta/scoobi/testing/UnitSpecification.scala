@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package testing
 
 import org.specs2.Specification
-import org.specs2.specification.{Grouped, Fragments, Tags}
+import org.specs2.specification._
 
 abstract class UnitSpecification extends Specification {
   override def map(fs: =>Fragments) = section("unit") ^ fs
