@@ -26,9 +26,12 @@ import rtt._
 import util.DistCache
 import com.nicta.scoobi.impl.plan.mscr.{OutputChannels, InputChannels, InputChannel}
 import reflect.ClasspathDiagnostics
-import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.io.{WritableComparable, WritableComparator, NullWritable}
 import scala.collection.mutable
 import org.apache.hadoop.util.ReflectionUtils
+import com.nicta.scoobi.impl.exec.ConfiguredWritableComparator
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.mapred.JobConf
 
 /**
  * Hadoop Mapper class for an MSCR
@@ -49,8 +52,9 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
 
   override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
     ClasspathDiagnostics.logInfo
+    val jobStep = ScoobiConfiguration(context.getConfiguration).jobStep
 
-    allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
+    allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, s"scoobi.mappers-$jobStep").getOrElse(InputChannels(Seq()))
     tk = ReflectionUtils.newInstance(context.getMapOutputKeyClass  , context.getConfiguration).asInstanceOf[TaggedKey]
     tv = ReflectionUtils.newInstance(context.getMapOutputValueClass, context.getConfiguration).asInstanceOf[TaggedValue]
 
@@ -66,7 +70,7 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
       taggedInputChannels.foreach(_.setup(inMemoryContext))
 
       channelOutputFormat = new ChannelOutputFormat(context)
-      allOutputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers").getOrElse(OutputChannels(Seq()))
+      allOutputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, s"scoobi.reducers-$jobStep").getOrElse(OutputChannels(Seq()))
       allOutputChannels.setup(channelOutputFormat)(context.getConfiguration)
     } else taggedInputChannels.foreach(_.setup(new InputOutputContext(mapContext)))
   }

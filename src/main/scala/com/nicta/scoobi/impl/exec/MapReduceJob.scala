@@ -18,10 +18,10 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapred.TaskCompletionEvent
+import org.apache.hadoop.mapred.{JobConf, TaskCompletionEvent}
 import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
-import org.apache.hadoop.io.RawComparator
+import org.apache.hadoop.io.{WritableComparable, WritableComparator, RawComparator}
 import scalaz.syntax.all._
 
 import core._
@@ -41,6 +41,7 @@ import Loggable._
 import mapreducer.BridgeStore
 import Configurations._
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.util.ReflectionUtils
 
 /**
  * A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
@@ -50,7 +51,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
   implicit protected val fileSystems: FileSystems = FileSystems
   private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
 
-  implicit lazy val job = new Job(configuration, configuration.jobStep(mscr.id))
+  implicit lazy val job = new Job(configuration, configuration.jobStepIs(mscr.id))
   
   /** Take this MapReduce job and run it on Hadoop. */
   def run = {
@@ -61,8 +62,9 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
 
   /** execute the Hadoop job and collect results */
   def execute = {
-    ("executing MSCR "+mscr.id+" on layer "+layerId).debug
+    ("STARTED executing MSCR "+mscr.id+" on layer "+layerId).debug
     executeJob
+    ("FINISHED executing MSCR "+mscr.id+" on layer "+layerId).debug
     collectOutputs
   }
 
@@ -118,7 +120,12 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     val tgRtClass = TaggedGroupingComparator("TG" + id, mscr.keyTypes.types, configuration.scoobiClassLoader, jobConfiguration)
     jar.addRuntimeClass(tgRtClass)
     job.setGroupingComparatorClass(tgRtClass.clazz.asInstanceOf[Class[_ <: RawComparator[_]]])
+
+    // A special kind of comparator needs to be added for TaggedKeys
+    job.setSortComparatorClass(classOf[ConfiguredWritableComparator])
   }
+
+
 
   /** Mappers:
    *     - use ChannelInputs to specify multiple mappers through job
@@ -127,7 +134,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
   private def configureMappers(jar: JarBuilder) {
     ChannelsInputFormat.configureSources(job, jar, mscr.sources)
 
-    DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), "scoobi.mappers")
+    DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), s"scoobi.mappers-${configuration.jobStep}")
     job.setMapperClass(classOf[MscrMapper].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
   }
 
@@ -137,7 +144,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
    *   - use distributed cache to push all combine code out */
   private def configureCombiners(jar: JarBuilder) {
     if (!mscr.combiners.isEmpty) {
-      DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, "scoobi.combiners")
+      DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, s"scoobi.combiners-${configuration.jobStep}")
       job.setCombinerClass(classOf[MscrCombiner].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
   }
@@ -156,7 +163,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
       out.sinks.foreach(sink => ChannelOutputFormat.addOutputChannel(job, out.tag, sink))
     }
 
-    DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers")
+    DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), s"scoobi.reducers-${configuration.jobStep}")
     job.setReducerClass(classOf[MscrReducer].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
     if (mscr.gbkOutputChannels.isEmpty) {
@@ -296,3 +303,23 @@ class TaskDetailsLogger(job: Job) {
 }
 
 class JobExecException(msg: String) extends RuntimeException(msg)
+
+/**
+ * This Comparator delegates comparisons to the WritableComparator for the MapOutputKeyClass
+ * but first it instantiate keys using the configuration (instead of null in the original version)
+ * so that the TaggedKey can be set up with the proper metadata
+ */
+class ConfiguredWritableComparator extends RawComparator[WritableComparable[_]] with Configured {
+  override def setConf(conf: Configuration) = {
+    super.setConf(conf)
+    WritableComparator.define(keyClass, new WritableComparator(keyClass, true) {
+      override def newKey = ReflectionUtils.newInstance(keyClass, configuration)
+    })
+  }
+
+  lazy val keyClass = new JobConf(configuration).getMapOutputKeyClass.asInstanceOf[Class[_ <: WritableComparable[_]]]
+  def compare(b1: Array[Byte], s1: Int, l1: Int, b2: Array[Byte], s2: Int, l2: Int) = WritableComparator.get(keyClass).compare(b1, s1, l1, b2, s2, l2)
+
+  def compare(a: WritableComparable[_], b: WritableComparable[_]) = WritableComparator.get(keyClass).compare(a, b)
+}
+

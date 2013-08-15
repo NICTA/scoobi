@@ -83,11 +83,14 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
-  def jobStep(mscrId: Int) = {
-    configuration.set(JOB_STEP, jobId + "(Mscr-" + mscrId + ")")
+  def jobStepIs(mscrId: Int) = {
+    configuration.set(JOB_STEP, "mscr"+mscrId)
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+configuration.get(JOB_STEP))
-    configuration.get(JOB_STEP).debug("the job step is")
+    jobStep
   }
+  /** @return the job step */
+  def jobStep =
+    Option(configuration.get(JOB_STEP)).getOrElse("-").debug("the job step is")
 
   /** update the current counters from the result of a job that has just been run */
   def updateCounters(hadoopCounters: HadoopCounters) = {

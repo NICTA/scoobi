@@ -25,6 +25,9 @@ import core._
 import rtt._
 import util.DistCache
 import plan.mscr.OutputChannels
+import org.apache.hadoop.conf.Configuration
+import com.nicta.scoobi.impl.exec.ConfiguredWritableComparator
+import org.apache.hadoop.mapred.JobConf
 
 /** Hadoop Reducer class for an MSCR. */
 class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
@@ -35,7 +38,8 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
   private var channelOutput: ChannelOutputFormat = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {
-    outputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers").getOrElse(OutputChannels(Seq()))
+    val configuration = context.getConfiguration
+    outputChannels = DistCache.pullObject[OutputChannels](configuration, s"scoobi.reducers-${ScoobiConfiguration(configuration).jobStep}").getOrElse(OutputChannels(Seq()))
     channelOutput = new ChannelOutputFormat(context)
 
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)

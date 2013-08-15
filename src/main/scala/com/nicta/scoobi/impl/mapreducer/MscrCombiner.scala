@@ -26,6 +26,9 @@ import plan.mscr.{OutputChannel, OutputChannels}
 import plan.comp.Combine
 import core.InputOutputContext
 import org.apache.hadoop.util.ReflectionUtils
+import org.apache.hadoop.conf.Configuration
+import com.nicta.scoobi.impl.exec.ConfiguredWritableComparator
+import org.apache.hadoop.mapred.JobConf
 
 /** Hadoop Combiner class for an MSCR. */
 class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
@@ -35,7 +38,8 @@ class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedVal
   private var tv: TaggedValue = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
-    combiners = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
+    val jobStep = ScoobiConfiguration(context.getConfiguration).jobStep
+    combiners = DistCache.pullObject[Combiners](context.getConfiguration, s"scoobi.combiners-$jobStep").getOrElse(Map())
     tv = ReflectionUtils.newInstance(context.getMapOutputValueClass, context.getConfiguration).asInstanceOf[TaggedValue]
   }
 
