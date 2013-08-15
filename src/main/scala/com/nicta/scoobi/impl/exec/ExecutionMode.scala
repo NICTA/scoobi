@@ -26,6 +26,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import ScoobiConfigurationImpl._
 import util.Compatibility
+import com.nicta.scoobi.impl.rtt.ScoobiMetadata
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -66,6 +67,13 @@ trait ExecutionMode extends ShowNode with Optimiser {
     val sinks = sinksToSave(node)
     val valuesToSave = if (WireFormat.isTraversable(node.wf)) values.head.asInstanceOf[Traversable[Any]] else values
 
+    // if the value type is a ScoobiWritable we need to store its wireformat as metadata in the distributed cache
+    // even if the execution is in memory
+    val elementWireformat = node.wf match {
+      case twf: WireFormat.TraversableWireFormat[_,_] => twf.elementWireFormat
+      case _ => node.wf
+    }
+
     sinks.foreach(_.outputSetup(sc))
     sinks.foreach { sink =>
       val job = new Job(new Configuration(sc.configuration))
@@ -74,8 +82,12 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
       sink.outputPath.foreach(FileOutputFormat.setOutputPath(job, _))
       job.setOutputFormatClass(sink.outputFormat)
+
       job.setOutputKeyClass(sink.outputKeyClass)
+
       job.setOutputValueClass(sink.outputValueClass)
+      ScoobiMetadata.saveMetadata("scoobi.metadata."+sink.outputValueClass.getName, elementWireformat, job.getConfiguration)
+
       job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}out${sink.id}")
       job.getConfiguration.set("avro.mo.config.namedOutput", s"ch${node.id}out${sink.id}")
 

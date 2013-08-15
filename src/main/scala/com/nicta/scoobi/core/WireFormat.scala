@@ -361,6 +361,8 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
    * This class is used to create a WireFormat for Traversables, Maps and Arrays
    */
   private[scoobi] case class TraversableWireFormat[T : WireFormat, CC <: Traversable[T]](builder: Builder[T, CC]) extends WireFormat[CC] {
+    def elementWireFormat = implicitly[WireFormat[T]]
+
     def toWire(x: CC, out: DataOutput) = {
       require(x != null, "Cannot serialise a null Traversable. Consider using an empty collection, or an Option[Traversable]")
       // The "naive" approach for persisting a Traversable would be to persist the number of elements, then the
@@ -373,7 +375,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       (x.view.toSeq.sliding(1000, 1000).toSeq :+ Iterator.empty) foreach { chunk =>
         val elements = chunk.toSeq
         out.writeInt(elements.size)
-        elements.foreach { implicitly[WireFormat[T]].toWire(_, out) }
+        elements.foreach { elementWireFormat.toWire(_, out) }
       }
     }
     def fromWire(in: DataInput): CC = {
@@ -387,7 +389,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       builder.result()
     }
 
-    override def toString = "Traversable["+implicitly[WireFormat[T]]+"]"
+    override def toString = "Traversable["+elementWireFormat+"]"
   }
 
   /**
