@@ -36,8 +36,7 @@ object TaggedPartitioner {
  */
 abstract class MetadataTaggedPartitioner extends TaggedPartitioner with MetadataWireFormats with MetadataGroupings {
   def getPartition(key: TaggedKey, value: TaggedValue, numPartitions: Int): Int = {
-    if (numPartitions == 0) 0
-    else                    grouping(key.tag).partition(key.get(key.tag), numPartitions)
+    grouping(key.tag).partition(key.get(key.tag), numPartitions)
   }
 }
 
