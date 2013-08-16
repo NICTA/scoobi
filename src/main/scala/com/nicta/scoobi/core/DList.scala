@@ -305,6 +305,14 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     }
   }
 
+  /**Sum up the elements of this distributed list. */
+  def fold(implicit m: Monoid[A]): DObject[A] =
+    reduceOption(R.semigroup) map (_ getOrElse m.zero)
+
+  /**Map each element to a scalaz.Monoid and fold. */
+  def foldMap[B : Monoid : WireFormat](f: A => B): DObject[B] =
+    map(f).fold
+
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
     by(f).groupByKey
@@ -380,10 +388,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Sum up the elements of this distribute list. */
   def sum(implicit num: Numeric[A]): DObject[A] =
     reduceOption(Reduction(num.plus)) map (_ getOrElse num.zero)
-
-  /**Sum up the elements of this distributed list. */
-  def sumMonoid(implicit m: Monoid[A]): DObject[A] =
-    reduceOption(Reduction((f1, f2) => m.append(f1, f2))) map (_ getOrElse m.zero)
 
   /**The length of the distributed list. */
   def length: DObject[Long] = map(_ => 1l).sum
