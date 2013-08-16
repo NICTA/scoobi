@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory
 import impl.control.Exceptions._
 import impl.util.Compatibility
 import org.apache.hadoop.fs.permission.FsAction._
+import org.apache.hadoop.util.ReflectionUtils
 
 /**
  * DataSource for a computation graph.
@@ -80,7 +81,7 @@ object Source {
   def read(source: Source, read: Any => Any = identity)(implicit sc: ScoobiConfiguration): Seq[Any] = {
     val vb = new VectorBuilder[Any]()
     val job = new Job(new Configuration(sc.configuration))
-    val inputFormat = source.inputFormat.newInstance
+    val inputFormat = ReflectionUtils.newInstance(source.inputFormat, sc.configuration)
 
     job.setInputFormatClass(source.inputFormat)
     source.inputConfigure(job)

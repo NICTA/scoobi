@@ -27,6 +27,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import ScoobiConfigurationImpl._
 import util.Compatibility
 import com.nicta.scoobi.impl.rtt.ScoobiMetadata
+import org.apache.hadoop.util.ReflectionUtils
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -78,7 +79,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
     sinks.foreach { sink =>
       val job = new Job(new Configuration(sc.configuration))
 
-      val outputFormat = sink.outputFormat.newInstance
+      val outputFormat = ReflectionUtils.newInstance(sink.outputFormat, job.getConfiguration)
 
       sink.outputPath.foreach(FileOutputFormat.setOutputPath(job, _))
       job.setOutputFormatClass(sink.outputFormat)

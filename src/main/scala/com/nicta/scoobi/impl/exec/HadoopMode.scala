@@ -128,7 +128,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       mscr.inputNodes.foreach(load)
 
       ("Configuring mscr "+mscr.id).debug
-      MapReduceJob(mscr, layer.id).configure
+      MapReduceJob(mscr, layer.id, layer.mscrs.size).configure
     }
 
     /** execute a Mscr */

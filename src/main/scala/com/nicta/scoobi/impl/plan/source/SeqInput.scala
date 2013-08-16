@@ -43,6 +43,7 @@ import plan.DListImpl
 import com.nicta.scoobi.impl.util.{Serialiser, DistCache}
 import SeqInput._
 import WireFormat._
+import com.nicta.scoobi.impl.rtt.Configured
 
 /**
  * Function for creating a distributed lists from a scala.collection.Seq
@@ -67,6 +68,7 @@ trait SeqInput {
         job.getConfiguration.setInt(LengthProperty, seq.size)
         job.getConfiguration.set(IdProperty, id.toString)
         DistCache.pushObject(job.getConfiguration, seq, seqProperty(id))
+        DistCache.pushObject(job.getConfiguration, implicitly[WireFormat[A]], wireFormatProperty(id))
       }
 
       def inputSize(implicit sc: ScoobiConfiguration): Long = seq.size.toLong
@@ -95,6 +97,7 @@ trait SeqInput {
         job.getConfiguration.set(IdProperty, id.toString)
         job.getConfiguration.set(SeqSizeProperty, seqSize.toString)
         DistCache.pushObject(job.getConfiguration, seq, seqProperty(id))
+        DistCache.pushObject(job.getConfiguration, implicitly[WireFormat[A]], wireFormatProperty(id))
       }
 
       def inputSize(implicit sc: ScoobiConfiguration): Long = 1
@@ -120,6 +123,7 @@ class SeqInputFormat[A] extends InputFormat[NullWritable, A] {
     val id = context.getConfiguration.getInt(IdProperty, 0)
 
     val seq = DistCache.pullObject[Seq[A]](context.getConfiguration, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
+    val wf  = DistCache.pullObject[WireFormat[A]](context.getConfiguration, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
     val splitSize = {
@@ -132,14 +136,13 @@ class SeqInputFormat[A] extends InputFormat[NullWritable, A] {
     logger.debug("numSplitsHint=" + numSplitsHint)
     logger.debug("splitSize=" + splitSize)
 
-    split(seq, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss))
+    split(seq, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss, wf, wireFormatProperty(id)))
   }
 }
 
 /** InputSplit for a range of values produced by a sequence. */
-class SeqInputSplit[A](var start: Int, var length: Int, var seq: Seq[A]) extends InputSplit with Writable {
-  def this() = this(0, 0, Seq())
-
+class SeqInputSplit[A](var start: Int, var length: Int, var seq: Seq[A], var wf: WireFormat[A], var wfTag: String) extends InputSplit with Writable with Configured {
+  def this() = this(0, 0, Seq(), null, "")
   def getLength: Long = length.toLong
 
   def getLocations: Array[String] = new Array[String](0)
@@ -147,13 +150,19 @@ class SeqInputSplit[A](var start: Int, var length: Int, var seq: Seq[A]) extends
   def readFields(in: DataInput) {
     start = in.readInt()
     length = in.readInt()
-    seq = readObject[Seq[A]](in)
+    wfTag = in.readUTF()
+    implicit val wfa = DistCache.pullObject[WireFormat[A]](configuration, wfTag).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wfTag); null})
+    implicit val wfs = implicitly[WireFormat[Seq[A]]]
+    seq = wfs.read(in)
   }
 
   def write(out: DataOutput) {
     out.writeInt(start)
     out.writeInt(length)
-    writeObject(out, seq)
+    out.writeUTF(wfTag)
+    implicit val wfa: WireFormat[A] = wf
+    implicit val wfs = implicitly[WireFormat[Seq[A]]]
+    wfs.write(seq, out)
   }
 }
 
@@ -190,6 +199,7 @@ object SeqInput extends SeqInput {
   val IdProperty = PropertyPrefix + ".id"
   val SeqSizeProperty = PropertyPrefix + ".size"
   def seqProperty(id: Int) = PropertyPrefix + ".seq" + id
+  def wireFormatProperty(id: Int) = PropertyPrefix + ".wf" + id
 
   /**
    * write an object to a DataOutput, using an ObjectOutputStream
@@ -233,6 +243,7 @@ class LazySeqInputFormat[A] extends InputFormat[NullWritable, A] {
     val id = context.getConfiguration.getInt(IdProperty, 0)
 
     val seq = DistCache.pullObject[() => Seq[A]](context.getConfiguration, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); () => Seq()})
+    val wf  = DistCache.pullObject[WireFormat[A]](context.getConfiguration, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
     val splitSize = n / numSplitsHint
@@ -242,6 +253,6 @@ class LazySeqInputFormat[A] extends InputFormat[NullWritable, A] {
     logger.debug("numSplitsHint=" + numSplitsHint)
     logger.debug("splitSize=" + splitSize)
 
-    split(seq().toStream, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss))
+    split(seq().toStream, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss, wf, wireFormatProperty(id)))
   }
 }
