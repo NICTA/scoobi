@@ -40,6 +40,7 @@ import monitor.Loggable._
 import tools.nsc.interpreter.AbstractFileClassLoader
 import com.nicta.scoobi.impl.util.Compatibility
 import com.nicta.scoobi.core.Mode.{Local, InMemory}
+import org.apache.commons.codec.binary.Base64
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
@@ -75,12 +76,12 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /* Timestamp used to mark each Scoobi working directory. */
   private lazy val timestamp = {
     val now = new Date
-    val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss")
+    val sdf = new SimpleDateFormat("MMdd-HHmmss")
     hadoopConfiguration.getOrSet(JOB_TIMESTAMP, sdf.format(now))
   }
 
   /** The id for the current Scoobi job being (or about to be) executed. */
-  def jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-")
+  def jobId: String = (jobName.toSeq ++ Seq(timestamp, uniqueId)).mkString("-")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStepIs(mscrId: Int) = {
@@ -296,8 +297,20 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     this
   }
 
-  /** @return a pseudo-random unique id */
-  private lazy val uniqueId = hadoopConfiguration.getOrSet(JOB_UNIQUEID, java.util.UUID.randomUUID.toString)
+  /**
+   * @return a pseudo-random unique id
+   *         we just need a bit of entropy here since the full Scoobi job id will have:
+   *
+   *         - the job name
+   *         - the date/time
+   *         - this id
+   *
+   * (and each Hadoop job name will have the mscr id appended to the Scoobi job id)
+   *
+   * This additional entropy is particularly useful when running tests to ensure that each one has it own unique
+   * working directory
+   */
+  private lazy val uniqueId = hadoopConfiguration.getOrSet(JOB_UNIQUEID, java.util.UUID.randomUUID.hashCode.toString)
 
   /** set a value on the configuration */
   def set(key: String, value: Any) {

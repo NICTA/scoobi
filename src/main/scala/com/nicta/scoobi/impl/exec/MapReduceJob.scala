@@ -51,7 +51,10 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
   implicit protected val fileSystems: FileSystems = FileSystems
   private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
 
-  implicit lazy val job = new Job(configuration, configuration.jobStepIs(mscr.id))
+  implicit lazy val job = {
+    configuration.jobStepIs(mscr.id)
+    new Job(configuration, configuration.jobId+"-"+configuration.jobStep)
+  }
   
   /** Take this MapReduce job and run it on Hadoop. */
   def run = {
