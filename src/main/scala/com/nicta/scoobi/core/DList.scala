@@ -19,6 +19,7 @@ package core
 import impl.control.{ImplicitParameter2, ImplicitParameter1, ImplicitParameter}
 import com.nicta.scoobi.impl.collection.WeakHashSet
 import Reduction.{Reduction => R}
+import scalaz.Monoid
 
 /**
  * A list that is distributed across multiple machines.
@@ -379,6 +380,10 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Sum up the elements of this distribute list. */
   def sum(implicit num: Numeric[A]): DObject[A] =
     reduceOption(Reduction(num.plus)) map (_ getOrElse num.zero)
+
+  /**Sum up the elements of this distributed list. */
+  def sumMonoid(implicit m: Monoid[A]): DObject[A] =
+    reduceOption(Reduction((f1, f2) => m.append(f1, f2))) map (_ getOrElse m.zero)
 
   /**The length of the distributed list. */
   def length: DObject[Long] = map(_ => 1l).sum
