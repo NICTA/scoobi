@@ -84,8 +84,8 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def jobId: String = (jobName.toSeq ++ Seq(timestamp, uniqueId)).mkString("-")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
-  def jobStepIs(mscrId: Int) = {
-    configuration.set(JOB_STEP, "mscr"+mscrId)
+  def jobStepIs(stepId: Int, stepsNumber: Int) = {
+    configuration.set(JOB_STEP, s"step$stepId of ${stepsNumber}")
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+configuration.get(JOB_STEP))
     jobStep
   }

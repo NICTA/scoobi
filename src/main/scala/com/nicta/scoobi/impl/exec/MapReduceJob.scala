@@ -46,13 +46,13 @@ import org.apache.hadoop.util.ReflectionUtils
 /**
  * A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
  */
-case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: ScoobiConfiguration) {
+case class MapReduceJob(mscr: Mscr, layerId: Int, mscrsNumber: Int)(implicit val configuration: ScoobiConfiguration) {
 
   implicit protected val fileSystems: FileSystems = FileSystems
   private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
 
   implicit lazy val job = {
-    configuration.jobStepIs(mscr.id)
+    configuration.jobStepIs(mscr.id, mscrsNumber)
     new Job(configuration, configuration.jobId+"-"+configuration.jobStep)
   }
   

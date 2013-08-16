@@ -66,7 +66,7 @@ trait ScoobiConfiguration {
   def jobNameIs(name: String)
   def jobName: Option[String]
   def jobId: String
-  def jobStepIs(mscrId: Int): String
+  def jobStepIs(stepId: Int, stepsNumber: Int): String
   def jobStep: String
   def updateCounters(counters: HadoopCounters): ScoobiConfiguration
   def counters: HadoopCounters
