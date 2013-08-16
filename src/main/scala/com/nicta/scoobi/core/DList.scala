@@ -19,6 +19,7 @@ package core
 import impl.control.{ImplicitParameter2, ImplicitParameter1, ImplicitParameter}
 import com.nicta.scoobi.impl.collection.WeakHashSet
 import Reduction.{Reduction => R}
+import scalaz.Monoid
 
 /**
  * A list that is distributed across multiple machines.
@@ -303,6 +304,14 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
         if (vs.forall(x => x)) Some(k) else None
     }
   }
+
+  /**Sum up the elements of this distributed list. */
+  def fold(implicit m: Monoid[A]): DObject[A] =
+    reduceOption(R.semigroup) map (_ getOrElse m.zero)
+
+  /**Map each element to a scalaz.Monoid and fold. */
+  def foldMap[B : Monoid : WireFormat](f: A => B): DObject[B] =
+    map(f).fold
 
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
