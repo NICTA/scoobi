@@ -325,7 +325,7 @@ a new distributed list
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#by" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="by[K](kf:A=&gt;K)(implicitevidence$13:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,A)]"></a>
+      <a id="by[K](kf:A=&gt;K)(implicitevidence$15:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,A)]"></a>
       <a id="by[K]((A)⇒K)(WireFormat[K]):DList[(K,A)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -533,6 +533,32 @@ mapReduce.
       </h4>
       <p class="shortcomment cmt">Converts a distributed list of iterable values into to a distributed list in which
 all the values are concatenated.</p>
+    </li><li name="com.nicta.scoobi.core.DList#fold" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fold(implicitm:scalaz.Monoid[A]):com.nicta.scoobi.core.DObject[A]"></a>
+      <a id="fold(Monoid[A]):DObject[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fold</span><span class="params">(<span class="implicit">implicit </span><span name="m">m: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Sum up the elements of this distributed list.</p>
+    </li><li name="com.nicta.scoobi.core.DList#foldMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="foldMap[B](f:A=&gt;B)(implicitevidence$10:scalaz.Monoid[B],implicitevidence$11:com.nicta.scoobi.core.WireFormat[B]):com.nicta.scoobi.core.DObject[B]"></a>
+      <a id="foldMap[B]((A)⇒B)(Monoid[B],WireFormat[B]):DObject[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">foldMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span>]</span>, <span name="arg1">arg1: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span>]</span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Map each element to a scalaz.</p><div class="fullcomment"><div class="comment cmt"><p>Map each element to a scalaz.Monoid and fold.</p></div></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -547,7 +573,7 @@ all the values are concatenated.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#groupBy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupBy[K](f:A=&gt;K)(implicitevidence$10:com.nicta.scoobi.core.WireFormat[K],implicitevidence$11:com.nicta.scoobi.core.Grouping[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
+      <a id="groupBy[K](f:A=&gt;K)(implicitevidence$12:com.nicta.scoobi.core.WireFormat[K],implicitevidence$13:com.nicta.scoobi.core.Grouping[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
       <a id="groupBy[K]((A)⇒K)(WireFormat[K],Grouping[K]):DList[(K,Iterable[A])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -577,7 +603,7 @@ secondary sorts, or groupings with strange logic (like making sure None's / null
 sprayed across all reducers
 </p></div></div>
     </li><li name="com.nicta.scoobi.core.DList#groupWith" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupWith[K](f:A=&gt;K)(gpk:com.nicta.scoobi.core.Grouping[K])(implicitevidence$12:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
+      <a id="groupWith[K](f:A=&gt;K)(gpk:com.nicta.scoobi.core.Grouping[K])(implicitevidence$14:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
       <a id="groupWith[K]((A)⇒K)(Grouping[K])(WireFormat[K]):DList[(K,Iterable[A])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">

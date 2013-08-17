@@ -35,13 +35,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">SeqInputSplit</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>
+        <span class="name">SeqInputSplit</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span> with <a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>InputSplit for a range of values produced by a sequence.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.hadoop.io.Writable">Writable</span>, <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a>, <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span>, <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span>, <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.plan.source.SeqInputSplit"><span>SeqInputSplit</span></li><li class="in" name="org.apache.hadoop.io.Writable"><span>Writable</span></li><li class="in" name="org.apache.hadoop.mapreduce.InputSplit"><span>InputSplit</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.plan.source.SeqInputSplit"><span>SeqInputSplit</span></li><li class="in" name="com.nicta.scoobi.impl.rtt.Configured"><span>Configured</span></li><li class="in" name="org.apache.hadoop.conf.Configurable"><span>Configurable</span></li><li class="in" name="org.apache.hadoop.io.Writable"><span>Writable</span></li><li class="in" name="org.apache.hadoop.mapreduce.InputSplit"><span>InputSplit</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -93,7 +93,7 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(start:Int,length:Int,seq:Seq[A]):com.nicta.scoobi.impl.plan.source.SeqInputSplit[A]"></a>
+      <a id="&lt;init&gt;(start:Int,length:Int,seq:Seq[A],wf:com.nicta.scoobi.core.WireFormat[A],wfTag:String):com.nicta.scoobi.impl.plan.source.SeqInputSplit[A]"></a>
       <a id="&lt;init&gt;:SeqInputSplit[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -101,7 +101,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SeqInputSplit</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Int">Int</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="seq">seq: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInputSplit.A">A</span>]</span>)</span>
+        <span class="name">SeqInputSplit</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Int">Int</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="seq">seq: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInputSplit.A">A</span>]</span>, <span name="wf">wf: <a href="../../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInputSplit.A">A</span>]</span>, <span name="wfTag">wfTag: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
       </span>
       </h4>
       
@@ -211,6 +211,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.rtt.Configured#configuration" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configuration:org.apache.hadoop.conf.Configuration"></a>
+      <a id="configuration:Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configuration</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -269,6 +282,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.rtt.Configured#getConf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getConf():org.apache.hadoop.conf.Configuration"></a>
+      <a id="getConf():Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getConf</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a> → Configurable</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit#getLength" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getLength():Long"></a>
       <a id="getLength():Long"></a>
@@ -399,6 +425,19 @@
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.impl.rtt.Configured#setConf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setConf(conf:org.apache.hadoop.conf.Configuration):Unit"></a>
+      <a id="setConf(Configuration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setConf</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a> → Configurable</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit#start" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="start:Int"></a>
       <a id="start:Int"></a>
@@ -495,6 +534,32 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit#wf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="wf:com.nicta.scoobi.core.WireFormat[A]"></a>
+      <a id="wf:WireFormat[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wf</span><span class="result">: <a href="../../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInputSplit.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit#wfTag" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="wfTag:String"></a>
+      <a id="wfTag:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wfTag</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit#write" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="write(out:java.io.DataOutput):Unit"></a>
       <a id="write(DataOutput):Unit"></a>
@@ -517,7 +582,11 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.apache.hadoop.io.Writable">
+        <div class="parent" name="com.nicta.scoobi.impl.rtt.Configured">
+              <h3>Inherited from <a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></h3>
+            </div><div class="parent" name="org.apache.hadoop.conf.Configurable">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span></h3>
+            </div><div class="parent" name="org.apache.hadoop.io.Writable">
               <h3>Inherited from <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></h3>
             </div><div class="parent" name="org.apache.hadoop.mapreduce.InputSplit">
               <h3>Inherited from <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span></h3>
