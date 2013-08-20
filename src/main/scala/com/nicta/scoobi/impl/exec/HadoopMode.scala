@@ -64,7 +64,8 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   def executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
-      createMapReduceLayers(node).info("Executing layers", showLayers).map(executeLayer)
+      val layers = createMapReduceLayers(node).info("Executing layers", showLayers)
+      layers.map(executeLayer(layers.map(_.mscrs.size).sum))
     }
 
     def showLayers = (layers: Seq[Layer]) =>
@@ -87,19 +88,19 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
   }
 
-  private def executeLayer: Layer => Unit =
+  private def executeLayer(totalMscrsNumber: Int): Layer => Unit =
     attr { case layer =>
-      Execution(layer).execute
+      Execution(layer, totalMscrsNumber).execute
     }
 
   /**
    * Execution of a "layer" of Mscrs
    */
-  private case class Execution(layer: Layer) {
+  private case class Execution(layer: Layer, totalMscrsNumber: Int) {
 
     def execute {
       (s"Executing layer ${layer.id}\n"+layer).info
-      runMscrs(layer.mscrs)
+      runMscrs(layer.mscrs, totalMscrsNumber)
 
       layer.sinks.info("Layer sinks: ").foreach(markSinkAsFilled)
       ("===== END OF LAYER "+layer.id+" ======\n").info
@@ -111,24 +112,24 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
      * Only the execution part is done concurrently, not the configuration.
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
-    private def runMscrs(mscrs: Seq[Mscr]) {
+    private def runMscrs(mscrs: Seq[Mscr], totalMscrsNumber: Int) {
       ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).info
 
-      val configured = mscrs.toList.map(configureMscr)
+      val configured = mscrs.toList.map(configureMscr(totalMscrsNumber))
       val executed = if (sc.concurrentJobs) { "executing the Mscrs concurrently".debug; configured.map(executeMscr).sequence.get }
                      else                   { "executing the Mscrs sequentially".debug; configured.map(_.execute) }
       executed.map(reportMscr)
     }
 
     /** configure a Mscr */
-    private def configureMscr = (mscr: Mscr) => {
+    private def configureMscr(totalMscrsNumber: Int) = (mscr: Mscr) => {
       implicit val mscrConfiguration = sc.duplicate
 
       ("Loading input nodes for mscr "+mscr.id).debug
       mscr.inputNodes.foreach(load)
 
       ("Configuring mscr "+mscr.id).debug
-      MapReduceJob(mscr, layer.id, layer.mscrs.size).configure
+      MapReduceJob(mscr, layer.id, totalMscrsNumber).configure
     }
 
     /** execute a Mscr */
