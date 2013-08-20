@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -46,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>The super-class of all &quot;value&quot; types used in Hadoop jobs.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable.A">A</span>]</dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a>, <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a>, <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span>, <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="MetadataScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataScoobiWritable">MetadataScoobiWritable</a></div>
@@ -67,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.rtt.ScoobiWritable"><span>ScoobiWritable</span></li><li class="in" name="com.nicta.scoobi.impl.rtt.Configured"><span>Configured</span></li><li class="in" name="org.apache.hadoop.io.Writable"><span>Writable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.rtt.ScoobiWritable"><span>ScoobiWritable</span></li><li class="in" name="com.nicta.scoobi.impl.rtt.Configured"><span>Configured</span></li><li class="in" name="org.apache.hadoop.conf.Configurable"><span>Configurable</span></li><li class="in" name="org.apache.hadoop.io.Writable"><span>Writable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -133,7 +128,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Writable</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.io.IOException]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="org.apache.hadoop.io.Writable#write" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
@@ -149,7 +147,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Writable</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.io.IOException]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -248,7 +249,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.rtt.Configured#configuration" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -303,7 +307,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.rtt.ScoobiWritable#get" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -332,6 +339,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.rtt.Configured#getConf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getConf():org.apache.hadoop.conf.Configuration"></a>
+      <a id="getConf():Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getConf</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a> → Configurable</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -410,6 +430,19 @@
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.impl.rtt.Configured#setConf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setConf(conf:org.apache.hadoop.conf.Configuration):Unit"></a>
+      <a id="setConf(Configuration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setConf</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a> → Configurable</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -449,7 +482,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -465,7 +501,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -481,7 +520,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -495,6 +537,8 @@
         <div id="inheritedMembers">
         <div class="parent" name="com.nicta.scoobi.impl.rtt.Configured">
               <h3>Inherited from <a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></h3>
+            </div><div class="parent" name="org.apache.hadoop.conf.Configurable">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span></h3>
             </div><div class="parent" name="org.apache.hadoop.io.Writable">
               <h3>Inherited from <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
@@ -517,7 +561,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

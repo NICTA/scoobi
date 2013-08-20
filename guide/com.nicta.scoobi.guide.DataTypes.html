@@ -15,6 +15,8 @@
       <script type="text/javascript" src="./../css/jquery.hotkeys.js"></script>
       <script type="text/javascript" src="./../css/jquery.jstree.js"></script>
       <script type="text/javascript" src="./../css/tooltip.js"></script>
+      <script type="text/javascript" src="./../js/specs2-user.js"></script>
+      <script language="javascript">$.getScript("./../js/specs2-user.js", initUserScript(document));</script>
       <script language="javascript">
       function init() {  prettyPrint(); };
       /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
@@ -32,9 +34,9 @@
         element.style.display = (element.style.display == 'block')? 'none' : 'block';
       };
       function showHideByClass(name) {
-		    var elements = document.getElementsByClassName(name);
+        var elements = document.getElementsByClassName(name);
         for (i = 0; i < elements.length; i++) {
-		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+          elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
         }
       };
       function showByClass(name) {
@@ -62,10 +64,10 @@
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
       <title>Data Types</title>
-    </head><body><div id="breadcrumbs"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.DataTypes.html">DataTypes</a></div><div class="colmask threecol">
-                   <div class="colmid">
-                     <div class="colleft">
-                       <div class="col1"><div id="central"><title>Data Types</title><a name="Data+Types"><h2 specId="2016093860">Data Types</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Standard+types"><h3>Standard types</h3></a><p>We've seen in many of the examples that it's possible for <code class="prettyprint">DList</code> objects to be parameterised by normal Scala primitive (<em>value</em>) types. Not surprisingly, Scoobi supports <code class="prettyprint">DList</code> objects that are parameterised by any of the Scala primitive types:</p>
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.DataTypes.html">DataTypes</a></div><div class="colmask threecol">
+            <div class="colmid">
+              <div class="colleft">
+                <div class="col1"><div id="central"><html><title>Data Types</title><a name="Data+Types"><h2 specId="1468885333">Data Types</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Standard+types"><h3>Standard types</h3></a><p>We've seen in many of the examples that it's possible for <code class="prettyprint">DList</code> objects to be parameterised by normal Scala primitive (<em>value</em>) types. Not surprisingly, Scoobi supports <code class="prettyprint">DList</code> objects that are parameterised by any of the Scala primitive types:</p>
 <pre><code class="prettyprint">val x: DList[Byte] = ...
 val x: DList[Char] = ...
 val x: DList[Int] = ...
@@ -79,7 +81,7 @@ val x: DList[(String, Long)] = ...
 val x: DList[(Int, String, Long)] = ...
 val x: DList[(Int, (String, String), Int, (Long, Long, Long))] = ...
 val x: DList[(Int, (String, (Long, Long)), Char)] = ...
-</code></pre><p>Finally, Scoobi also supports <code class="prettyprint">DList</code> objects that are parameterised by the Scala <a href="http://www.scala-lang.org/api/rc/scala/Option.html"><code class="prettyprint">Option</code></a><br />and <a href="http://www.scala-lang.org/api/current/scala/Either.html"><code class="prettyprint">Either</code></a> types, which can also be combined with any of the <code class="prettyprint">Tuple</code> and primitive types:</p>
+</code></pre><p>Finally, Scoobi also supports <code class="prettyprint">DList</code> objects that are parameterised by the Scala <a href="http://www.scala-lang.org/api/current/index.html#scala.Option"><code class="prettyprint">Option</code></a><br />and <a href="http://www.scala-lang.org/api/current/index.html#scala.util.Either"><code class="prettyprint">Either</code></a> types, which can also be combined with any of the <code class="prettyprint">Tuple</code> and primitive types:</p>
 <pre><code class="prettyprint">val x: Option[Int] = ...
 val x: Option[String] = ...
 val x: Option[(Long, String)] = ...
@@ -88,9 +90,9 @@ val x: Either[Int, String] = ...
 val x: Either[String, (Long, Long)] = ...
 val x: Either[Long, Either[String, Int]] = ...
 val x: Either[Int, Option[Long]] = ...
-</code></pre><p>Notice that in all these cases, the <code class="prettyprint">DList</code> object is parameterised by a <em>standard</em> Scala type and not some wrapper type. This is really convenient. It means, for example, that the use of a higher-order function like <code class="prettyprint">map</code> can directly call any of the methods associated with those types. In contrast, programming MapReduce jobs directly using Hadoop's API requires that all types implement the <a href="http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/io/Writable.html"><code class="prettyprint">Writable</code></a> interface, resulting in the use of wrapper types such as <code class="prettyprint">IntWritable</code> rather than just <code class="prettyprint">int</code>. Of course the reason for this is that <code class="prettyprint">Writable</code> specifies methods for serialization and deserialization of data within the Hadoop framework. However, given that <code class="prettyprint">DList</code> objects eventually result in code that is executed by the Hadoop framework, how is serialization and deserialization specified?</p><a name="Custom+types"><h3>Custom types</h3></a><a name="WireFormat"><h4>WireFormat</h4></a><p>Scoobi requires that the type parameterizing a <code class="prettyprint">DList</code> object has an implementation of the <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.0-RC1-cdh4/index.html#com.nicta.scoobi.WireFormat"><code class="prettyprint">WireFormat</code></a> type class (Scala <a href="http://stackoverflow.com/questions/2982276/what-is-a-context-bound-in-scala">context bound</a>). Thus, the <code class="prettyprint">DList</code> class is actually specified as:</p>
+</code></pre><p>Notice that in all these cases, the <code class="prettyprint">DList</code> object is parameterised by a <em>standard</em> Scala type and not some wrapper type. This is really convenient. It means, for example, that the use of a higher-order function like <code class="prettyprint">map</code> can directly call any of the methods associated with those types. In contrast, programming MapReduce jobs directly using Hadoop's API requires that all types implement the <a href="http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/io/Writable.html"><code class="prettyprint">Writable</code></a> interface, resulting in the use of wrapper types such as <code class="prettyprint">IntWritable</code> rather than just <code class="prettyprint">int</code>. Of course the reason for this is that <code class="prettyprint">Writable</code> specifies methods for serialization and deserialization of data within the Hadoop framework. However, given that <code class="prettyprint">DList</code> objects eventually result in code that is executed by the Hadoop framework, how is serialization and deserialization specified?</p><a name="Custom+types"><h3>Custom types</h3></a><a name="WireFormat"><h4>WireFormat</h4></a><p>Scoobi requires that the type parameterizing a <code class="prettyprint">DList</code> object has an implementation of the <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.2/index.html#com.nicta.scoobi.core.WireFormat"><code class="prettyprint">WireFormat</code></a> type class (Scala <a href="http://stackoverflow.com/questions/2982276/what-is-a-context-bound-in-scala">context bound</a>). Thus, the <code class="prettyprint">DList</code> class is actually specified as:</p>
 <pre><code class="prettyprint">class DList[A : WireFormat] { ... }
-</code></pre><p>If the compiler cannot find a <code class="prettyprint">WireFormat</code> implementation for the type parameterizing a specific <code class="prettyprint">DList</code> object, that code will not compile. Implementations of <code class="prettyprint">WireFormat</code> specify serialization and deserialization in their <code class="prettyprint">toWire</code> and <code class="prettyprint">fromWire</code> methods, which end up finding their way into <code class="prettyprint">Writable</code>'s <code class="prettyprint">write</code> and <code class="prettyprint">readFields</code> methods.</p><p>To make life easy, the <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.0-RC1-cdh4/index.html#com.nicta.scoobi.WireFormat$"><code class="prettyprint">WireFormat</code></a> object includes <code class="prettyprint">WireFormat</code> implementations for the types listed above (that is why they work out of the box). However, the real advantage of using type classes is they allow you to extend the set of types that can be used with <code class="prettyprint">DList</code> objects and that set can include types that already exist, maybe even in some other compilation unit. So long as a type has a <code class="prettyprint">WireFormat</code> implementation, it can parameterise a <code class="prettyprint">DList</code>. This is extremely useful because while, say, you can represent a lot with nested tuples, much can be gained in terms of type safety, readability and maintenance by using custom types. For example, say we were building an application to analyze stock ticker-data. In that situation it would be nice to work with <code class="prettyprint">DList[Tick]</code> objects. We can do that if we write a <code class="prettyprint">WireFormat</code> implementation for <code class="prettyprint">Tick</code>:</p>
+</code></pre><p>If the compiler cannot find a <code class="prettyprint">WireFormat</code> implementation for the type parameterizing a specific <code class="prettyprint">DList</code> object, that code will not compile. Implementations of <code class="prettyprint">WireFormat</code> specify serialization and deserialization in their <code class="prettyprint">toWire</code> and <code class="prettyprint">fromWire</code> methods, which end up finding their way into <code class="prettyprint">Writable</code>'s <code class="prettyprint">write</code> and <code class="prettyprint">readFields</code> methods.</p><p>To make life easy, the <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.2/index.html#com.nicta.scoobi.core.WireFormat$"><code class="prettyprint">WireFormat</code></a> object includes <code class="prettyprint">WireFormat</code> implementations for the types listed above (that is why they work out of the box). However, the real advantage of using type classes is they allow you to extend the set of types that can be used with <code class="prettyprint">DList</code> objects and that set can include types that already exist, maybe even in some other compilation unit. So long as a type has a <code class="prettyprint">WireFormat</code> implementation, it can parameterise a <code class="prettyprint">DList</code>. This is extremely useful because while, say, you can represent a lot with nested tuples, much can be gained in terms of type safety, readability and maintenance by using custom types. For example, say we were building an application to analyze stock ticker-data. In that situation it would be nice to work with <code class="prettyprint">DList[Tick]</code> objects. We can do that if we write a <code class="prettyprint">WireFormat</code> implementation for <code class="prettyprint">Tick</code>:</p>
 <pre><code class="prettyprint">case class Tick(val date: Int, val symbol: String, val price: Double)
 
 implicit def TickFmt = new WireFormat[Tick] {
@@ -148,10 +150,10 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
  implicit val timestampFormat = AnythingFmt[Timestamp]
 
  val timestamps: DList[Timestamps] = ...  /* Compiles OK */
-</code></pre><p>The <code class="prettyprint">AnythingFmt</code> is a <code class="prettyprint">WireFormat</code> using Java serialization to serialise/deserialise the objects. It is however very ineffecient so it is not provided as an implicit conversion, you need to explicitely import it to be able to use it.</p></p></div></status></div></div>
-                       <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1435979385"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1454722734"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+</code></pre><p>The <code class="prettyprint">AnythingFmt</code> is a <code class="prettyprint">WireFormat</code> using Java serialization to serialise/deserialise the objects. It is however very ineffecient so it is not provided as an implicit conversion, you need to explicitely import it to be able to use it.</p></div></status></html></div></div>
+                <div class="col2"><div id="leftcolumn"><div id="tree">
+      <ul><li id="1521159967"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="328735190"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -161,7 +163,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1849285841"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="561309634"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -185,7 +187,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="416306656"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="35357367"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -201,7 +203,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="364245466"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1545780597"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -215,7 +217,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1545153112"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="1824816020"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -258,10 +260,14 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
             
           </li></ul>
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Checkpoints">Checkpoints</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Default+checkpoint">Default checkpoint</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Expiry+policy">Expiry policy</a>
             
           </li></ul>
           </li></ul>
-          </li><li id="2016093860"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li></ul>
+          </li><li id="1468885333"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -273,7 +279,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
             
           </li></ul>
           </li></ul>
-          </li><li id="1492522654"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="83785819"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -281,7 +287,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="71765171"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="1586471148"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -297,7 +303,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1418903030"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="663623284"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -327,7 +333,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1844808922"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1633955317"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -343,7 +349,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="334656668"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="2013618630"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -351,7 +357,7 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="314947583"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="693521337"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -360,14 +366,12 @@ val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Contributions">Contributions</a>
             
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Eclipse">Eclipse</a>
-            
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1435979385','2016093860'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1521159967','1468885333'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
-                       <div class="col3"><div id="rightcolumn"></div></div>
-                     </div>
-                   </div>
-                 </div></body></html>
+                <div class="col3"><div id="rightcolumn"></div></div>
+              </div>
+            </div>
+          </div></body></html>

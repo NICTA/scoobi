@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -63,7 +58,23 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.nicta.scoobi.impl.exec.ExecutionMode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.impl.exec.ConfiguredWritableComparator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConfiguredWritableComparatorextendsRawComparator[org.apache.hadoop.io.WritableComparable[_]]withConfigured"></a>
+      <a id="ConfiguredWritableComparator:ConfiguredWritableComparator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConfiguredWritableComparator.html"><span class="name">ConfiguredWritableComparator</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.io.RawComparator">RawComparator</span>[<span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]] with <a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">This Comparator delegates comparisons to the WritableComparator for the MapOutputKeyClass
+but first it instantiate keys using the configuration (instead of null in the original version)
+so that the TaggedKey can be set up with the proper metadata
+</p>
+    </li><li name="com.nicta.scoobi.impl.exec.ExecutionMode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ExecutionModeextendsShowNodewithOptimiser"></a>
       <a id="ExecutionMode:ExecutionMode"></a>
       <h4 class="signature">
@@ -111,7 +122,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="MapReduceJob.html"><span class="name">MapReduceJob</span></a><span class="params">(<span name="mscr">mscr: <a href="../plan/mscr/Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a></span>, <span name="layerId">layerId: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="MapReduceJob.html"><span class="name">MapReduceJob</span></a><span class="params">(<span name="mscr">mscr: <a href="../plan/mscr/Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a></span>, <span name="layerId">layerId: <span class="extype" name="scala.Int">Int</span></span>, <span name="mscrsNumber">mscrsNumber: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
@@ -171,7 +182,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

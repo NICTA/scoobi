@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -64,7 +59,7 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="com.nicta.scoobi.impl.rtt.Configured" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ConfiguredextendsAnyRef"></a>
+      <a id="ConfiguredextendsConfigurable"></a>
       <a id="Configured:Configured"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -72,7 +67,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Configured.html"><span class="name">Configured</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <a href="Configured.html"><span class="name">Configured</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span></span>
       </span>
       </h4>
       
@@ -98,7 +93,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="MetadataClassBuilder.html"><span class="name">MetadataClassBuilder</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="className">className: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="metaData">metaData: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>, <span name="mf">mf: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="MetadataClassBuilder.html"><span class="name">MetadataClassBuilder</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="className">className: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="metaData">metaData: <span class="extype" name="scala.Any">Any</span></span>, <span name="scoobiClassLoader">scoobiClassLoader: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>, <span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mf">mf: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A class for building a class extending T at run-time.</p>
@@ -426,7 +421,6 @@ and having WireFormats accessible for each tag
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

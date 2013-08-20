@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -197,7 +192,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -239,7 +237,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -347,15 +348,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InputsOutputs.ListToAvroFile#toAvroFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toAvroFile(path:String,overwrite:Boolean,checkpoint:Boolean)(implicitas:InputsOutputs.this.AvroSchema[A],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):ListToAvroFile.this.list.T"></a>
-      <a id="toAvroFile(String,Boolean,Boolean)(AvroSchema[A],ScoobiConfiguration):T"></a>
+      <a id="toAvroFile(path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,checkpoint:Boolean,expiryPolicy:com.nicta.scoobi.core.ExpiryPolicy)(implicitas:InputsOutputs.this.AvroSchema[A],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):ListToAvroFile.this.list.T"></a>
+      <a id="toAvroFile(String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit,Boolean,ExpiryPolicy)(AvroSchema[A],ScoobiConfiguration):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toAvroFile</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="as">as: <a href="InputsOutputs.html#AvroSchema[A]=com.nicta.scoobi.io.avro.AvroSchema[A]" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToAvroFile.A">A</span>]</span>, <span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
+        <span class="name">toAvroFile</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../../package.html">Sink.defaultOutputCheck</a></span></span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="expiryPolicy">expiryPolicy: <a href="../core/ExpiryPolicy.html" class="extype" name="com.nicta.scoobi.core.ExpiryPolicy">ExpiryPolicy</a> = <span class="symbol"><span class="name"><a href="../../../package.html">ExpiryPolicy.default</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="as">as: <a href="InputsOutputs.html#AvroSchema[A]=com.nicta.scoobi.io.avro.AvroSchema[A]" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToAvroFile.A">A</span>]</span>, <span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
       </span>
       </h4>
       
@@ -385,7 +386,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -401,7 +405,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -417,7 +424,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -449,7 +459,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

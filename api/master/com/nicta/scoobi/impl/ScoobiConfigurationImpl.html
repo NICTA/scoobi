@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -300,7 +295,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#concurrentJobs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -446,7 +444,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#getBytesPerReducer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -613,15 +614,28 @@
 </p><div class="fullcomment"><div class="comment cmt"><p>set a new job name to help recognize the job better
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#jobStep" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="jobStep(mscrId:Int):String"></a>
-      <a id="jobStep(Int):String"></a>
+      <a id="jobStep:String"></a>
+      <a id="jobStep:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">jobStep</span><span class="params">(<span name="mscrId">mscrId: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">jobStep</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the job step</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#jobStepIs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="jobStepIs(stepId:Int,stepsNumber:Int):String"></a>
+      <a id="jobStepIs(Int,Int):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jobStepIs</span><span class="params">(<span name="stepId">stepId: <span class="extype" name="scala.Int">Int</span></span>, <span name="stepsNumber">stepsNumber: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">The job name for a step in the current Scoobi, i.</p><div class="fullcomment"><div class="comment cmt"><p>The job name for a step in the current Scoobi, i.e. a single MapReduce job</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
@@ -652,28 +666,28 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#mode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mode:com.nicta.scoobi.core.Mode.Value"></a>
-      <a id="mode:core.Mode.Value"></a>
+      <a id="mode:com.nicta.scoobi.core.Mode"></a>
+      <a id="mode:Mode"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mode</span><span class="result">: <a href="../core/Mode$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.nicta.scoobi.core.Mode.Value">core.Mode.Value</a></span>
+        <span class="name">mode</span><span class="result">: <a href="../core/Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the current mode</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#modeIs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="modeIs(mode:com.nicta.scoobi.core.Mode.Value):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
-      <a id="modeIs(core.Mode.Value):ScoobiConfigurationImpl"></a>
+      <a id="modeIs(mode:com.nicta.scoobi.core.Mode):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="modeIs(Mode):ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <a href="../core/Mode$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.nicta.scoobi.core.Mode.Value">core.Mode.Value</a></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
+        <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <a href="../core/Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">set a flag in order to know that this configuration is for a in-memory, local or remote execution,
@@ -1085,7 +1099,10 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1101,7 +1118,10 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1117,7 +1137,10 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#withHadoopArgs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1233,7 +1256,6 @@ because all the paths will depend on that
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

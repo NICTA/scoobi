@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -210,7 +205,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_COMMAND" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_COMMAND" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="HADOOP_COMMAND:Option[String]"></a>
       <a id="HADOOP_COMMAND:Option[String]"></a>
       <h4 class="signature">
@@ -222,20 +217,33 @@
         <span class="name">HADOOP_COMMAND</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_HOME" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="HADOOP_HOME:String"></a>
-      <a id="HADOOP_HOME:String"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_CONF_DIR" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="HADOOP_CONF_DIR:Option[String]"></a>
+      <a id="HADOOP_CONF_DIR:Option[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">HADOOP_HOME</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">HADOOP_CONF_DIR</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_HOME" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="HADOOP_HOME:Option[String]"></a>
+      <a id="HADOOP_HOME:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HADOOP_HOME</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiApp#args" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="args:Seq[String]"></a>
       <a id="args:Seq[String]"></a>
@@ -301,6 +309,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">make a DObject runnable, executing the computation and returning the values</p><div class="fullcomment"><div class="comment cmt"><p>make a DObject runnable, executing the computation and returning the values</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ReplFunctions#avrocat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="avrocat(path:String):Iterable[org.apache.avro.generic.GenericRecord]"></a>
+      <a id="avrocat(String):Iterable[GenericRecord]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">avrocat</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Get the contents of an Avro file.</p><div class="fullcomment"><div class="comment cmt"><p>Get the contents of an Avro file.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReplFunctions.html" class="extype" name="com.nicta.scoobi.application.ReplFunctions">ReplFunctions</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ReplFunctions#cat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="cat(path:String):Iterable[String]"></a>
       <a id="cat(String):Iterable[String]"></a>
@@ -353,7 +374,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiInterpreter#cluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -395,6 +419,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">store the value of the configuration in a lazy val, so that it can be updated and still be referenced</p><div class="fullcomment"><div class="comment cmt"><p>store the value of the configuration in a lazy val, so that it can be updated and still be referenced</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiApp.html" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a> → <a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFilesDiagnostic" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configurationFilesDiagnostic:Unit"></a>
+      <a id="configurationFilesDiagnostic:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configurationFilesDiagnostic</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFromConfigurationDirectory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configurationFromConfigurationDirectory(conf:org.apache.hadoop.conf.Configuration):org.apache.hadoop.conf.Configuration"></a>
       <a id="configurationFromConfigurationDirectory(Configuration):Configuration"></a>
@@ -407,7 +444,7 @@
         <span class="name">configurationFromConfigurationDirectory</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration object set with the properties found in the hadoop directories</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#configureArguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configureArguments(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="configureArguments(ScoobiConfiguration):Unit"></a>
@@ -464,15 +501,15 @@
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with local setup
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#configureJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="configureJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):org.apache.hadoop.conf.Configuration"></a>
-      <a id="configureJars(ScoobiConfiguration):Configuration"></a>
+      <a id="configureJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="configureJars(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
@@ -610,7 +647,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ClusterConfiguration#fs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -691,6 +731,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#hadoopConfDirs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hadoopConfDirs:Seq[String]"></a>
+      <a id="hadoopConfDirs:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hadoopConfDirs</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#hadoopHomeDir" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hadoopHomeDir:Option[String]"></a>
+      <a id="hadoopHomeDir:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hadoopHomeDir</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -782,6 +848,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the cluster argument is specified and the local argument is not</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#isHadoopConfigured" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isHadoopConfigured:Boolean"></a>
+      <a id="isHadoopConfigured:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isHadoopConfigured</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if there are some configuration directories for hadoop</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInMemory:Boolean"></a>
       <a id="isInMemory:Boolean"></a>
@@ -1520,15 +1599,15 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </h4>
       <p class="shortcomment cmt">upload the jars unless 'nolibjars' has been set on the command-line'</p><div class="fullcomment"><div class="comment cmt"><p>upload the jars unless 'nolibjars' has been set on the command-line'</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiApp.html" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#uploadLibJarsFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="uploadLibJarsFiles(deleteLibJarsFirst:Boolean)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Any"></a>
-      <a id="uploadLibJarsFiles(Boolean)(ScoobiConfiguration):Any"></a>
+      <a id="uploadLibJarsFiles(deleteLibJarsFirst:Boolean)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="uploadLibJarsFiles(Boolean)(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uploadLibJarsFiles</span><span class="params">(<span name="deleteLibJarsFirst">deleteLibJarsFirst: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+        <span class="name">uploadLibJarsFiles</span><span class="params">(<span name="deleteLibJarsFirst">deleteLibJarsFirst: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">upload the jars which don't exist yet in the library directory on the cluster
@@ -1587,7 +1666,10 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1603,7 +1685,10 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1619,7 +1704,10 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#withTimer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1699,7 +1787,6 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

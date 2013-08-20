@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -40,12 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MetadataClassBuilder</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="className">className: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="metaData">metaData: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>, <span name="mf">mf: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">MetadataClassBuilder</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="className">className: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="metaData">metaData: <span class="extype" name="scala.Any">Any</span></span>, <span name="scoobiClassLoader">scoobiClassLoader: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>, <span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mf">mf: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A class for building a class extending T at run-time.</p><p>The purpose is to create a unique class which, when instantiated, will be able to perform the operations described in
-T, while using some metadata object serialised to the distributed cache</p><p>It takes:</p><ul><li>a type T which is going to be the parent of the generated class</li><li>the className (which must be unique for the class to build)</li><li>some metadata for the class (like a Map from tags to WireFormats, if it's a TaggedValue)</li></ul><p> The metadata is distributed to the cache and a &quot;metadataPath&quot; method is added to the built class so that it can be retrieved.</p><p> For example, a TaggedValue is a class, defined for several tags, which is able to read/write values of different types (described by their WireFormats),
+T, while using some metadata object serialised to the distributed cache</p><p>It takes:</p><ul><li>a type T which is going to be the parent of the generated class</li><li>the className (which must be unique for the class to build)</li><li>some metadata for the class (like a Map from tags to WireFormats, if it's a TaggedValue)</li></ul><p> The metadata is distributed to the cache and a &quot;metadataTag&quot; method is added to the built class so that it can be retrieved.</p><p> For example, a TaggedValue is a class, defined for several tags, which is able to read/write values of different types (described by their WireFormats),
  with one type per tag. A concrete instance of that class will have a unique name, TV92, and will provide a method returning the
  path of the distributed cache file containing all WireFormats per tags.</p><p> The TaggedKey class then retrieves the map with the help of the ScoobiMetadata class and can use the wireformats to
  serialise/deserialise values</p></div><div class="toggleContainer block">
@@ -89,7 +84,7 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(className:String,metaData:Any)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration,implicitmf:Manifest[T]):com.nicta.scoobi.impl.rtt.MetadataClassBuilder[T]"></a>
+      <a id="&lt;init&gt;(className:String,metaData:Any,scoobiClassLoader:ClassLoader,configuration:org.apache.hadoop.conf.Configuration)(implicitmf:Manifest[T]):com.nicta.scoobi.impl.rtt.MetadataClassBuilder[T]"></a>
       <a id="&lt;init&gt;:MetadataClassBuilder[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -97,7 +92,7 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MetadataClassBuilder</span><span class="params">(<span name="className">className: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="metaData">metaData: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>, <span name="mf">mf: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder.T">T</span>]</span>)</span>
+        <span class="name">MetadataClassBuilder</span><span class="params">(<span name="className">className: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="metaData">metaData: <span class="extype" name="scala.Any">Any</span></span>, <span name="scoobiClassLoader">scoobiClassLoader: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>, <span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mf">mf: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder.T">T</span>]</span>)</span>
       </span>
       </h4>
       
@@ -214,9 +209,25 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#configuration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="configuration:org.apache.hadoop.conf.Configuration"></a>
+      <a id="configuration:Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configuration</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -243,7 +254,10 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -324,6 +338,19 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#scoobiClassLoader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="scoobiClassLoader:ClassLoader"></a>
+      <a id="scoobiClassLoader:ClassLoader"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiClassLoader</span><span class="result">: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#show" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="show:String"></a>
       <a id="show:String"></a>
@@ -389,7 +416,10 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -405,7 +435,10 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -421,7 +454,10 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -461,7 +497,6 @@ T, while using some metadata object serialised to the distributed cache</p><p>It
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

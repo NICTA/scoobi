@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -160,7 +155,7 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_COMMAND" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_COMMAND" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="HADOOP_COMMAND:Option[String]"></a>
       <a id="HADOOP_COMMAND:Option[String]"></a>
       <h4 class="signature">
@@ -172,20 +167,33 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
         <span class="name">HADOOP_COMMAND</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_HOME" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="HADOOP_HOME:String"></a>
-      <a id="HADOOP_HOME:String"></a>
+      
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_CONF_DIR" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HADOOP_CONF_DIR:Option[String]"></a>
+      <a id="HADOOP_CONF_DIR:Option[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">HADOOP_HOME</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">HADOOP_CONF_DIR</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_HOME" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HADOOP_HOME:Option[String]"></a>
+      <a id="HADOOP_HOME:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HADOOP_HOME</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -225,7 +233,10 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configuration" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -241,7 +252,20 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <p class="shortcomment cmt">default configuration</p><div class="fullcomment"><div class="comment cmt"><p>default configuration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a> → <a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFromConfigurationDirectory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFilesDiagnostic" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="configurationFilesDiagnostic:Unit"></a>
+      <a id="configurationFilesDiagnostic:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configurationFilesDiagnostic</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFromConfigurationDirectory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configurationFromConfigurationDirectory(conf:org.apache.hadoop.conf.Configuration):org.apache.hadoop.conf.Configuration"></a>
       <a id="configurationFromConfigurationDirectory(Configuration):Configuration"></a>
       <h4 class="signature">
@@ -253,7 +277,7 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
         <span class="name">configurationFromConfigurationDirectory</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration object set with the properties found in the hadoop directories</p></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiArgs#deleteLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="deleteLibJars:Boolean"></a>
       <a id="deleteLibJars:Boolean"></a>
@@ -306,7 +330,10 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ClusterConfiguration#fs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -361,6 +388,32 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SystemProperties</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#hadoopConfDirs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hadoopConfDirs:Seq[String]"></a>
+      <a id="hadoopConfDirs:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hadoopConfDirs</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#hadoopHomeDir" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hadoopHomeDir:Option[String]"></a>
+      <a id="hadoopHomeDir:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hadoopHomeDir</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -374,6 +427,19 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#isHadoopConfigured" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isHadoopConfigured:Boolean"></a>
+      <a id="isHadoopConfigured:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isHadoopConfigured</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if there are some configuration directories for hadoop</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -595,7 +661,10 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -611,7 +680,10 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -627,7 +699,10 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -667,7 +742,6 @@ object because it wouldn't be possible to remove them afterwards.</p></div><div 
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

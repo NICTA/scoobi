@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -330,7 +325,7 @@ a new distributed list
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#by" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="by[K](kf:A=&gt;K)(implicitevidence$12:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,A)]"></a>
+      <a id="by[K](kf:A=&gt;K)(implicitevidence$15:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,A)]"></a>
       <a id="by[K]((A)⇒K)(WireFormat[K]):DList[(K,A)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -355,7 +350,10 @@ a new distributed list
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#collect" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -387,18 +385,38 @@ which the function is defined
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#count" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="count(p:A=&gt;Boolean):com.nicta.scoobi.core.DObject[Int]"></a>
-      <a id="count((A)⇒Boolean):DObject[Int]"></a>
+      <a id="count(p:A=&gt;Boolean):com.nicta.scoobi.core.DObject[Long]"></a>
+      <a id="count((A)⇒Boolean):DObject[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">count</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">count</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Count the number of elements in the list which satisfy a predicate.</p>
+    </li><li name="com.nicta.scoobi.core.DList#diff" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="diff(that:com.nicta.scoobi.core.DList[A])(implicitcmp:com.nicta.scoobi.core.Grouping[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="diff(DList[A])(Grouping[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">diff</span><span class="params">(<span name="that">that: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="Grouping.html" class="extype" name="com.nicta.scoobi.core.Grouping">Grouping</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Computes the multiset difference between this DList and that
+This has the same semantics as Scala's List.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the multiset difference between this DList and that
+This has the same semantics as Scala's List.diff
+ This makes code makes the assumption that all A's that group together are exactly
+ equivalent and interchangeable with each other, and all A's that do group together
+ will be brought together in the resultant DList. If this is a problem, shuffle can
+ be used (after)
+</p></div></div>
     </li><li name="com.nicta.scoobi.core.DList#distinct" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="distinct:com.nicta.scoobi.core.DList[A]"></a>
       <a id="distinct:DList[A]"></a>
@@ -412,6 +430,24 @@ which the function is defined
       </span>
       </h4>
       <p class="shortcomment cmt">Build a new distributed list from this list without any duplicate elements.</p>
+    </li><li name="com.nicta.scoobi.core.DList#distinctDiff" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="distinctDiff(that:com.nicta.scoobi.core.DList[A])(implicitcmp:com.nicta.scoobi.core.Grouping[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="distinctDiff(DList[A])(Grouping[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">distinctDiff</span><span class="params">(<span name="that">that: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="Grouping.html" class="extype" name="com.nicta.scoobi.core.Grouping">Grouping</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Computes the set difference between this DList and another
+This has the same semantics as Scala's Set.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the set difference between this DList and another
+This has the same semantics as Scala's Set.diff and is equivalent to calling
+.distinct.diff(that) but is considerably more efficient, as it can be done in a single
+mapReduce.
+</p></div></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -477,7 +513,10 @@ which the function is defined
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#flatten" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -494,6 +533,32 @@ which the function is defined
       </h4>
       <p class="shortcomment cmt">Converts a distributed list of iterable values into to a distributed list in which
 all the values are concatenated.</p>
+    </li><li name="com.nicta.scoobi.core.DList#fold" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fold(implicitm:scalaz.Monoid[A]):com.nicta.scoobi.core.DObject[A]"></a>
+      <a id="fold(Monoid[A]):DObject[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fold</span><span class="params">(<span class="implicit">implicit </span><span name="m">m: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Sum up the elements of this distributed list.</p>
+    </li><li name="com.nicta.scoobi.core.DList#foldMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="foldMap[B](f:A=&gt;B)(implicitevidence$10:scalaz.Monoid[B],implicitevidence$11:com.nicta.scoobi.core.WireFormat[B]):com.nicta.scoobi.core.DObject[B]"></a>
+      <a id="foldMap[B]((A)⇒B)(Monoid[B],WireFormat[B]):DObject[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">foldMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span>]</span>, <span name="arg1">arg1: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span>]</span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.core.DList.foldMap.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Map each element to a scalaz.</p><div class="fullcomment"><div class="comment cmt"><p>Map each element to a scalaz.Monoid and fold.</p></div></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -508,7 +573,7 @@ all the values are concatenated.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#groupBy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupBy[K](f:A=&gt;K)(implicitevidence$9:com.nicta.scoobi.core.WireFormat[K],implicitevidence$10:com.nicta.scoobi.core.Grouping[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
+      <a id="groupBy[K](f:A=&gt;K)(implicitevidence$12:com.nicta.scoobi.core.WireFormat[K],implicitevidence$13:com.nicta.scoobi.core.Grouping[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
       <a id="groupBy[K]((A)⇒K)(WireFormat[K],Grouping[K]):DList[(K,Iterable[A])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -538,7 +603,7 @@ secondary sorts, or groupings with strange logic (like making sure None's / null
 sprayed across all reducers
 </p></div></div>
     </li><li name="com.nicta.scoobi.core.DList#groupWith" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupWith[K](f:A=&gt;K)(gpk:com.nicta.scoobi.core.Grouping[K])(implicitevidence$11:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
+      <a id="groupWith[K](f:A=&gt;K)(gpk:com.nicta.scoobi.core.Grouping[K])(implicitevidence$14:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
       <a id="groupWith[K]((A)⇒K)(Grouping[K])(WireFormat[K]):DList[(K,Iterable[A])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -635,15 +700,15 @@ and some grouping function.</p>
       </h4>
       <p class="shortcomment cmt">Create a distributed list containing just the keys of a key-value distributed list.</p>
     </li><li name="com.nicta.scoobi.core.DList#length" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="length:com.nicta.scoobi.core.DObject[Int]"></a>
-      <a id="length:DObject[Int]"></a>
+      <a id="length:com.nicta.scoobi.core.DObject[Long]"></a>
+      <a id="length:DObject[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">length</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">length</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The length of the distributed list.</p>
@@ -839,7 +904,8 @@ new distributed list
       <p class="shortcomment cmt">Partitions this distributed list into a pair of distributed lists according to some
 predicate.</p><div class="fullcomment"><div class="comment cmt"><p>Partitions this distributed list into a pair of distributed lists according to some
 predicate. The first distributed list consists of elements that satisfy the predicate
-and the second of all elements that don't.</p></div></div>
+and the second of all elements that don't.
+</p></div></div>
     </li><li name="com.nicta.scoobi.core.DList#product" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="product(implicitnum:Numeric[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="product(Numeric[A]):DObject[A]"></a>
@@ -898,18 +964,45 @@ the list is empty. The order in which the elements are reduced is unspecified an
       </h4>
       <p class="shortcomment cmt">Randomly shuffle a DList.</p>
     </li><li name="com.nicta.scoobi.core.DList#size" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="size:com.nicta.scoobi.core.DObject[Int]"></a>
-      <a id="size:DObject[Int]"></a>
+      <a id="size:com.nicta.scoobi.core.DObject[Long]"></a>
+      <a id="size:DObject[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">size</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">size</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The size of the distributed list.</p>
+    </li><li name="com.nicta.scoobi.core.DList#stratify" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="stratify(n:Int)(f:A=&gt;Int):Seq[com.nicta.scoobi.core.DList[A]]"></a>
+      <a id="stratify(Int)((A)⇒Int):Seq[DList[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stratify</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Divide a DList into multiple partitions.</p>
+    </li><li name="com.nicta.scoobi.core.DList#stratifyWeighted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="stratifyWeighted[N](weights:Seq[N])(implicitevidence$9:Numeric[N]):Seq[com.nicta.scoobi.core.DList[A]]"></a>
+      <a id="stratifyWeighted[N](Seq[N])(Numeric[N]):Seq[DList[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stratifyWeighted</span><span class="tparams">[<span name="N">N</span>]</span><span class="params">(<span name="weights">weights: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.DList.stratifyWeighted.N">N</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../../../scala/package.html#Numeric[T]=scala.math.Numeric[T]" class="extmbr" name="scala.Numeric">Numeric</a>[<span class="extype" name="com.nicta.scoobi.core.DList.stratifyWeighted.N">N</span>]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Randomly divide a DList into multiple partitions where the stratum proportions are
+defined by <code>weights</code>.</p>
     </li><li name="com.nicta.scoobi.core.DList#sum" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="sum(implicitnum:Numeric[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="sum(Numeric[A]):DObject[A]"></a>
@@ -975,7 +1068,10 @@ the list is empty. The order in which the elements are reduced is unspecified an
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -991,7 +1087,10 @@ the list is empty. The order in which the elements are reduced is unspecified an
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1007,7 +1106,10 @@ the list is empty. The order in which the elements are reduced is unspecified an
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#wf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -1117,7 +1219,6 @@ the list is empty. The order in which the elements are reduced is unspecified an
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

@@ -9,11 +9,6 @@
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
@@ -115,6 +110,19 @@
       </span>
       </h4>
       <p class="comment cmt">RecordReader for producing values based on a function.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LazySeqInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="LazySeqInputFormat[A]:LazySeqInputFormat[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LazySeqInputFormat.html"><span class="name">LazySeqInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">InputFormat for producing values based on a lazy sequence.</p>
     </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="SeqInputextendsAnyRef"></a>
       <a id="SeqInput:SeqInput"></a>
@@ -142,7 +150,7 @@
       </h4>
       <p class="comment cmt">InputFormat for producing values based on a sequence.</p>
     </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SeqInputSplit[A]extendsInputSplitwithWritable"></a>
+      <a id="SeqInputSplit[A]extendsInputSplitwithWritablewithConfigured"></a>
       <a id="SeqInputSplit[A]:SeqInputSplit[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -150,7 +158,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="SeqInputSplit.html"><span class="name">SeqInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>
+        <a href="SeqInputSplit.html"><span class="name">SeqInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span> with <a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
       </span>
       </h4>
       <p class="comment cmt">InputSplit for a range of values produced by a sequence.</p>
@@ -225,7 +233,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

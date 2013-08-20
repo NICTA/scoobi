@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -406,15 +401,28 @@ added to the classpath.
       </h4>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobStep" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="jobStep(mscrId:Int):String"></a>
-      <a id="jobStep(Int):String"></a>
+      <a id="jobStep:String"></a>
+      <a id="jobStep:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">jobStep</span><span class="params">(<span name="mscrId">mscrId: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">jobStep</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobStepIs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="jobStepIs(stepId:Int,stepsNumber:Int):String"></a>
+      <a id="jobStepIs(Int,Int):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jobStepIs</span><span class="params">(<span name="stepId">stepId: <span class="extype" name="scala.Int">Int</span></span>, <span name="stepsNumber">stepsNumber: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       
@@ -432,28 +440,28 @@ added to the classpath.
       </h4>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#mode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="mode:com.nicta.scoobi.core.Mode.Value"></a>
-      <a id="mode:Mode.Value"></a>
+      <a id="mode:com.nicta.scoobi.core.Mode"></a>
+      <a id="mode:Mode"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mode</span><span class="result">: <a href="Mode$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.nicta.scoobi.core.Mode.Value">Mode.Value</a></span>
+        <span class="name">mode</span><span class="result">: <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a></span>
       </span>
       </h4>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#modeIs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="modeIs(mode:com.nicta.scoobi.core.Mode.Value):com.nicta.scoobi.core.ScoobiConfiguration"></a>
-      <a id="modeIs(Mode.Value):ScoobiConfiguration"></a>
+      <a id="modeIs(mode:com.nicta.scoobi.core.Mode):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="modeIs(Mode):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <a href="Mode$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.nicta.scoobi.core.Mode.Value">Mode.Value</a></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
+        <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
@@ -891,7 +899,10 @@ added to the classpath.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -933,7 +944,10 @@ added to the classpath.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1053,7 +1067,10 @@ added to the classpath.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1069,7 +1086,10 @@ added to the classpath.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1085,7 +1105,10 @@ added to the classpath.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -1152,7 +1175,6 @@ added to the classpath.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>
