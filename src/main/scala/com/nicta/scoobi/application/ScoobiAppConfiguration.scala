@@ -67,7 +67,7 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
     if (!isHadoopConfigured) logger.error(s"No configuration directory could be found. $$HADOOP_HOME is $HADOOP_HOME, $$HADOOP_CONF_DIR is $HADOOP_CONF_DIR")
     hadoopConfDirs.foreach { dir =>
       val configurationFiles = Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml")
-      logger.info(s"looking for configuration files in $dir. Found ${configurationFiles.map(name => s"$name: ${new File(name).exists}").mkString(", ")}")
+      logger.info(s"looking for configuration files in $dir. Found ${configurationFiles.map(name => s"$name: ${new File(dir+"/"+name).exists}").mkString(", ")}")
     }
   }
 
