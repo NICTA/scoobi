@@ -40,7 +40,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
   protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) = {
     reinit(node)
     val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph(showComputationGraph)))
-    checkSourceAndSinks(sc)(toExecute.debug("Active nodes", prettyGraph(showComputationGraph)))
+    checkSourceAndSinks(toExecute.debug("Active nodes", prettyGraph(showComputationGraph)))
     toExecute
   }
 
@@ -48,13 +48,13 @@ trait ExecutionMode extends ShowNode with Optimiser {
   protected def showComputationGraph(implicit sc: ScoobiConfiguration) =
     sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)
 
-  protected lazy val checkSourceAndSinks: CachedParamAttribute[ScoobiConfiguration, CompNode, Unit] = paramAttr { sc: ScoobiConfiguration => node: CompNode =>
+  protected def checkSourceAndSinks(node: CompNode)(implicit sc: ScoobiConfiguration): Unit = {
     node.sinks.filterNot(hasBeenFilled).foreach(_.outputCheck(sc))
     node match {
       case load: Load => load.source.inputCheck(sc)
       case _          => ()
     }
-    children(node).foreach(n => checkSourceAndSinks(sc)(n))
+    children(node).foreach(n => checkSourceAndSinks(n))
   }
 
   /**
