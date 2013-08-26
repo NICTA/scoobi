@@ -49,12 +49,15 @@ trait ExecutionMode extends ShowNode with Optimiser {
     sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)
 
   protected def checkSourceAndSinks(node: CompNode)(implicit sc: ScoobiConfiguration): Unit = {
-    node.sinks.filterNot(hasBeenFilled).foreach(_.outputCheck(sc))
-    node match {
-      case load: Load => load.source.inputCheck(sc)
-      case _          => ()
+    def checkNode(n: CompNode) = {
+      n.sinks.filterNot(hasBeenFilled).foreach(_.outputCheck(sc))
+      n match {
+        case load: Load => load.source.inputCheck(sc)
+        case _          => ()
+      }
     }
-    children(node).foreach(n => checkSourceAndSinks(n))
+    checkNode(node)
+    descendents(node).distinct.foreach(checkNode)
   }
 
   /**
