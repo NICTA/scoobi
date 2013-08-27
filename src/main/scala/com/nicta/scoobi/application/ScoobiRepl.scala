@@ -26,8 +26,9 @@ import tools.nsc.interpreter.IMain.ReplStrippingWriter
 import tools.nsc.util.ScalaClassLoader.URLClassLoader
 import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
 import core.ScoobiConfiguration
-import impl.io.FileSystems
+import com.nicta.scoobi.impl.io.{Files, CloseableIterator, GlobIterator, FileSystems}
 import org.apache.avro.generic.GenericRecord
+import org.apache.hadoop.conf.Configuration
 
 /** A REPL for Scoobi.
   *
@@ -181,42 +182,27 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
 }
 
 trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
+  private implicit val hadoopConfiguration: Configuration = configuration.configuration
+
   /** List a path . */
   def ls(path: String) {
     val p = new Path(path)
-    p.getFileSystem(configuration.configuration).listStatus(p) foreach { fstat =>
+    Files.globStatus(p) foreach { status =>
       Console.printf("%s%s  %-15s  %-12s  %s\n",
-        if (FileSystems.isDirectory(fstat)) "d" else "-",
-        fstat.getPermission,
-        fstat.getOwner,
-        fstat.getLen,
-        fstat.getPath.toUri.getPath)
+        if (FileSystems.isDirectory(status)) "d" else "-",
+        status.getPermission,
+        status.getOwner,
+        status.getLen,
+        status.getPath.toUri.getPath)
     }
   }
 
   /** Get the contents of a text file. */
-  def cat(path: String): Iterable[String] = {
-    import scala.io._
-    val p = new Path(path)
-    val fs = p.getFileSystem(configuration.configuration)
-    fs.globStatus(p).flatMap { fstat =>
-      Source.fromInputStream(fs.open(fstat.getPath)).getLines().toIterable
-    }
-  }
+  def cat(path: String): Iterable[String] =
+    new GlobIterator(new Path(path), GlobIterator.sourceIterator).toIterable
 
   /** Get the contents of an Avro file. */
-  def avrocat(path: String): Iterable[GenericRecord] = {
-    import org.apache.avro.mapred.FsInput
-    import org.apache.avro.file.DataFileReader
-    import org.apache.avro.generic.GenericDatumReader
-    new Iterable[GenericRecord] {
-      def iterator = new Iterator[GenericRecord] {
-        val in = new FsInput(new Path(path), configuration.configuration)
-        val reader = new GenericDatumReader[GenericRecord]()
-        val it = DataFileReader.openReader(in, reader)
-        def hasNext: Boolean = it.hasNext
-        def next(): GenericRecord = it.next()
-      }
-    }
-  }
+  def avrocat(path: String): Iterable[GenericRecord] =
+    new GlobIterator(new Path(path), GlobIterator.avroIterator).toIterable
+
 }

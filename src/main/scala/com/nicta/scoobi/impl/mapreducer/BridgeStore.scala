@@ -30,7 +30,7 @@ import org.apache.hadoop.mapreduce.Job
 
 import core._
 import rtt._
-import io.Files
+import com.nicta.scoobi.impl.io.{GlobIterator, Files}
 import ScoobiConfiguration._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress.CompressionCodec
@@ -124,49 +124,10 @@ object BridgeStore {
 }
 
 class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration) extends Iterator[A] {
-  def fs = FileSystem.get(path.toUri, sc)
-
-  private var initialised = false
-  def init {
-    if (!initialised)  {
-      remainingReaders = fs.globStatus(new Path(path, "ch*")).toStream map { (stat: FileStatus) =>
-        Compatibility.newSequenceFileReader(sc, stat.getPath)
-      }
-      value.configuration = sc.configuration
-      empty = remainingReaders.isEmpty || !readNext()
-      initialised = true
-    }
-  }
-  private var remainingReaders: Stream[SequenceFile.Reader] = Stream()
-  private var empty: Boolean = false
-  private val key = NullWritable.get
-
-  def next(): A = {
-    init
-    val v = value.get
-    empty = !readNext()
-    v
-  }
-  def hasNext(): Boolean = {
-    init
-    !empty
-  }
-
-  /* Attempt to read the next key-value and return true if successful, else false. As the
-   * end of each SequenceFile.Reader is reached, move on to the next until they have all
-   * been read. */
-  private def readNext(): Boolean = {
-    remainingReaders match {
-      case cur #:: rest =>
-        val nextValueIsRead = try { cur.next(key, value) } catch { case e: Throwable => e.printStackTrace; close; false }
-        nextValueIsRead || { cur.close(); remainingReaders = rest; readNext() }
-      case Stream.Empty => false
-    }
-  }
-
-  def close {
-    Option(remainingReaders).map(rs => rs.foreach(_.close))
-  }
+  private val iterator = new GlobIterator[A](new Path(path, "ch*"), GlobIterator.scoobiWritableIterator(value)(sc.configuration))(sc.configuration)
+  def next() = iterator.next
+  def hasNext = iterator.hasNext
+  def close = iterator.close
 }
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,

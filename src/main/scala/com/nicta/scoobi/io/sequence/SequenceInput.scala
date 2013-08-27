@@ -168,7 +168,7 @@ class CheckedSeqSource[K : Manifest, V : Manifest, A](paths: Seq[String],
   override protected def checkInputPathType(p: Path)(implicit sc: ScoobiConfiguration) {
     if (checkFileTypes)
       Files.getSingleFilePerDir(p)(sc) foreach { filePath =>
-        val seqReader: SequenceFile.Reader = Compatibility.newSequenceFileReader(sc, filePath)
+        val seqReader: SequenceFile.Reader = Compatibility.newSequenceFileReader(sc.configuration, filePath)
         checkType(seqReader.getKeyClass, manifest[K].runtimeClass, "KEY")
         checkType(seqReader.getValueClass, manifest[V].runtimeClass, "VALUE")
       }

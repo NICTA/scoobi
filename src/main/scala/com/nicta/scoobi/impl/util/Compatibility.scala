@@ -26,6 +26,7 @@ import org.apache.hadoop.fs.{FileSystem, Path, FileStatus}
 import org.apache.hadoop.io.SequenceFile
 import core.ScoobiConfiguration
 import org.apache.commons.logging.LogFactory
+import com.nicta.scoobi.impl.io.Files
 
 
 /**
@@ -86,8 +87,8 @@ object Compatibility {
   def isDirectory(fileStatus: FileStatus): Boolean = invoke(v2.isDirectory, fileStatus).asInstanceOf[Boolean]
 
   /** @return a sequence file reader */
-  def newSequenceFileReader(sc: ScoobiConfiguration, path: Path): SequenceFile.Reader =
-    newInstance(v2.sequenceFileReaderConstructor, sc.fileSystem, path, sc.configuration).asInstanceOf[SequenceFile.Reader]
+  def newSequenceFileReader(configuration: Configuration, path: Path): SequenceFile.Reader =
+    newInstance(v2.sequenceFileReaderConstructor, Files.fileSystem(path)(configuration), path, configuration).asInstanceOf[SequenceFile.Reader]
 
   /**
    * Creates TaskAttemptContext from a JobConf and jobId using the correct
