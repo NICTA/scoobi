@@ -18,7 +18,7 @@ package core
 
 import java.util.{Calendar, UUID}
 import org.apache.hadoop.fs.{FileSystem, Path}
-import com.nicta.scoobi.impl.io.FileSystems
+import com.nicta.scoobi.impl.io.{Files, FileSystems}
 import scala.concurrent.duration.{Duration, FiniteDuration}
 
 /** store the output path of a Sink as a checkpoint */
@@ -87,7 +87,7 @@ object ExpiryPolicy {
   /** rename the previous checkpoint file with an increasing version number */
   val incrementCounterFile: ArchivingPolicy = (p: Path, sc: ScoobiConfiguration) => {
     val newIndex = lastIndex(p, sc).map(_ + 1).getOrElse(1)
-    FileSystems.copyTo(new Path(p.getParent, s"$p-$newIndex"))(sc)(p)
+    Files.copyTo(new Path(p.getParent, s"$p-$newIndex"))(sc.configuration)(p)
   }
 
   /** rename the previous checkpoint file with an increasing version number, and remove the n oldest files */

@@ -21,7 +21,7 @@ import org.apache.hadoop.fs.{Path, FileSystem}
 import scala.io.Source
 import Scoobi._
 import core.WireFormat
-import impl.io.FileSystems
+import com.nicta.scoobi.impl.io.{Files, FileSystems}
 
 import impl.ScoobiConfiguration._
 import impl.ScoobiConfigurationImpl._
@@ -64,9 +64,10 @@ trait TestFiles {
 
   implicit def fs(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration.configuration)
 
-  def moveToRemote(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
+  def moveToRemote(file: File, keep: Boolean = false)(implicit sc: ScoobiConfiguration) = {
     if (isRemote) {
-      FileSystems.fileSystem.copyFromLocalFile(!keep, new Path(file.getPath), remotePath(file))
+      val path = new Path(file.getPath)
+      Files.fileSystem(path)(sc.configuration).copyFromLocalFile(!keep, path, remotePath(file))
     }
     file
   }

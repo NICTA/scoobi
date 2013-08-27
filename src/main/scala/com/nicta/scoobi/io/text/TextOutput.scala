@@ -26,7 +26,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
 import core._
-import impl.io.Helper
+import impl.io.Files
 import avro.AvroInput
 import org.apache.hadoop.conf.Configuration
 import impl.ScoobiConfigurationImpl
@@ -94,9 +94,9 @@ case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, 
   override def outputSetup(implicit sc: ScoobiConfiguration) {
     super.outputSetup(sc)
 
-    if (Helper.pathExists(output)(sc.configuration) && overwrite) {
+    if (Files.pathExists(output)(sc.configuration) && overwrite) {
       logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
-      Helper.deletePath(output)(sc.configuration)
+      Files.deletePath(output)(sc.configuration)
     }
   }
 

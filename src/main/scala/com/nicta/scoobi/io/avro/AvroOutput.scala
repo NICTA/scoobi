@@ -27,7 +27,7 @@ import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyOutputFormat
 
 import core._
-import impl.io.Helper
+import impl.io.Files
 import org.apache.hadoop.conf.Configuration
 import impl.ScoobiConfigurationImpl
 import org.apache.hadoop.io.compress._
@@ -90,9 +90,9 @@ case class AvroSink[K, B](schema: AvroSchema[B],
 
   override def outputSetup(implicit sc: ScoobiConfiguration) {
     super.outputSetup(sc)
-    if (Helper.pathExists(output)(sc.configuration) && overwrite) {
+    if (Files.pathExists(output)(sc.configuration) && overwrite) {
       logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
-      Helper.deletePath(output)(sc.configuration)
+      Files.deletePath(output)(sc.configuration)
     }
   }
 

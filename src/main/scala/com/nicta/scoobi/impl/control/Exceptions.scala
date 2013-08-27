@@ -17,6 +17,8 @@ package com.nicta.scoobi
 package impl
 package control
 
+import scalaz.Monoid
+
 /**
  * This trait provides methods to catch exceptions and transform them into values which can be passed to
  * further computations.
@@ -70,6 +72,12 @@ trait Exceptions {
    * return ko otherwise
    */
   def tryOrElse[T](a: =>T)(ko: T): T = tryo(a).getOrElse(ko)
+
+  /**
+   * try to evaluate an expression and return it if nothing fails.
+   * return the zero value of the Monoid instance otherwise
+   */
+  def tryOrZero[T : Monoid](a: =>T): T = tryOrElse(a)(implicitly[Monoid[T]].zero)
 
   /**
    * try to evaluate an expression and return ok if nothing fails.

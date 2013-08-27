@@ -28,7 +28,7 @@ import core._
 import WireFormat._
 import impl.plan.DListImpl
 import impl.ScoobiConfiguration._
-import impl.io.Helper
+import impl.io.Files
 import impl.util.Compatibility
 
 /** Smart functions for materialising distributed lists by loading Sequence files. */
@@ -155,7 +155,7 @@ class SeqSource[K, V, A](paths: Seq[String],
     inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
   }
 
-  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
+  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Files.pathSize(p)(sc)).sum
 }
 
 /** This class can check if the source types are ok, based on the Manifest of the input types */
@@ -167,7 +167,7 @@ class CheckedSeqSource[K : Manifest, V : Manifest, A](paths: Seq[String],
 
   override protected def checkInputPathType(p: Path)(implicit sc: ScoobiConfiguration) {
     if (checkFileTypes)
-      Helper.getSingleFilePerDir(p)(sc) foreach { filePath =>
+      Files.getSingleFilePerDir(p)(sc) foreach { filePath =>
         val seqReader: SequenceFile.Reader = Compatibility.newSequenceFileReader(sc, filePath)
         checkType(seqReader.getKeyClass, manifest[K].runtimeClass, "KEY")
         checkType(seqReader.getValueClass, manifest[V].runtimeClass, "VALUE")

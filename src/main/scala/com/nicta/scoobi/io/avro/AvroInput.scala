@@ -36,7 +36,7 @@ import org.apache.avro.file.DataFileReader
 import core._
 import impl.plan.DListImpl
 import impl.ScoobiConfiguration._
-import impl.io.Helper
+import impl.io.Files
 import AvroParsingImplicits._
 /**
  * Functions for materialising distributed lists by loading Avro files
@@ -91,8 +91,8 @@ case class AvroDataSource[K, A](paths: Seq[Path],
 
   protected def checkInputSchema(p: Path)(implicit sc: ScoobiConfiguration) {
     if (checkSchemas && schema.getType != Schema.Type.NULL) {
-      val fileStats = Helper.getFileStatus(p)(sc)
-      Helper.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
+      val fileStats = Files.globStatus(p)(sc.configuration)
+      Files.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
         val avroFile = new FsInput(filePath, sc)
         try {
           val writerSchema = DataFileReader.openReader(avroFile, new GenericDatumReader[K]()).getSchema
@@ -118,7 +118,7 @@ case class AvroDataSource[K, A](paths: Seq[Path],
     job.getConfiguration.set("avro.schema.input.key", schema.toString)
   }
 
-  def inputSize(implicit sc: ScoobiConfiguration): Long = paths.map(p => Helper.pathSize(p)(sc)).sum
+  def inputSize(implicit sc: ScoobiConfiguration): Long = paths.map(p => Files.pathSize(p)(sc)).sum
 }
 
 class GenericAvroKeyInputFormat[T] extends AvroKeyInputFormat[T] {

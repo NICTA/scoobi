@@ -21,7 +21,7 @@ import Data._
 import collection.immutable.VectorBuilder
 import org.apache.hadoop.conf.Configuration
 import scala.collection.JavaConversions._
-import com.nicta.scoobi.impl.io.{FileSystems, Helper}
+import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import java.io.IOException
 import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
@@ -104,9 +104,9 @@ object Source {
   /** default check for sources using input files */
   val defaultInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => {
     inputPaths foreach { p =>
-      if (Helper.pathExists(p)(sc.configuration)) logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc.configuration)) + ")")
+      if (Files.pathExists(p)(sc.configuration)) logger.info("Input path: " + p.toUri.toASCIIString + " (" + Files.sizeString(Files.pathSize(p)(sc.configuration)) + ")")
       else                                        throw new IOException("Input path " + p + " does not exist.")
-      FileSystems.checkFilePermissions(p, READ)(sc)
+      Files.checkFilePermissions(p, READ)(sc.configuration)
     }
   }
   val noInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => ()

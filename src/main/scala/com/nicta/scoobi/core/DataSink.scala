@@ -22,12 +22,10 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.fs._
 import org.apache.hadoop.conf.Configuration
 import Data._
-import com.nicta.scoobi.impl.io.{FileSystems, Helper}
+import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.commons.logging.LogFactory
-import java.io.IOException
 import org.apache.hadoop.fs.permission.FsAction
-import org.apache.hadoop.security.UserGroupInformation
 import FsAction._
 /**
  * An output store from a MapReduce job
@@ -125,11 +123,11 @@ object Sink {
 
   /** default check for sink using output files */
   val defaultOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => {
-    if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
+    if (Files.pathExists(output)(sc.configuration) && !overwrite) {
       throw new FileAlreadyExistsException("Output path already exists: " + output)
     } else logger.info("Output path: " + output.toUri.toASCIIString)
 
-    FileSystems.checkFilePermissions(output, WRITE)(sc)
+    Files.checkFilePermissions(output, WRITE)(sc.configuration)
   }
 
   val noOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => ()

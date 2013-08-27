@@ -31,7 +31,7 @@ import core._
 import impl.plan.DListImpl
 import impl.mapreducer.TaggedInputSplit
 import impl.ScoobiConfiguration._
-import impl.io.Helper
+import impl.io.Files
 import WireFormat._
 
 /** Smart functions for materialising distributed lists by loading text files. */
@@ -137,7 +137,7 @@ case class TextSource[A : WireFormat](paths: Seq[String],
     inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
   }
 
-  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
+  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Files.pathSize(p)(sc)).sum
 }
 
 

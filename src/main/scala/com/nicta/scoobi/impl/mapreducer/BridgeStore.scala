@@ -30,7 +30,7 @@ import org.apache.hadoop.mapreduce.Job
 
 import core._
 import rtt._
-import io.Helper
+import io.Files
 import ScoobiConfiguration._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress.CompressionCodec
@@ -76,7 +76,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
      FileInputFormat.addInputPath(job, new Path(path(sc), "ch*"))
   }
 
-  def inputSize(implicit sc: ScoobiConfiguration): Long = Helper.pathSize(new Path(path, "ch*"))(sc)
+  def inputSize(implicit sc: ScoobiConfiguration): Long = Files.pathSize(new Path(path, "ch*"))(sc)
 
   lazy val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
     def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get

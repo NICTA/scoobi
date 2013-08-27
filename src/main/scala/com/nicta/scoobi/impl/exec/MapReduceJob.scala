@@ -186,7 +186,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrsNumber: Int)(implicit val
       job.setNumReduceTasks(numReducers)
 
       /* Log stats on this MR job. */
-      logger.info("Total input size: " +  Helper.sizeString(inputBytes))
+      logger.info("Total input size: " +  Files.sizeString(inputBytes))
       logger.info("Number of reducers: " + numReducers)
     }
 

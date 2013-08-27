@@ -34,7 +34,7 @@ import org.apache.hadoop.security.UserGroupInformation
  * Utility methods for copying files in the local / remote filesystem or across file systems
  */
 private [scoobi]
-trait FileSystems {
+trait FileSystems extends Files {
 
   private implicit val logger = LogFactory.getLog("scoobi.FileSystems")
 
@@ -66,10 +66,10 @@ trait FileSystems {
   }
 
   /** @return true if a file can be found in the existing files and if its size has not changed */
-  def isOldFile(existingFiles: Seq[Path])(implicit configuration: ScoobiConfiguration) = (file: File) =>
+  def isOldFile(existingFiles: Seq[Path])(implicit sc: ScoobiConfiguration) = (file: File) =>
     existingFiles.exists { (path:Path) =>
       path.getName.contains(file.getName) &&
-      fileStatus(path).getLen == file.length
+      fileStatus(path)(sc.configuration).getLen == file.length
     }.debugNot("the file "+file.getName+" was not found on the cluster or has changed")
 
   /** @return a non-null sequence of files contained in a given directory */
@@ -128,61 +128,6 @@ trait FileSystems {
    */
   private[scoobi]
   def isLocal(implicit configuration: ScoobiConfiguration) = fileSystem.isInstanceOf[LocalFileSystem]
-
-  /** @return a function moving a Path to a given directory */
-  def moveTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = moveTo(new Path(dirPath(dir)))
-
-  /** @return a function moving a Path to a given directory */
-  def moveTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) => {
-    !(fileSystem.exists(f)) || {
-      val from = fileSystem
-      val to = FileSystem.get(dir.toUri, sc.configuration)
-
-      if (sameFileSystem(from, to)) fileSystem.rename(f, new Path(dir, f.getName))
-      else                          FileUtil.copy(from, f, to, new Path(dir, f.getName),
-                                                  true /* deleteSource */, false /* overwrite */, sc.configuration)
-    }
-  }
-
-  /** @return a function copying a Path to a given directory */
-  def copyTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = copyTo(new Path(dir))
-
-  /** @return a function copying a Path to a given directory */
-  def copyTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) =>
-    FileUtil.copy(fileSystem, f, FileSystem.get(dir.toUri, sc.configuration), dir, false, sc)
-
-  /** @return the path with a trailing slash */
-  def dirPath(s: String) = if (s endsWith "/") s else s+"/"
-
-  /** @return the file status of a file */
-  def fileStatus(path: Path)(implicit sc: ScoobiConfiguration) = fileSystem.getFileStatus(path)
-
-  /** @return true if the 2 fileSystems are the same */
-  def sameFileSystem(from: FileSystem, to: FileSystem): Boolean = sameFileSystem(from.getUri, to.getUri)
-
-  /** @return true if the 2 uri are one the same host with the same scheme */
-  def sameFileSystem(from: URI, to: URI): Boolean = {
-    def equalIgnoreCase(from: String, to: String) = (from == null && to == null) || from.equalsIgnoreCase(to)
-    (equalIgnoreCase(from.getHost, to.getHost) && equalIgnoreCase(from.getScheme, to.getScheme))
-  }
-
-  /** @return true if the file is a directory */
-  def isDirectory(fileStatus: FileStatus) = Compatibility.isDirectory(fileStatus)
-
-  /** check if a READ or WRITE action can be done on a given file based on the current user and on the file permissions */
-  def checkFilePermissions(path: Path, action: FsAction)(implicit sc: ScoobiConfiguration) = {
-    val existingParent = Helper.getExistingParent(path)(sc.configuration)
-    val existingParentFileStatus = existingParent.getFileSystem(sc.configuration).getFileStatus(existingParent)
-    val permission = Helper.getFilePermission(existingParent)(sc.configuration)
-
-    val (group, owner, user) = (existingParentFileStatus.getGroup, existingParentFileStatus.getOwner, UserGroupInformation.getCurrentUser)
-    val ownerIsUser = owner == user.getShortUserName || owner == user.getUserName
-
-    if (ownerIsUser && !permission.getUserAction.implies(action) &&
-        user.getGroupNames.contains(group) && !permission.getGroupAction.implies(action) &&
-        !permission.getOtherAction.implies(action))
-      throw new IOException(s"You do not have $action permission on the path: $permission $path")
-  }
 
 }
 

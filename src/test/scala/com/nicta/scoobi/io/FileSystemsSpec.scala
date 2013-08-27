@@ -20,10 +20,11 @@ import java.io.File
 import org.specs2.specification.Scope
 import org.apache.hadoop.fs.{FileStatus, Path}
 import impl.ScoobiConfiguration
-import impl.io.FileSystems
+import com.nicta.scoobi.impl.io.{Files, FileSystems}
 import testing.mutable.UnitSpecification
 import org.specs2.mutable.Tables
 import java.net.URI
+import org.apache.hadoop.conf.Configuration
 
 class FileSystemsSpec extends UnitSpecification with Tables {
   "A local file can be compared to a list of files on the server to check if it is outdated" >> {
@@ -51,14 +52,14 @@ class FileSystemsSpec extends UnitSpecification with Tables {
     "local"    ! "file"     ! "cluster"  ! "file"     ! false   |
     nullString ! nullString ! nullString ! nullString ! true    |
     nullString ! "file"     ! "local"    ! "file"     ! false   | { (h1, s1, h2, s2, same) =>
-      FileSystems.sameFileSystem(uri(h1, s1), uri(h2, s2)) === same
+      Files.sameFileSystem(uri(h1, s1), uri(h2, s2)) === same
     }
   }
 
   trait fs extends FileSystems with Scope {
     var uploadedLengthIs = 0
     /** default file status for all test cases */
-    override def fileStatus(path: Path)(implicit sc: core.ScoobiConfiguration) =
+    override def fileStatus(path: Path)(implicit configuration: Configuration) =
       new FileStatus(uploadedLengthIs, false, 0, 0, 0, 0, null, null, null, null)
   }
 }

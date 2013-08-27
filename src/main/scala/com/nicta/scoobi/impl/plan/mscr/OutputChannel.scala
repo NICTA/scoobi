@@ -101,9 +101,9 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   }
 
   /** copy all outputs files to the destinations specified by sink files */
-  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
-    val fs = configuration.fileSystem
+  def collectOutputs(outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) {
     import fileSystems._
+    implicit val configuration = sc.configuration
 
     outer.logger.debug("outputs files are "+outputFiles.mkString("\n") )
     // copy the each result file to its sink
@@ -121,7 +121,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
     outputFiles.find(_.getName ==  "_SUCCESS").foreach { successFile =>
       sinks.flatMap(_.outputPath).foreach { outDir =>
         mkdir(outDir)
-        copyTo(outDir)(configuration)(successFile)
+        copyTo(outDir).apply(successFile)
       }
     }
   }
