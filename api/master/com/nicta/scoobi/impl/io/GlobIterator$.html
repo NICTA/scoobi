@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>Compatibility - com.nicta.scoobi.impl.util.Compatibility</title>
-          <meta name="description" content="Compatibility - com.nicta.scoobi.impl.util.Compatibility" />
-          <meta name="keywords" content="Compatibility com.nicta.scoobi.impl.util.Compatibility" />
+          <title>GlobIterator - com.nicta.scoobi.impl.io.GlobIterator</title>
+          <meta name="description" content="GlobIterator - com.nicta.scoobi.impl.io.GlobIterator" />
+          <meta name="keywords" content="GlobIterator com.nicta.scoobi.impl.io.GlobIterator" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.impl.util.Compatibility$';
+            var hash = 'com.nicta.scoobi.impl.io.GlobIterator$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.util">util</a></p>
-        <h1>Compatibility</h1>
+        <a href="GlobIterator.html" title="Go to companion"><img src="../../../../../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.io">io</a></p>
+        <h1><a href="GlobIterator.html" title="Go to companion">GlobIterator</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,13 +35,11 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Compatibility</span>
+        <span class="name">GlobIterator</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides a compatibility layer for handling API incompatibilities between
-hadoop 1.x and 2.x via reflection.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -61,7 +59,7 @@ hadoop 1.x and 2.x via reflection.
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.util.Compatibility"><span>Compatibility</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.io.GlobIterator"><span>GlobIterator</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -165,6 +163,19 @@ hadoop 1.x and 2.x via reflection.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#avroIterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="avroIterator(implicitconfiguration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path=&gt;com.nicta.scoobi.impl.io.CloseableIterator[org.apache.avro.generic.GenericRecord]{lazyvaliterator:Iterator[org.apache.avro.generic.GenericRecord]}"></a>
+      <a id="avroIterator(Configuration):(Path)⇒CloseableIterator[GenericRecord]{lazyvaliterator:Iterator[org.apache.avro.generic.GenericRecord]}"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">avroIterator</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span>] { lazy val iterator: Iterator[org.apache.avro.generic.GenericRecord] }</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>an iterator on an Avro FileReader</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -184,19 +195,6 @@ hadoop 1.x and 2.x via reflection.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.Compatibility#defaultFSKeyName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="defaultFSKeyName:String"></a>
-      <a id="defaultFSKeyName:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">defaultFSKeyName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the key to use for the default file system</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -255,21 +253,6 @@ hadoop 1.x and 2.x via reflection.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.Compatibility#getConfiguration" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getConfiguration(context:org.apache.hadoop.mapreduce.JobContext):org.apache.hadoop.conf.Configuration"></a>
-      <a id="getConfiguration(JobContext):Configuration"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getConfiguration</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.JobContext">JobContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Invokes getConfiguration() on JobContext.</p><div class="fullcomment"><div class="comment cmt"><p>Invokes getConfiguration() on JobContext. Works with both
-hadoop 1 and 2.
-</p></div></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -283,19 +266,6 @@ hadoop 1 and 2.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.Compatibility#isDirectory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isDirectory(fileStatus:org.apache.hadoop.fs.FileStatus):Boolean"></a>
-      <a id="isDirectory(FileStatus):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isDirectory</span><span class="params">(<span name="fileStatus">fileStatus: <span class="extype" name="org.apache.hadoop.fs.FileStatus">FileStatus</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the file is a directory</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -322,61 +292,6 @@ hadoop 1 and 2.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.Compatibility#newJobContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newJobContext(conf:org.apache.hadoop.conf.Configuration,id:org.apache.hadoop.mapreduce.JobID):org.apache.hadoop.mapreduce.JobContext"></a>
-      <a id="newJobContext(Configuration,JobID):JobContext"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newJobContext</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="id">id: <span class="extype" name="org.apache.hadoop.mapreduce.JobID">JobID</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.JobContext">JobContext</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates JobContext from a configuration and jobId using the correct
-constructor for based on the hadoop version.</p>
-    </li><li name="com.nicta.scoobi.impl.util.Compatibility#newMapContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newMapContext(conf:org.apache.hadoop.conf.Configuration,id:org.apache.hadoop.mapreduce.TaskAttemptID,reader:org.apache.hadoop.mapreduce.RecordReader[_,_],writer:org.apache.hadoop.mapreduce.RecordWriter[_,_],outputCommitter:org.apache.hadoop.mapreduce.OutputCommitter,reporter:org.apache.hadoop.mapreduce.StatusReporter,split:org.apache.hadoop.mapreduce.InputSplit):org.apache.hadoop.mapreduce.MapContext[Any,Any,Any,Any]"></a>
-      <a id="newMapContext(Configuration,TaskAttemptID,RecordReader[_,_],RecordWriter[_,_],OutputCommitter,StatusReporter,InputSplit):MapContext[Any,Any,Any,Any]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newMapContext</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="id">id: <span class="extype" name="org.apache.hadoop.mapreduce.TaskAttemptID">TaskAttemptID</span></span>, <span name="reader">reader: <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[_, _]</span>, <span name="writer">writer: <span class="extype" name="org.apache.hadoop.mapreduce.RecordWriter">RecordWriter</span>[_, _]</span>, <span name="outputCommitter">outputCommitter: <span class="extype" name="org.apache.hadoop.mapreduce.OutputCommitter">OutputCommitter</span></span>, <span name="reporter">reporter: <span class="extype" name="org.apache.hadoop.mapreduce.StatusReporter">StatusReporter</span></span>, <span name="split">split: <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.MapContext">MapContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates MapContext from a JobConf and jobId using the correct
-constructor for based on the hadoop version.</p>
-    </li><li name="com.nicta.scoobi.impl.util.Compatibility#newSequenceFileReader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="newSequenceFileReader(configuration:org.apache.hadoop.conf.Configuration,path:org.apache.hadoop.fs.Path):org.apache.hadoop.io.SequenceFile.Reader"></a>
-      <a id="newSequenceFileReader(Configuration,Path):Reader"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newSequenceFileReader</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.io.SequenceFile.Reader">Reader</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a sequence file reader</p></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.Compatibility#newTaskAttemptContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newTaskAttemptContext(conf:org.apache.hadoop.conf.Configuration,id:org.apache.hadoop.mapreduce.TaskAttemptID):org.apache.hadoop.mapreduce.TaskAttemptContext"></a>
-      <a id="newTaskAttemptContext(Configuration,TaskAttemptID):TaskAttemptContext"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newTaskAttemptContext</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="id">id: <span class="extype" name="org.apache.hadoop.mapreduce.TaskAttemptID">TaskAttemptID</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.TaskAttemptContext">TaskAttemptContext</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates TaskAttemptContext from a JobConf and jobId using the correct
-constructor for based on the hadoop version.</p>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -403,6 +318,32 @@ constructor for based on the hadoop version.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#scoobiWritableIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="scoobiWritableIterator[A](value:com.nicta.scoobi.impl.rtt.ScoobiWritable[A])(implicitconfiguration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path=&gt;com.nicta.scoobi.impl.io.CloseableIterator[A]{lazyvaliterator:Iterator[A]}"></a>
+      <a id="scoobiWritableIterator[A](ScoobiWritable[A])(Configuration):(Path)⇒CloseableIterator[A]{lazyvaliterator:Iterator[A]}"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiWritableIterator</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="value">value: <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.scoobiWritableIterator.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.scoobiWritableIterator.A">A</span>] { lazy val iterator: Iterator[A] }</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#sourceIterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sourceIterator(implicitconfiguration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path=&gt;com.nicta.scoobi.impl.io.CloseableIterator[String]{lazyvalis:scala.io.BufferedSource;lazyvaliterator:Iterator[String]}"></a>
+      <a id="sourceIterator(Configuration):(Path)⇒CloseableIterator[String]{.../*2definitionsintyperefinement*/}"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sourceIterator</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="scala.Predef.String">String</span>] { ... /* 2 definitions in type refinement */ }</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>an iterator on a scala.io.Source</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

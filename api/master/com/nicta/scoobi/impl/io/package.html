@@ -58,7 +58,21 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.nicta.scoobi.impl.io.Files" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.impl.io.CloseableIterator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CloseableIterator[A]extendsIterator[A]"></a>
+      <a id="CloseableIterator[A]:CloseableIterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CloseableIterator.html"><span class="name">CloseableIterator</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">encapsulation of an Iterator with a close method to clean up resources
+</p>
+    </li><li name="com.nicta.scoobi.impl.io.Files" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="FilesextendsAnyRef"></a>
       <a id="Files:Files"></a>
       <h4 class="signature">
@@ -71,6 +85,21 @@
       </span>
       </h4>
       <p class="comment cmt">A set of helper functions for implementing DataSources and DataSinks
+</p>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GlobIterator[A]extendsIterator[A]"></a>
+      <a id="GlobIterator[A]:GlobIterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="GlobIterator.html"><span class="name">GlobIterator</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This Iterator iterates over values found in all the files corresponding to a given path, provided that there is a way to
+get individual iterators to each file
 </p>
     </li></ol>
             </div>
@@ -89,6 +118,19 @@
       </span>
       <span class="symbol">
         <a href="Files$.html"><span class="name">Files</span></a><span class="result"> extends <a href="Files.html" class="extype" name="com.nicta.scoobi.impl.io.Files">Files</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GlobIterator"></a>
+      <a id="GlobIterator:GlobIterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="GlobIterator$.html"><span class="name">GlobIterator</span></a>
       </span>
       </h4>
       
