@@ -124,7 +124,7 @@ object BridgeStore {
 }
 
 class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration) extends Iterator[A] {
-  private val iterator = new GlobIterator[A](new Path(path, "ch*"), GlobIterator.scoobiWritableIterator(value)(sc.configuration))(sc.configuration)
+  private lazy val iterator = new GlobIterator[A](new Path(path, "ch*"), GlobIterator.scoobiWritableIterator(value)(sc.configuration))(sc.configuration)
   def next() = iterator.next
   def hasNext = iterator.hasNext
   def close = iterator.close

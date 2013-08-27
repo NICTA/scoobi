@@ -7,7 +7,7 @@ import org.apache.hadoop.fs.{FileSystem, FileStatus, Path}
 import org.apache.avro.generic.GenericRecord
 import com.nicta.scoobi.impl.util.Compatibility
 import scala.collection.JavaConversions._
-import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.io.{SequenceFile, NullWritable}
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 
 /**
@@ -18,23 +18,23 @@ class GlobIterator[A](path: Path, iterator: Path => CloseableIterator[A])(implic
 
   private lazy val fs = Files.fileSystem(path)
 
-  private var initialised = false
+  private var allInitialised = false
   private var remainingReaders: Stream[CloseableIterator[A]] = Stream()
 
   def init {
-    if (!initialised)  {
-      remainingReaders = fs.globStatus(path).toStream flatMap { stat: FileStatus =>
-        val reader = iterator(stat.getPath)
-        if (reader.hasNext) Some(reader) else None
-      }
-      initialised = true
+    if (!allInitialised)  {
+      remainingReaders = fs.globStatus(path).toStream.map(status => iterator(status.getPath))
+      allInitialised = true
     }
   }
 
   def next(): A = {
     init
     remainingReaders match {
-      case cur #:: rest => val n = cur.next(); if(!cur.hasNext) moveNextReader(); n
+      case cur #:: rest =>
+        val n = cur.next()
+        if (!cur.hasNext) moveNextReader()
+        n
     }
   }
 
@@ -43,7 +43,7 @@ class GlobIterator[A](path: Path, iterator: Path => CloseableIterator[A])(implic
     remainingReaders match {
       case Stream.Empty         => false
       case cur #:: Stream.Empty => cur.hasNext
-      case cur #:: rest         => cur.hasNext || { moveNextReader(); rest.head.hasNext }
+      case cur #:: rest         => cur.hasNext || { moveNextReader(); hasNext }
     }
   }
 
@@ -87,13 +87,13 @@ object GlobIterator {
   }
 
   def scoobiWritableIterator[A](value: ScoobiWritable[A])(implicit configuration: Configuration) = (path: Path) => {
-    new CloseableIterator[A] {
-      private val reader = Compatibility.newSequenceFileReader(configuration, path)
+    val reader = Compatibility.newSequenceFileReader(configuration, path)
+    val key = NullWritable.get
 
+    new CloseableIterator[A] {
       lazy val iterator = new Iterator[A] {
-        private val key = NullWritable.get
-        private var initialised = false
         private var empty = false
+        private var initialised = false
 
         def next() = {
           init
@@ -107,14 +107,17 @@ object GlobIterator {
         }
 
         private def init {
-          if (!initialised)  {
-            value.configuration = configuration
+          if (!initialised) {
             empty = !readNext()
+            value.configuration = configuration
             initialised = true
           }
         }
 
-        private def readNext(): Boolean = try { reader.next(key, value) } catch { case e: Throwable => e.printStackTrace; false }
+        private def readNext(): Boolean = {
+          try reader.next(key, value)
+          catch { case e: Throwable => e.printStackTrace; false }
+        }
       }
       def close() = reader.close()
     }
@@ -127,8 +130,10 @@ object GlobIterator {
  */
 trait CloseableIterator[A] extends Iterator[A] {
   def iterator: Iterator[A]
-  def hasNext: Boolean = iterator.hasNext
-  def next(): A = iterator.next
+  private lazy val closeableIterator = iterator
+
+  def hasNext = closeableIterator.hasNext
+  def next()  = closeableIterator.next
 
   def close(): Unit
 }
