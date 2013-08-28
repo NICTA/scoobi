@@ -321,8 +321,9 @@ class ConfiguredWritableComparator extends RawComparator[WritableComparable[_]] 
   }
 
   lazy val keyClass = new JobConf(configuration).getMapOutputKeyClass.asInstanceOf[Class[_ <: WritableComparable[_]]]
-  def compare(b1: Array[Byte], s1: Int, l1: Int, b2: Array[Byte], s2: Int, l2: Int) = WritableComparator.get(keyClass).compare(b1, s1, l1, b2, s2, l2)
+  private lazy val comparator = WritableComparator.get(keyClass)
 
-  def compare(a: WritableComparable[_], b: WritableComparable[_]) = WritableComparator.get(keyClass).compare(a, b)
+  def compare(b1: Array[Byte], s1: Int, l1: Int, b2: Array[Byte], s2: Int, l2: Int) = comparator.compare(b1, s1, l1, b2, s2, l2)
+  def compare(a: WritableComparable[_], b: WritableComparable[_]) = comparator.compare(a, b)
 }
 
