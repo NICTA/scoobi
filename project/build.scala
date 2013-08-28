@@ -36,7 +36,7 @@ import Utilities._
 import Defaults._
 
 object build extends Build {
-  type Settings = Project.Setting[_]
+  type Settings = Def.Setting[_]
 
   lazy val scoobi = Project(
     id = "scoobi",
@@ -61,14 +61,14 @@ object build extends Build {
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
-    scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions,reflectiveCalls,postfixOps,higherKinds,existentials"),
+    scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:_"),
     scalacOptions in Test ++= Seq("-Yrangepos")
   )
 
   lazy val testingSettings: Seq[Settings] = Seq(
     testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") || s.contains("guide") || Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains))),
     fork in Test := true,
-    javaOptions in Test ++= Seq("-Xmx1g")
+    javaOptions in Test ++= Seq("-Xmx3g")
   )
 
   lazy val siteSettings: Seq[Settings] = ghpages.settings ++ SbtSite.site.settings ++ Seq(
