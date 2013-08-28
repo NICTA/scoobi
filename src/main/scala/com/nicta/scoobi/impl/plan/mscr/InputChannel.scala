@@ -205,7 +205,7 @@ trait MscrInputChannel extends InputChannel {
       }
     }
     def emitValues(mapper: ParallelDo, resultValues: Seq[Any]) {
-      outputTags(mapper).map(emitters).foreach { emitter =>
+      outputEmitters(mapper).foreach { emitter =>
         resultValues.foreach(emitter.write)
       }
     }
@@ -219,6 +219,9 @@ trait MscrInputChannel extends InputChannel {
 
   /** @return the output tag for a given "last" mapper */
   protected def outputTags(mapper: ParallelDo): Seq[Int]
+
+  // memoise the emitters for a given mapper
+  private lazy val outputEmitters = scalaz.Memo.weakHashMapMemo((mapper: ParallelDo) => outputTags(mapper).map(emitters))
 
   def cleanup(context: InputOutputContext) {
     lastMappers.foreach { m =>
@@ -284,8 +287,11 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
     }
     def context = ioContext
   }
-  protected def outputTags(mapper: ParallelDo): Seq[Int] =
-    (outputNodes.filter(_ == mapper) ++ uses(mapper).filter(outputNodes.contains)).map(_.id).toSeq
+
+  protected def outputTags(mapper: ParallelDo) = outputTagsMemo(mapper)
+
+  private lazy val outputTagsMemo = scalaz.Memo.weakHashMapMemo((mapper: ParallelDo) =>
+    (outputNodes.filter(_ == mapper) ++ nodes.uses(mapper).filter(outputNodes.contains)).map(_.id).toSeq)
 
   def processNodes: Seq[ProcessNode] = mappers
 }
@@ -324,8 +330,10 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
     }
     def context = ioContext
   }
-  protected def outputTags(mapper: ParallelDo): Seq[Int] =
-    outputNodes.filter(_ == mapper).map(_.id).toSeq
+
+  protected def outputTags(mapper: ParallelDo): Seq[Int] = outputTagsMemo(mapper)
+
+  private lazy val outputTagsMemo = scalaz.Memo.weakHashMapMemo((mapper: ParallelDo) => outputNodes.filter(_ == mapper).map(_.id).toSeq)
 
   def processNodes: Seq[ProcessNode] = mappers
 
