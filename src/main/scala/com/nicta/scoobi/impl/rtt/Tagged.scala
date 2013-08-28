@@ -48,6 +48,9 @@ trait MetadataTaggedWritable extends MetadataWireFormats {
   def tag: Int
   def setTag(t: Int)
 
+  private lazy val theTag = tags(0)
+  private lazy val theWireFormat = wireFormat(theTag)
+
   private val values = new mutable.HashMap[Int, Any]
   def get(t: Int) = values(t)
 
@@ -61,14 +64,21 @@ trait MetadataTaggedWritable extends MetadataWireFormats {
 
   def write(out: DataOutput) {
     // if there are more than one tag, write the tag to the output stream
-    if (tags.size > 1) out.writeInt(tag)
-    wireFormat(tag).toWire(get(tag), out)
+    if (tags.size > 1) {
+      out.writeInt(tag)
+      wireFormat(tag).toWire(get(tag), out)
+    } else theWireFormat.toWire(get(theTag), out)
   }
 
   def readFields(in: DataInput) {
     // if there are more than one tag, read the tag from the input stream
-    setTag(if (tags.size > 1) in.readInt else tags(0))
-    set(wireFormat(tag).fromWire(in))
+    if (tags.size > 1) {
+      setTag(in.readInt)
+      set(wireFormat(tag).fromWire(in))
+    } else {
+      setTag(theTag)
+      set(theWireFormat.fromWire(in))
+    }
   }
 
 }
