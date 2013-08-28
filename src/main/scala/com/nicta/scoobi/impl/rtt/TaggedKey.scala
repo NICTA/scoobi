@@ -38,7 +38,8 @@ object TaggedKey {
  * Set of Groupings accessible by tag
  */
 trait MetadataGroupings extends TaggedMetadata {
-  lazy val theGrouping = metaDatas(tags(0)).productElement(1).asInstanceOf[Grouping[Any]]
+  lazy val theTag = tags(0)
+  lazy val theGrouping = metaDatas(theTag).productElement(1).asInstanceOf[Grouping[Any]]
 
   def grouping(tag: Int): Grouping[Any] = {
     if (tags.size > 0) metaDatas(tag).productElement(1).asInstanceOf[Grouping[Any]]
