@@ -49,6 +49,7 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
   private var taggedInputChannels: Seq[InputChannel] = _
   private var tk: TaggedKey = _
   private var tv: TaggedValue = _
+  private var hasReduceTasks = true
 
   override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
     ClasspathDiagnostics.logInfo
@@ -66,6 +67,7 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
 
     // if there are no reducers for this job use an in-memory context to hold the mapped values and pass them directly to output channels
     if (context.getNumReduceTasks == 0) {
+      hasReduceTasks = false
       inMemoryContext = new InMemoryInputOutputContext(mapContext)
       taggedInputChannels.foreach(_.setup(inMemoryContext))
 
@@ -80,7 +82,7 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     taggedInputChannels.foreach(_.map(key, value, new InputOutputContext(taskContext)))
 
     // if there are no reducers pass the mapped value of a given tag to the corresponding output channel
-    if (taskContext.getNumReduceTasks == 0) {
+    if (!hasReduceTasks) {
       taggedInputChannels.foreach { channel =>
         channel.tags.foreach { tag =>
           allOutputChannels.channel(tag).foreach { outputChannel =>
