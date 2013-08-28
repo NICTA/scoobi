@@ -40,7 +40,7 @@ object ScoobiMetadata {
   }
 
   /** we retrieve metadata from the distributed cache and memoise each retrieved piece of metadata */
-  def metadata(implicit configuration: Configuration) = (metadataTag: String) => Memo.mutableHashMapMemo[String, Any]{ metadataTag: String =>
+  def metadata(implicit configuration: Configuration) = (metadataTag: String) => Memo.weakHashMapMemo[String, Any]{ metadataTag: String =>
     logger.debug("retrieving metadata for tag "+metadataTag)
     DistCache.pullObject(configuration, metadataTag).get: Any
   }.apply(metadataTag)
