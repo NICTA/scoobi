@@ -91,13 +91,17 @@ trait Files {
       !permission.getOtherAction.implies(action))
       throw new IOException(s"You do not have $action permission on the path: $permission $path")
   }
+
   /** Determine whether a path exists or not. */
   def pathExists(p: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit configuration: Configuration): Boolean = tryOrElse {
     val fs = fileSystem(p)
     (fs.isFile(p) && fs.exists(p)) || globStatus(p, pathFilter).nonEmpty
   }(false)
 
-  /** Get a Set of FileStatus objects for a given Path specified as a glob */
+  /** Determine whether a path exists or not. */
+  def pathExists(p: String)(implicit configuration: Configuration): Boolean = pathExists(new Path(p))
+
+    /** Get a Set of FileStatus objects for a given Path specified as a glob */
   def globStatus(path: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit configuration: Configuration): Seq[FileStatus] =
     tryOrElse {
       fileSystem(path).globStatus(new Path(path, "*"), pathFilter).toSeq
