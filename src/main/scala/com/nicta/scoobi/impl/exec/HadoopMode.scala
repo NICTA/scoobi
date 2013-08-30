@@ -81,9 +81,20 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
     // execute value nodes recursively, other nodes start a "layer" execution
     attr { node =>
+      val banner = s"${"="*(sc.jobId.size+37)}"
+
+      banner.info
+      s"===== START OF SCOOBI JOB '${sc.jobId}' ======".info
+      (banner+"\n").info
+
       executeLayers(node)
       val result = getValue(node)
       saveSinks(Seq(result), node)(sc)
+
+      banner.info
+      s"===== END OF SCOOBI JOB '${sc.jobId}'   ========".info
+      (banner+"\n").info
+
       result
     }
   }
@@ -113,37 +124,38 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
     private def runMscrs(mscrs: Seq[Mscr], totalMscrsNumber: Int) {
-      ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).info
+      ("executing map reduce jobs"+mscrs.mkString("\n", "\n", "\n")).info
 
-      val configured = mscrs.toList.map(configureMscr(totalMscrsNumber))
-      val executed = if (sc.concurrentJobs) { "executing the Mscrs concurrently".debug; configured.map(executeMscr).sequence.get }
-                     else                   { "executing the Mscrs sequentially".debug; configured.map(_.execute) }
+      val configured = mscrs.toList.zipWithIndex.map { case (mscr, i) => configureMscr(i + 1, totalMscrsNumber)(mscr) }
+      val executed = if (sc.concurrentJobs) { "executing the map reduce jobs concurrently".debug; configured.map(executeMscr).sequence.get }
+                     else                   { "executing the map reduce jobs sequentially".debug; configured.map { case (job, step) => (job.execute, step) } }
       executed.map(reportMscr)
     }
 
     /** configure a Mscr */
-    private def configureMscr(totalMscrsNumber: Int) = (mscr: Mscr) => {
+    private def configureMscr(mscrNumber: Int, totalMscrsNumber: Int) = (mscr: Mscr) => {
       implicit val mscrConfiguration = sc.duplicate
+      val step = s"$mscrNumber of $totalMscrsNumber"
 
-      ("Loading input nodes for mscr "+mscr.id).debug
+      s"Loading input nodes for map reduce job ${mscr.id} $step".debug
       mscr.inputNodes.foreach(load)
 
-      ("Configuring mscr "+mscr.id).debug
-      MapReduceJob(mscr, layer.id, totalMscrsNumber).configure
+      s"Configuring map reduce job ${mscr.id} $step".debug
+      (MapReduceJob(mscr, layer.id, mscrNumber, totalMscrsNumber).configure, step)
     }
 
     /** execute a Mscr */
-    protected def executeMscr = (job: MapReduceJob) => {
-      Promise(tryOr(job.execute)((e: Exception) => { e.printStackTrace; job }))
-    }
+    protected def executeMscr = ((job: MapReduceJob, step: String) => {
+      Promise(tryOr((job.execute, step))((e: Exception) => { e.printStackTrace; (job, step) }))
+    }).tupled
 
     /** report the execution of a Mscr */
-    protected def reportMscr = (job: MapReduceJob) => {
+    protected def reportMscr = ((job: MapReduceJob, step: String) => {
       // update the original configuration with the job counters for each job
       sc.updateCounters(job.job.getCounters)
       job.report
-      ("===== END OF MSCR "+job.mscr.id+" ======\n").info
-    }
+      (s"===== END OF MAP-REDUCE JOB $step (for the Scoobi job '${sc.jobId}') ======\n").info
+    }).tupled
   }
 
   protected def sinksToSave(node: CompNode): Seq[Sink] =
