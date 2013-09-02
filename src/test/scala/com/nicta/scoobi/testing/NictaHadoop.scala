@@ -20,6 +20,7 @@ import core._
 import application._
 import org.specs2.specification.Fragments
 import org.specs2.specification.Tags
+import org.apache.hadoop.conf.Configuration
 
 /**
  * This trait can be used to create Hadoop specifications on the NictaCluster
@@ -35,6 +36,15 @@ abstract class NictaHadoop extends
   def acceptanceSection = section("hadoop")
 
   override def map(fs: =>Fragments) = super.map(fs).insert(acceptanceSection).add(acceptanceSection)
+
+  /**
+   * add more memory when running on the cluster
+   */
+  override def setConfiguration(configuration: Configuration) =  {
+    super.setConfiguration(configuration)
+    configuration.set("mapred.child.java.opts", "-Xmx512m")
+    configuration
+  }
 }
 
 /**
