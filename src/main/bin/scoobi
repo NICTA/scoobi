@@ -1,7 +1,7 @@
 #!/bin/bash --posix
 #
 #  This script is copied from the original scala script to be able to use
-#  the exit function in order to make sure that the terminal is working properly 
+#  the exit function in order to make sure that the terminal is working properly
 #  on exit
 #
 ##############################################################################
@@ -23,7 +23,7 @@ function restoreSttySettings() {
     echo "restoring stty
  $saved_stty"
   fi
-    
+
   stty $saved_stty
   saved_stty=""
 }
@@ -41,7 +41,7 @@ trap onExit INT
 # save terminal settings
 saved_stty=$(stty -g 2>/dev/null)
 # clear on error so we don't later try to restore them
-if [[ ! $? ]]; then  
+if [[ ! $? ]]; then
   saved_stty=""
 fi
 if [[ -n $SCALA_RUNNER_DEBUG ]]; then
@@ -67,17 +67,16 @@ do
 done
 
 # basedir
-base=`readlink -f ${BASH_SOURCE[0]}`
-base=`dirname $base`
+base=$(readlink $0 || printf $0 | xargs dirname)
 
 # classpath
-classpath=$base/scoobi-repl-assembly-0.7.2.jar:`hadoop classpath`
+classpath=$base/scoobi-repl.jar:`hadoop classpath`
 if [ $user_classpath ]; then
   classpath=$classpath:$user_classpath
 fi
 
 # launch
-export HADOOP_CONF_DIR=/home/hadoop/conf
+: ${HADOOP_CONF_DIR:=/home/hadoop/conf}
 java -cp $classpath com.nicta.scoobi.application.ScoobiRepl
 
 scala_exit_status=$?

@@ -19,7 +19,7 @@ import Keys._
 object dependencies {
 
   lazy val settings = dependencies ++ resolversSettings
-  lazy val dependencies = libraryDependencies ++= 
+  lazy val dependencies = libraryDependencies ++=
     scoobi(scalaVersion.value) ++
     hadoop(version.value)      ++
     scalaz()             ++
@@ -61,6 +61,9 @@ object dependencies {
     "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
     "junit"                             %  "junit"                     % "4.7"              % "test")
 
+  def repl = Seq(
+    "org.scala-lang"                    %  "jline"                     % "2.10.2"
+  )
 
   lazy val resolversSettings = resolvers ++= Seq(
     "cloudera"           at "https://repository.cloudera.com/content/repositories/releases",
