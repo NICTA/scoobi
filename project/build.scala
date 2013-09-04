@@ -41,6 +41,7 @@ object build extends Build {
   lazy val scoobi = Project(
     id = "scoobi",
     base = file("."),
+    configurations = Configurations.default ++ Seq(repl.Repl),
     settings = Defaults.defaultSettings ++
                scoobiSettings           ++
                dependencies.settings    ++
@@ -49,7 +50,8 @@ object build extends Build {
                siteSettings             ++
                publicationSettings      ++
                notificationSettings     ++
-               releaseSettings
+               releaseSettings          ++
+               repl.settings
   )
 
   lazy val scoobiVersion = SettingKey[String]("scoobi-version", "defines the current Scoobi version")
@@ -316,5 +318,3 @@ object build extends Build {
   }
 
 }
-
-
