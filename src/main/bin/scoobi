@@ -76,7 +76,7 @@ if [ $user_classpath ]; then
 fi
 
 # launch
-export HADOOP_CONF_DIR=/home/hadoop/conf
+: ${HADOOP_CONF_DIR:=/home/hadoop/conf}
 java -cp $classpath com.nicta.scoobi.application.ScoobiRepl
 
 scala_exit_status=$?
