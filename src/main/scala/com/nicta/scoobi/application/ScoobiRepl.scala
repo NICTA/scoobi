@@ -83,7 +83,8 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
     arguments.filterNot(Seq("local", "cluster", "inmemory").contains)
 
   private[scoobi] def initialise {
-    cluster
+    try cluster
+    catch { case t: Throwable => local }
   }
 
   def scoobiArgs_=(arguments: String) {
@@ -101,7 +102,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 
     if (isInMemory)   configureForInMemory
     else if (isLocal) configureForLocal
-    else              configureForCluster
+    else              try configureForCluster catch { case t: Throwable => configureForLocal }
     setLogFactory()
 
     configuration.jobNameIs("REPL")
