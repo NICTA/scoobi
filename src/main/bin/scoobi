@@ -67,7 +67,7 @@ do
 done
 
 # basedir
-base=$(readlink $0 || printf $0 | xargs dirname)
+base=$(readlink -f ${BASH_SOURCE[0]} | xargs dirname)
 
 # classpath
 classpath=$base/scoobi-repl.jar:`hadoop classpath`
