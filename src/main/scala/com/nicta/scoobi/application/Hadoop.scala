@@ -22,7 +22,8 @@ import Mode._
 import org.apache.commons.logging.LogFactory
 import impl.ScoobiConfiguration._
 import impl.reflect.Classes
-import com.nicta.scoobi.impl.util.Compatibility
+import impl.util.Compatibility
+import scalaz._,Scalaz._
 
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
@@ -42,9 +43,11 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
 
   /** @return the classes directories to include on a job classpath */
   def classDirs: Seq[String] = {
-    val classesDirectory = Classes.findContainingDirectory(classOf[ScoobiApp]).getOrElse("target/scala-2.10/classes/")
-    val targetScalaDirectory = classesDirectory.replace("classes/", "")
-    Seq("classes", "test-classes").map(targetScalaDirectory+_)
+    // use the directory where ScoobiApp can be found (this is for the case where the application is launched from sbt and the Scoobi project itself
+    // otherwise use the target/scala-2.10 directory for the case where an application is developed with sbt in another project
+    val classesDirectories = Classes.findContainingDirectory(classOf[ScoobiApp]).toSeq ++ Seq("target/scala-2.10/classes/")
+    val targetScalaDirectories = classesDirectories.map(_.replace("classes/", "")).toList
+    (targetScalaDirectories |@| List("classes", "test-classes")) (_+_)
   }
 
   /** execute some code on the cluster, possibly showing the execution time */
