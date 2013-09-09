@@ -43,7 +43,7 @@ trait ScoobiCommandLineArgs extends DelayedInit {
    * => scoobiArguments = Seq(verbose, all)
    */
   private[scoobi] def setScoobiArgs(args: Seq[String]) {
-    val after = args.dropWhile(!_.toLowerCase.startsWith("scoobi"))
+    val after = args.dropWhile(_.toLowerCase != "scoobi")
     scoobiArguments = after.drop(1).take(1).map(_.toLowerCase).flatMap(_.split("\\."))
   }
 
@@ -54,7 +54,7 @@ trait ScoobiCommandLineArgs extends DelayedInit {
    * => userArguments = Seq(file.txt, file2.txt)
    */
   private[scoobi] def setRemainingArgs(args: Seq[String]) {
-    val (before, after) = args.span(!_.toLowerCase.startsWith("scoobi"))
+    val (before, after) = args.span(_.toLowerCase != "scoobi")
     userArguments = before ++ after.drop(2)
   }
 
