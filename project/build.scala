@@ -69,7 +69,6 @@ object build extends Build {
 
   lazy val testingSettings: Seq[Settings] = Seq(
     testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") || s.contains("guide") || Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains))),
-    fork in Test := true,
     javaOptions in Test ++= Seq("-Xmx3g")
   )
 
