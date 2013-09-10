@@ -81,8 +81,7 @@ trait TextInput {
     * create the distributed list. */
   def fromDelimitedTextFile[A : WireFormat]
       (path: String, sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
-      (extractFn: PartialFunction[Seq[String], A])
-    : DList[A] = {
+      (extractFn: PartialFunction[Seq[String], A]): DList[A] = {
 
     val lines = fromTextSource(textSource(Seq(path), check))
     lines.mapFlatten { line =>

@@ -21,6 +21,7 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import sys.process._
 
 import impl.control.Exceptions._
+import com.nicta.scoobi.core.ScoobiConfiguration
 
 /**
  * This trait helps with the creation of temporary files and directories
@@ -119,6 +120,9 @@ trait TempFiles {
     printToFile(file, isRemote)(p => lines foreach p.println)
     path(file, isRemote)
   }
+
+  def writeLines(path: String, lines: Seq[String], isRemote: Boolean)(implicit sc: ScoobiConfiguration): String =
+    writeLines(new File(path), lines, isRemote)(sc.fileSystem)
 
   /**
    * write to a file and copy it to the cluster if we're executing a distributed job

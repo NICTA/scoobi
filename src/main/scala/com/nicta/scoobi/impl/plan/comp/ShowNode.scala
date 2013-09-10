@@ -43,6 +43,7 @@ trait ShowNode extends CompNodes {
       case Load1(_)              => value(showNode(node))
       case pd @ ParallelDo1(ins) => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i)), line <> "+")) <> line <> "env. " <> show(pd.env))
       case Return1(_)            => value(showNode(node))
+      case ReturnSC1(_)          => value(showNode(node))
       case Combine1(in)          => showNode(node) <> braces (nest (line <> show(in) <> line))
       case GroupByKey1(in)       => showNode(node) <> braces (nest (line <> show(in) <> line))
       case Materialise1(in)      => showNode(node) <> braces (nest (line <> show(in) <> line))

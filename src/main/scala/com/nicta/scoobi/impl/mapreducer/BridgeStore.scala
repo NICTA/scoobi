@@ -40,7 +40,7 @@ import org.apache.hadoop.util.ReflectionUtils
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoint: Option[Checkpoint] = None, compression: Option[Compression] = None) extends
+case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoint: Option[Checkpoint] = None, compression: Option[Compression] = None, pattern: String = "ch*") extends
    DataSource[NullWritable, ScoobiWritable[A], A] with
    DataSink[NullWritable, ScoobiWritable[A], A]   with
    Bridge {
@@ -99,7 +99,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
     lazy val value: ScoobiWritable[A] =
       rtClass(sc).clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
 
-    def iterator = new BridgeStoreIterator[A](value, path, sc)
+    def iterator = new BridgeStoreIterator[A](value, path, sc, pattern)
   }
 
   override def toString = typeName+"("+id+")"
@@ -123,8 +123,8 @@ object BridgeStore {
   val runtimeClasses: scala.collection.mutable.Map[String, RuntimeClass] = new scala.collection.mutable.HashMap()
 }
 
-class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration) extends Iterator[A] {
-  private lazy val iterator = new GlobIterator[A](new Path(path, "ch*"), GlobIterator.scoobiWritableIterator(value)(sc.configuration))(sc.configuration)
+class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration, pattern: String = "ch*") extends Iterator[A] {
+  private lazy val iterator = new GlobIterator[A](new Path(path, pattern), GlobIterator.scoobiWritableIterator(value)(sc.configuration))(sc.configuration)
   def next() = iterator.next
   def hasNext = iterator.hasNext
   def close = iterator.close

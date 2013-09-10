@@ -76,6 +76,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
         case n @ Op1(a, b)        => n.execute(getValue(a), getValue(b))
         case n @ Materialise1(in) => read(in.bridgeStore)
         case n @ Return1(v)       => v
+        case n @ ReturnSC1(v)     => v(sc)
         case other                => Seq()
       }
     }
@@ -84,7 +85,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       val banner = s"${"="*(sc.jobId.size+37)}"
 
       banner.info
-      s"===== START OF SCOOBI JOB '${sc.jobId}' ======".info
+      s"===== START OF SCOOBI JOB '${sc.jobId}' ========".info
       (banner+"\n").info
 
       executeLayers(node)
@@ -173,6 +174,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   /** make sure that all inputs environments are fully loaded */
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
+      case rt @ ReturnSC1(in)    => pushEnv(rt, in(sc))
       case rt @ Return1(in)      => pushEnv(rt, in)
       case op @ Op1(in1, in2)    => pushEnv(op, op.execute(load(in1), load(in2)))
       case mt @ Materialise1(in) => pushEnv(mt, read(in.bridgeStore))

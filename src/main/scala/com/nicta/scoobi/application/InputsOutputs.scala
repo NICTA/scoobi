@@ -30,6 +30,11 @@ import io.sequence.SequenceOutput
 import impl.mapreducer.BridgeStore
 import java.util.UUID
 import scala.Some
+import com.nicta.scoobi.impl.plan.DObjectImpl
+import com.nicta.scoobi.impl.plan.comp._
+import org.apache.hadoop.fs.Path
+import com.nicta.scoobi.impl.io.GlobIterator
+import com.nicta.scoobi.impl.rtt.ScoobiWritable
 
 /**
  * This trait provides way to create DLists from files
@@ -42,10 +47,21 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
   /** create a DObject which will only be evaluated on the cluster */
   def lazyObject[A : WireFormat](o: =>A): core.DObject[A] = fromLazySeq(Seq(o), seqSize = 1).materialise.map(_.head)
   /** Text file I/O */
-  def objectFromTextFile(paths: String*) = fromTextFile(paths:_*).head
+  def objectFromTextFile(paths: String*): core.DObject[String] = {
+    if (paths.size == 1) new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
+        new GlobIterator(new Path(paths.head), GlobIterator.sourceIterator).toSeq
+      })).map((_: Seq[String]).head)
+    else fromTextFile(paths:_*).head
+  }
+
   def objectFromDelimitedTextFile[A : WireFormat](path: String, sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
-                                                 (extractFn: PartialFunction[Seq[String], A]) =
-    fromDelimitedTextFile[A](path, sep)(extractFn).head
+                                                 (extractFn: PartialFunction[Seq[String], A]) = {
+
+    new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
+      check(Seq(new Path(path)), sc)
+      new GlobIterator(new Path(path), GlobIterator.sourceIterator).toSeq.map(line => extractFn(line.split(sep)))
+    })).map((_:Seq[A]).head)
+  }
 
   implicit class ListToTextFile[A](val list: core.DList[A]) {
     def toTextFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = list.addSink(textFileSink(path, overwrite, check))
@@ -69,11 +85,26 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
   /** Sequence File I/O */
   type SeqSchema[A] = com.nicta.scoobi.io.sequence.SeqSchema[A]
 
-  def objectKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): core.DObject[K] = keyFromSequenceFile[K](paths:_*).head
+  def objectKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): core.DObject[K] = {
+    if (paths.size == 1) new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
+      new GlobIterator(new Path(paths.head+"/*"), GlobIterator.keySequenceIterator(configuration, implicitly[WireFormat[K]], implicitly[SeqSchema[K]])).toSeq
+    })).map((_: Seq[K]).head)
+    else keyFromSequenceFile[K](paths:_*).head
+  }
   def objectKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: Seq[String], checkKeyType: Boolean = true): core.DObject[K] = keyFromSequenceFile[K](paths, checkKeyType).head
-  def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): core.DObject[V] = valueFromSequenceFile[V](paths:_*).head
+  def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): core.DObject[V] = {
+    if (paths.size == 1) new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
+      new GlobIterator(new Path(paths.head+"/*"), GlobIterator.valueSequenceIterator(configuration, implicitly[WireFormat[V]], implicitly[SeqSchema[V]])).toSeq
+    })).map((_: Seq[V]).head)
+    else valueFromSequenceFile[V](paths:_*).head
+  }
   def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: Seq[String], checkValueType: Boolean = true): core.DObject[V] = SequenceInput.keyFromSequenceFile[V](paths, checkValueType).head
-  def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: String*): core.DObject[(K, V)] = SequenceInput.fromSequenceFile[K, V](paths).head
+  def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: String*): core.DObject[(K, V)] = {
+    if (paths.size == 1) new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
+      new GlobIterator(new Path(paths.head+"/*"), GlobIterator.sequenceIterator(configuration, implicitly[WireFormat[K]], implicitly[SeqSchema[K]], implicitly[WireFormat[V]], implicitly[SeqSchema[V]])).toSeq
+    })).map((_: Seq[(K, V)]).head)
+    else SequenceInput.fromSequenceFile[K, V](paths).head
+  }
   def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: Seq[String], checkKeyValueTypes: Boolean = true): core.DObject[(K, V)] =
     fromSequenceFile[K, V](paths, checkKeyValueTypes).head
 

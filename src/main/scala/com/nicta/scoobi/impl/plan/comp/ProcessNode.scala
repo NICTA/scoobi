@@ -255,6 +255,14 @@ case class Return(rt: ReturnedValue, wf: WireReaderWriter, sinks: Seq[Sink] = Se
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 
+case class ReturnSC(in: ScoobiConfiguration => Seq[Any], wf: WireReaderWriter = UnitFmt, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
+  override val toString = "ReturnSC ("+id+")"
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = this
+}
+object ReturnSC1 {
+  def unapply(rt: ReturnSC): Option[ScoobiConfiguration => Seq[Any]] = Some(rt.in)
+}
+
 class ReturnedValue(val value: Any)
 object Return1 {
   def unapply(rt: Return): Option[Any] = Some(rt.in)
