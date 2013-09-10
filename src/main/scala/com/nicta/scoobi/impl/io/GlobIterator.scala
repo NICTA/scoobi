@@ -11,6 +11,7 @@ import org.apache.hadoop.io.{Writable, SequenceFile, NullWritable}
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.core.WireFormat
 import com.nicta.scoobi.io.sequence.SeqSchema
+import org.apache.commons.logging.LogFactory
 
 /**
  * This Iterator iterates over values found in all the files corresponding to a given path, provided that there is a way to
@@ -62,6 +63,8 @@ class GlobIterator[A](path: Path, iterator: Path => CloseableIterator[A])(implic
 }
 
 object GlobIterator {
+  private lazy val logger = LogFactory.getLog("scoobi.GlobIterator")
+
   /** @return an iterator on a scala.io.Source */
   def sourceIterator(implicit configuration: Configuration) = (path: Path) => {
     val fs = path.getFileSystem(configuration)
@@ -130,23 +133,35 @@ object GlobIterator {
   def keySequenceIterator[K](implicit configuration: Configuration, wf: WireFormat[K], schema: SeqSchema[K]) = (path: Path) => try {
     val reader = Compatibility.newSequenceFileReader(configuration, path)
     new SequenceCloseableIterator[K](reader)((key: Writable, value: Writable) => schema.fromWritable(key.asInstanceOf[schema.SeqType]))
-  } catch { case e: Exception => emptyCloseableIterator[K] }
+  } catch sequenceIteratorErrorHandler[K](path)
 
   /** iterator for value sequences */
   def valueSequenceIterator[V](implicit configuration: Configuration, wf: WireFormat[V], schema: SeqSchema[V]) = (path: Path) => try {
     val reader = Compatibility.newSequenceFileReader(configuration, path)
     new SequenceCloseableIterator[V](reader)((key: Writable, value: Writable) => schema.fromWritable(value.asInstanceOf[schema.SeqType]))
-  } catch { case e: Exception => emptyCloseableIterator[V] }
+  } catch sequenceIteratorErrorHandler[V](path)
 
   /** iterator for sequences */
   def sequenceIterator[K, V](implicit configuration: Configuration, wfk: WireFormat[K], schemaK: SeqSchema[K], wfv: WireFormat[V], schemaV: SeqSchema[V]) = (path: Path) => try {
     val reader = Compatibility.newSequenceFileReader(configuration, path)
     new SequenceCloseableIterator[(K, V)](reader)((key: Writable, value: Writable) => (schemaK.fromWritable(key.asInstanceOf[schemaK.SeqType]), schemaV.fromWritable(value.asInstanceOf[schemaV.SeqType])))
-  } catch { case e: Exception => emptyCloseableIterator[(K, V)] }
+  } catch sequenceIteratorErrorHandler[(K, V)](path)
+
+  def sequenceIteratorErrorHandler[A](path: Path): PartialFunction[Throwable, CloseableIterator[A]] = { case e: Exception =>
+    if (!path.getName.endsWith("_SUCCESS") && !path.getName.endsWith(".crc")) logger.error(e)
+    emptyCloseableIterator[A]
+  }
 
   class SequenceCloseableIterator[A](reader: SequenceFile.Reader)(f: (Writable, Writable) => A) extends CloseableIterator[A] {
-    val key = reader.getKeyClass.newInstance.asInstanceOf[Writable]
-    val value = reader.getValueClass.newInstance.asInstanceOf[Writable]
+    val key = newInstance(reader.getKeyClass)
+    val value = newInstance(reader.getValueClass)
+
+    /**
+     * create a new instance for a key class or a value class
+     */
+    private def newInstance(klass: Class[_]) =
+      if (klass.isAssignableFrom(classOf[NullWritable])) NullWritable.get
+      else klass.newInstance.asInstanceOf[Writable]
 
     lazy val iterator = new Iterator[A] {
       private var empty = false
@@ -171,7 +186,7 @@ object GlobIterator {
       }
 
       private def readNext(): Boolean = {
-        try     reader.next(key, value)
+        try   reader.next(key, value)
         catch { case e: Throwable => e.printStackTrace; false }
       }
     }
