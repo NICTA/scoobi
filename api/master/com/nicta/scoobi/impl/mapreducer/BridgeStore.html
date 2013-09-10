@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">BridgeStore</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">BridgeStore</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>, <span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;ch*&quot;</span></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -81,7 +81,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(bridgeStoreId:String,wf:com.nicta.scoobi.core.WireReaderWriter,checkpoint:Option[com.nicta.scoobi.core.Checkpoint],compression:Option[com.nicta.scoobi.core.Compression]):com.nicta.scoobi.impl.mapreducer.BridgeStore[A]"></a>
+      <a id="&lt;init&gt;(bridgeStoreId:String,wf:com.nicta.scoobi.core.WireReaderWriter,checkpoint:Option[com.nicta.scoobi.core.Checkpoint],compression:Option[com.nicta.scoobi.core.Compression],pattern:String):com.nicta.scoobi.impl.mapreducer.BridgeStore[A]"></a>
       <a id="&lt;init&gt;:BridgeStore[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -89,7 +89,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">BridgeStore</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span>
+        <span class="name">BridgeStore</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>, <span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;ch*&quot;</span></span>)</span>
       </span>
       </h4>
       
@@ -696,6 +696,19 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </span>
       <span class="symbol">
         <span class="name">path</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#pattern" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pattern:String"></a>
+      <a id="pattern:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pattern</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       

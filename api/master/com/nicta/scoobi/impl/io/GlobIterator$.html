@@ -79,7 +79,23 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.impl.io.GlobIterator.SequenceCloseableIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SequenceCloseableIterator[A]extendsCloseableIterator[A]"></a>
+      <a id="SequenceCloseableIterator[A]:SequenceCloseableIterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="GlobIterator$$SequenceCloseableIterator.html"><span class="name">SequenceCloseableIterator</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.SequenceCloseableIterator.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -195,6 +211,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#emptyCloseableIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="emptyCloseableIterator[A]:com.nicta.scoobi.impl.io.CloseableIterator[A]{lazyvaliterator:Iterator[A]{defnext():Nothing}}"></a>
+      <a id="emptyCloseableIterator[A]:CloseableIterator[A]{lazyvaliterator:Iterator[A]{defnext():Nothing}}"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">emptyCloseableIterator</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.emptyCloseableIterator.A">A</span>] { lazy val iterator: Iterator[A]{def next(): Nothing} }</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -279,6 +308,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#keySequenceIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="keySequenceIterator[K](implicitconfiguration:org.apache.hadoop.conf.Configuration,implicitwf:com.nicta.scoobi.core.WireFormat[K],implicitschema:com.nicta.scoobi.io.sequence.SeqSchema[K]):org.apache.hadoop.fs.Path=&gt;com.nicta.scoobi.impl.io.CloseableIterator[K]"></a>
+      <a id="keySequenceIterator[K](Configuration,WireFormat[K],SeqSchema[K]):(Path)⇒CloseableIterator[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">keySequenceIterator</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="wf">wf: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.keySequenceIterator.K">K</span>]</span>, <span name="schema">schema: <a href="../../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.keySequenceIterator.K">K</span>]</span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.keySequenceIterator.K">K</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">iterator for key sequences</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -330,6 +372,32 @@
         <span class="name">scoobiWritableIterator</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="value">value: <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.scoobiWritableIterator.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.scoobiWritableIterator.A">A</span>] { lazy val iterator: Iterator[A] }</span>
       </span>
       </h4>
+      <p class="shortcomment cmt">iterator for Scoobi writables</p>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#sequenceIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sequenceIterator[K,V](implicitconfiguration:org.apache.hadoop.conf.Configuration,implicitwfk:com.nicta.scoobi.core.WireFormat[K],implicitschemaK:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitwfv:com.nicta.scoobi.core.WireFormat[V],implicitschemaV:com.nicta.scoobi.io.sequence.SeqSchema[V]):org.apache.hadoop.fs.Path=&gt;com.nicta.scoobi.impl.io.CloseableIterator[(K,V)]"></a>
+      <a id="sequenceIterator[K,V](Configuration,WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):(Path)⇒CloseableIterator[(K,V)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sequenceIterator</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="wfk">wfk: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.sequenceIterator.K">K</span>]</span>, <span name="schemaK">schemaK: <a href="../../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.sequenceIterator.K">K</span>]</span>, <span name="wfv">wfv: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.sequenceIterator.V">V</span>]</span>, <span name="schemaV">schemaV: <a href="../../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.sequenceIterator.V">V</span>]</span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[(<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.sequenceIterator.K">K</span>, <span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.sequenceIterator.V">V</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">iterator for sequences</p>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#sequenceIteratorErrorHandler" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sequenceIteratorErrorHandler[A](path:org.apache.hadoop.fs.Path):PartialFunction[Throwable,com.nicta.scoobi.impl.io.CloseableIterator[A]]"></a>
+      <a id="sequenceIteratorErrorHandler[A](Path):PartialFunction[Throwable,CloseableIterator[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sequenceIteratorErrorHandler</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<a href="../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a>, <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.sequenceIteratorErrorHandler.A">A</span>]]</span>
+      </span>
+      </h4>
       
     </li><li name="com.nicta.scoobi.impl.io.GlobIterator#sourceIterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sourceIterator(implicitconfiguration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path=&gt;com.nicta.scoobi.impl.io.CloseableIterator[String]{lazyvalis:scala.io.BufferedSource;lazyvaliterator:Iterator[String]}"></a>
@@ -370,6 +438,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.io.GlobIterator#valueSequenceIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="valueSequenceIterator[V](implicitconfiguration:org.apache.hadoop.conf.Configuration,implicitwf:com.nicta.scoobi.core.WireFormat[V],implicitschema:com.nicta.scoobi.io.sequence.SeqSchema[V]):org.apache.hadoop.fs.Path=&gt;com.nicta.scoobi.impl.io.CloseableIterator[V]"></a>
+      <a id="valueSequenceIterator[V](Configuration,WireFormat[V],SeqSchema[V]):(Path)⇒CloseableIterator[V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">valueSequenceIterator</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="wf">wf: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.valueSequenceIterator.V">V</span>]</span>, <span name="schema">schema: <a href="../../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.valueSequenceIterator.V">V</span>]</span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <a href="CloseableIterator.html" class="extype" name="com.nicta.scoobi.impl.io.CloseableIterator">CloseableIterator</a>[<span class="extype" name="com.nicta.scoobi.impl.io.GlobIterator.valueSequenceIterator.V">V</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">iterator for value sequences</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
