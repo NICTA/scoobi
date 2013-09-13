@@ -57,22 +57,31 @@ trait ScoobiConfiguration {
   def mode: Mode
   def uploadedLibJars: Boolean
   def setUploadedLibJars(uploaded: Boolean)
+
+  def disableCombiners: ScoobiConfiguration
+  def enableCombiners: ScoobiConfiguration
+  def disabledCombiners: Boolean
+
   def setMaxReducers(maxReducers: Int)
   def getMaxReducers: Int
   def setMinReducers(minReducers: Int)
   def getMinReducers: Int
   def setBytesPerReducer(sizeInBytes: Long)
   def getBytesPerReducer: Long
+
   def jobNameIs(name: String)
   def jobName: Option[String]
   def jobId: String
   def jobStepIs(stepId: Int, stepsNumber: Int): String
   def jobStep: String
+
   def updateCounters(counters: HadoopCounters): ScoobiConfiguration
   def counters: HadoopCounters
+
   def setAsInMemory: ScoobiConfiguration
   def setAsLocal: ScoobiConfiguration
   def setDirectories: ScoobiConfiguration
+
   def set(key: String, value: Any)
   def setScoobiDir(dir: String): ScoobiConfiguration
 

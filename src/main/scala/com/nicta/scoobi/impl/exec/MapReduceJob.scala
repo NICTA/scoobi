@@ -146,7 +146,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
    *   functions have been added
    *   - use distributed cache to push all combine code out */
   private def configureCombiners(jar: JarBuilder) {
-    if (!mscr.combiners.isEmpty) {
+    if (!mscr.combiners.isEmpty && !configuration.disabledCombiners) {
       DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, s"scoobi.combiners-${configuration.jobStep}")
       job.setCombinerClass(classOf[MscrCombiner].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }

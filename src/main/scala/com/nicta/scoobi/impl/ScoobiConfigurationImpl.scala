@@ -218,6 +218,21 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     set(UPLOADED_LIBJARS, uploaded.toString)
   }
 
+  /** do not use combiners */
+  def disableCombiners: ScoobiConfiguration = {
+    configuration.setBoolean(DISABLE_COMBINERS, true)
+    this
+  }
+
+  /** use combiners */
+  def enableCombiners: ScoobiConfiguration = {
+    configuration.setBoolean(DISABLE_COMBINERS, false)
+    this
+  }
+
+  /** @return true if combiners are disabled */
+  def disabledCombiners = configuration.getBoolean(DISABLE_COMBINERS, false)
+
   /** Set an upper bound for the number of reducers to be used in M/R jobs */
   def setMaxReducers(maxReducers: Int) {
     configuration.setInt(MAPREDUCE_REDUCERS_MAX, maxReducers)

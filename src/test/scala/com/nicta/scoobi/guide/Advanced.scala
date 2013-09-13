@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package guide
 
 class Advanced extends ScoobiPage { def is = "Advanced Notes".title^
-                                                                                                                        """
+  """
 ### Configuration Options
 
 Scoobi allows you to configure a few useful runtime settings:
@@ -26,6 +26,7 @@ Scoobi allows you to configure a few useful runtime settings:
 * Set an upper-bound on the amount of reducers scoobi will use with `ScoobiConfiguration.setMaxReducers`
 * Set a lower-bound on the amount of reducers scoobi use with `ScoobiConfiguration.setMinReducers`
 * Set the amount of reducers scoobi picks, with `ScoobiConfiguration.setBytesPerReducer` (Note: this is based on the input to a MapReduce job, not the input to the reducer. Default is 1GiB)
+* Disable the use of combiners with `ScoobiConfiguration.disableCombiners`
 
 Look in `ScoobiConfiguration` for other useful runtime configuration options
 
