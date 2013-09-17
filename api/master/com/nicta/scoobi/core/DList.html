@@ -950,6 +950,32 @@ order in which the elements are reduced is unspecified and may be non-determinis
 the list is empty.</p><div class="fullcomment"><div class="comment cmt"><p>Reduce the elements of this distributed list using the specified associative binary operator and a default value if
 the list is empty. The order in which the elements are reduced is unspecified and may be non-deterministic
 </p></div></div>
+    </li><li name="com.nicta.scoobi.core.DList#reduceValues" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reduceValues[K,V](op:com.nicta.scoobi.core.Reduction[V])(implicitev:&lt;:&lt;[A,(K,Iterable[V])],implicitmwk:com.nicta.scoobi.core.WireFormat[K],implicitmwv:com.nicta.scoobi.core.WireFormat[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
+      <a id="reduceValues[K,V](Reduction[V])(&lt;:&lt;[A,(K,Iterable[V])],WireFormat[K],WireFormat[V]):DList[(K,V)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceValues</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="op">op: <a href="Reduction.html" class="extype" name="com.nicta.scoobi.core.Reduction">Reduction</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValues.V">V</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>, (<span class="extype" name="com.nicta.scoobi.core.DList.reduceValues.K">K</span>, <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValues.V">V</span>])]</span>, <span name="mwk">mwk: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValues.K">K</span>]</span>, <span name="mwv">mwv: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValues.V">V</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.core.DList.reduceValues.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.DList.reduceValues.V">V</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">reduce the values which are the result of a groupByKey</p>
+    </li><li name="com.nicta.scoobi.core.DList#reduceValuesOption" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reduceValuesOption[K,V](op:com.nicta.scoobi.core.Reduction[V])(implicitev:&lt;:&lt;[A,(K,Iterable[V])],implicitmwk:com.nicta.scoobi.core.WireFormat[K],implicitmwv:com.nicta.scoobi.core.WireFormat[V]):com.nicta.scoobi.core.DList[(K,Option[V])]"></a>
+      <a id="reduceValuesOption[K,V](Reduction[V])(&lt;:&lt;[A,(K,Iterable[V])],WireFormat[K],WireFormat[V]):DList[(K,Option[V])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceValuesOption</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="op">op: <a href="Reduction.html" class="extype" name="com.nicta.scoobi.core.Reduction">Reduction</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValuesOption.V">V</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>, (<span class="extype" name="com.nicta.scoobi.core.DList.reduceValuesOption.K">K</span>, <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValuesOption.V">V</span>])]</span>, <span name="mwk">mwk: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValuesOption.K">K</span>]</span>, <span name="mwv">mwv: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValuesOption.V">V</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.core.DList.reduceValuesOption.K">K</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.core.DList.reduceValuesOption.V">V</span>])]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">reduce the values which are the result of a groupByKey</p>
     </li><li name="com.nicta.scoobi.core.DList#shuffle" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="shuffle:com.nicta.scoobi.core.DList[A]"></a>
       <a id="shuffle:DList[A]"></a>
