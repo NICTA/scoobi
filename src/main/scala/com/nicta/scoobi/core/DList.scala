@@ -354,6 +354,14 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    */
   def reduce(op: Reduction[A]): DObject[A] = reduceOption(op).map(_.getOrElse(sys.error("the reduce operation is called on an empty list")))
 
+  /** reduce the values which are the result of a groupByKey */
+  def reduceValues[K, V](op: Reduction[V])(implicit ev: A <:< (K, Iterable[V]), mwk:  WireFormat[K], mwv:  WireFormat[V]): DList[(K, V)] =
+    map(ev).map { case (k, vs) => (k, vs.reduce(op.reduce)) }
+
+  /** reduce the values which are the result of a groupByKey */
+  def reduceValuesOption[K, V](op: Reduction[V])(implicit ev: A <:< (K, Iterable[V]), mwk:  WireFormat[K], mwv:  WireFormat[V]): DList[(K, Option[V])] =
+    map(ev).map { case (k, vs) => (k, vs.reduceOption(op.reduce)) }
+
   /**
    * Reduce the elements of this distributed list using the specified associative binary operator and a default value if
    * the list is empty. The order in which the elements are reduced is unspecified and may be non-deterministic

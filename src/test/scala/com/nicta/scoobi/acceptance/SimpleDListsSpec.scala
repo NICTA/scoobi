@@ -184,4 +184,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
 
     result.run.toSet === Set((1,1), (2,2), (1,1), (2,2))
   }
+  "31. reduce values with a Reduction" >> { implicit sc: SC =>
+    DList(("a", Iterable(1, 2, 3)), ("b", Iterable(2, 3, 4))).reduceValues(Reduction.Sum.int).run === Seq(("a", 6), ("b", 9))
+  }
 }
