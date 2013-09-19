@@ -49,12 +49,11 @@ trait DLists {
     FunctionInput.fromFunction(n)(f)
 
   /** Create a DList with the same element repeated n times. */
-  def fill[A : WireFormat : Manifest](n: Int)(a: =>A): DList[A] =
+  def fill[A : WireFormat](n: Int)(a: =>A): DList[A] =
     apply(Seq.fill(n)(a):_*)
 
   /** Pimping from generic collection types (i.e. Seq) to a Distributed List */
-  implicit def traversableToDList[A : WireFormat : Manifest](traversable: Traversable[A]) = new TraversableToDList[A](traversable)
-  class TraversableToDList[A : WireFormat : Manifest](traversable: Traversable[A]) {
+  implicit class TraversableToDList[A : WireFormat](traversable: Traversable[A]) {
     def toDList: DList[A] = apply(traversable.toSeq:_*)
   }
 }
