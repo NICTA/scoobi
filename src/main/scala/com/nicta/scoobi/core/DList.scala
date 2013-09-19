@@ -163,7 +163,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   /**Converts a distributed list of iterable values into to a distributed list in which
    * all the values are concatenated. */
-  def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] =
+  def flatten[B](implicit ev: A <:< Iterable[B], wtB: WireFormat[B]): DList[B] =
     parallelDo((input: A, emitter: Emitter[B]) => input.foreach { emitter.emit(_) })
 
   /** Returns if the other DList has the same elements. A DList is unordered
