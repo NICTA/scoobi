@@ -89,14 +89,14 @@
       <a id="TraversableToDList[A]:TraversableToDList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">implicit </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
         <a href="DLists$TraversableToDList.html"><span class="name">TraversableToDList</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      
+      <p class="comment cmt">Pimping from generic collection types (i.</p>
     </li></ol>
             </div>
 
@@ -280,15 +280,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.DLists#fill" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="fill[A](n:Int)(a:=&gt;A)(implicitevidence$6:com.nicta.scoobi.core.WireFormat[A],implicitevidence$7:Manifest[A]):com.nicta.scoobi.core.DList[A]"></a>
-      <a id="fill[A](Int)(⇒A)(WireFormat[A],Manifest[A]):DList[A]"></a>
+      <a id="fill[A](n:Int)(a:=&gt;A)(implicitevidence$6:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="fill[A](Int)(⇒A)(WireFormat[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fill</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span name="a">a: ⇒ <span class="extype" name="com.nicta.scoobi.application.DLists.fill.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.application.DLists.fill.A">A</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.application.DLists.fill.A">A</span>]</span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.DLists.fill.A">A</span>]</span>
+        <span class="name">fill</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span name="a">a: ⇒ <span class="extype" name="com.nicta.scoobi.application.DLists.fill.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.application.DLists.fill.A">A</span>]</span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.DLists.fill.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Create a DList with the same element repeated n times.</p>
@@ -442,19 +442,6 @@ integer values starting from 0.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.DLists#traversableToDList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="traversableToDList[A](traversable:Traversable[A])(implicitevidence$8:com.nicta.scoobi.core.WireFormat[A],implicitevidence$9:Manifest[A]):DLists.this.TraversableToDList[A]"></a>
-      <a id="traversableToDList[A](Traversable[A])(WireFormat[A],Manifest[A]):TraversableToDList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">traversableToDList</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="traversable">traversable: <a href="../../../../scala/package.html#Traversable[+A]=Traversable[A]" class="extmbr" name="scala.Traversable">Traversable</a>[<span class="extype" name="com.nicta.scoobi.application.DLists.traversableToDList.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.application.DLists.traversableToDList.A">A</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.application.DLists.traversableToDList.A">A</span>]</span>)</span><span class="result">: <a href="DLists$TraversableToDList.html" class="extype" name="com.nicta.scoobi.application.DLists.TraversableToDList">TraversableToDList</a>[<span class="extype" name="com.nicta.scoobi.application.DLists.traversableToDList.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Pimping from generic collection types (i.</p><div class="fullcomment"><div class="comment cmt"><p>Pimping from generic collection types (i.e. Seq) to a Distributed List</p></div></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
