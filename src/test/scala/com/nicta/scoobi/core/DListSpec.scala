@@ -50,7 +50,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     def simpleJoin[T: WireFormat, V: WireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
       (a.map(x => (x._1, x._1)) ++ b.map(x => (x._1, x._1))).groupByKey
 
-    val data = DList((12 -> 13), (14 -> 15), (13 -> 55))
+    val data = DList(12 -> 13, 14 -> 15, 13 -> 55)
     val (a, b, c, d, e) = (data, data, data, data, data)
 
     // joinab = joincd = Vector((12,Vector(12, 12)), (13,Vector(13, 13)), (14,Vector(14,14)))
@@ -172,7 +172,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
         (list.length > 0) ==>  {
           val orig = list.toDList
           val partitions = f(orig)
-          run(orig isEqual partitions.reduce(_ ++ _)) must beTrue
+          run(orig isEqual partitions.reduce(_ ++ _))(sc.duplicate) must beTrue
         }
       }
     }
@@ -181,7 +181,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
 
     "Into 2 DLists" >> { implicit sc: SC =>
       val prop = partitionProperty { xs =>
-        val (l, r) = xs.partition(_ => scala.util.Random.nextBoolean())
+        val (l, r) = xs.partition(_ => scala.util.Random.nextBoolean)
         Seq(l, r)
       }
       check { Prop.forAllNoShrink(arbitrary[List[Int]])(prop) }
