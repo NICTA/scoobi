@@ -67,12 +67,12 @@
     </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.Grouping.html">Grouping</a></div><div class="colmask threecol">
             <div class="colmid">
               <div class="colleft">
-                <div class="col1"><div id="central"><html><title>Grouping</title><a name="Grouping"><h2 specId="83785819">Grouping</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.2/index.html#com.nicta.scoobi.core.Grouping">Grouping</a> type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
+                <div class="col1"><div id="central"><html><title>Grouping</title><a name="Grouping"><h2 specId="1619358690">Grouping</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.3/index.html#com.nicta.scoobi.core.Grouping">Grouping</a> type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
 <ul>
   <li>Provide an <a href="http://www.scala-lang.org/api/current/index.html#scala.math.Ordering">Ordering</a> for your type.</li>
   <li>Extend <a href="http://www.scala-lang.org/api/current/index.html#scala.math.Ordered">Ordered</a> with your type</li>
   <li>Extend <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html">java.lang.Comparable</a> (preferable only for Java code)</li>
-  <li>Directly provide a <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.2/index.html#com.nicta.scoobi.core.Grouping">scoobi.Grouping</a>.</li>
+  <li>Directly provide a <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.3/index.html#com.nicta.scoobi.core.Grouping">scoobi.Grouping</a>.</li>
 </ul><p>Since the third option is the only one Scoobi specific, and a little more powerful, we'll focus on that.</p><a name="Basic+grouping"><h3>Basic grouping</h3></a><p>Let's say we have a user-defined type, <code class="prettyprint">case class Point(x: Integer, y: Integer)</code> and are using it in a <code class="prettyprint">DList[(Point, String)]</code>. Now if want to group all the same points together, so as to end up with a: <code class="prettyprint">DList[(Point, Iterable[String])</code> we will need to write a function that defines what makes two points equal. It would not be enough to merely provide a pure equality function, as that would require every point to be check against every point (quadratic time).</p><p>Instead, we need to provide strict total ordering. That is, provide a function that can reliably create an ordering for Points. It doesn't really matter how this ordering is done, as long as it is. The scheme normally used is to break the type down into all its members, and provide ordering based on it. So in the <code class="prettyprint">Point</code> case, we can order by <code class="prettyprint">Point.x</code>, if they're the same, order by <code class="prettyprint">Point.y</code> and finally, if they're the same -- we can say the two points are the same.</p><p>The <code class="prettyprint">Grouping[T]</code> trait has a method called <code class="prettyprint">sortCompare</code> that we will override. It takes two T's, and like Java's <code class="prettyprint">Comparable</code> it returns an Int. A negative number to indicate the first <code class="prettyprint">T</code> is less than the second. Zero if the two <code class="prettyprint">T</code>s are equal. And a positive number if the second <code class="prettyprint">T</code> is after the first <code class="prettyprint">T</code>.</p><p>Sample code for our <code class="prettyprint">Point</code>:</p>
 <pre><code class="prettyprint">import scalaz.Ordering._
 
@@ -151,8 +151,8 @@ val grouping = new Grouping[(FirstName, LastName)] {
 }
 </code></pre><p>Now calling <code class="prettyprint">bigKey.groupByKeyWith(grouping)</code> will work as intended, with all lastNames arriving in order. Note, that instead of explicitly passing in <code class="prettyprint">grouping</code> it's possible to use implicits and the plain <code class="prettyprint">groupByKey</code>, just be careful the correct one is being picked up.</p></div></status></html></div></div>
                 <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1521159967"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="328735190"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="2094271389"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="1545780597"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -162,7 +162,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="561309634"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1586471148"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -186,7 +186,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="35357367"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="663623284"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -202,7 +202,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1545780597"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1633955317"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -216,7 +216,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1824816020"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="2013618630"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -266,7 +266,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="1468885333"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="693521337"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -278,7 +278,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
             
           </li></ul>
           </li></ul>
-          </li><li id="83785819"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="1619358690"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -286,7 +286,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1586471148"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="1501244399"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -302,7 +302,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="663623284"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="629245390"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -332,7 +332,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1633955317"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1517791902"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -348,7 +348,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="2013618630"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1717737848"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -356,7 +356,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="693521337"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1397344715"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -368,7 +368,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1521159967','83785819'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['2094271389','1619358690'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                 <div class="col3"><div id="rightcolumn"></div></div>
               </div>
