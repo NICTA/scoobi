@@ -1,0 +1,21 @@
+This is a maintenance release for Scoobi
+
+### Improvements
+
+ * improved the diagnostic messages for the existence of configuration files
+ * added a glob pattern for the cat command in the repl
+ * checking read/write permissions [#189](https://github.com/NICTA/scoobi/issues/189), pull request by Jeff Zhang
+ * made the Scoobi REPL `ls`/`cat` support multiple filesystems
+ * added `avrocat` to the Scoobi REPL
+ * improved the naming of the Scoobi job and the individual MapReduce jobs ("steps")
+ * a DObject can be directly read from a path without triggering a MapReduce job [#288](https://github.com/NICTA/scoobi/issues/288)
+ * added `repl:assembly` to build a fat jar for scoobi-repl (and `repl:dist` to build a tar ball containing the script and fat jar) [#292](https://github.com/NICTA/scoobi/issues/292)
+ * added a `reduceValues` method to avoid using combiners after a `groupByKey`
+
+### Fixes
+
+ * prevented accidental division by zero errors in `TaggedPartitioners` and when composing `Grouping` instances
+ * made the cat and avrocat commands lazy [#293](https://github.com/NICTA/scoobi/issues/293)
+ * getting the proper file system for deleting a path [#295](https://github.com/NICTA/scoobi/issues/295)
+ 
+------ 
