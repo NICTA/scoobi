@@ -279,33 +279,33 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles { sequential
   section("issue 288")
   "a DObject created from a path must not trigger a mapreduce job for its evaluation" >> {
     "from a Text File" >> { implicit sc: SC =>
-      val file = TempFiles.createTempFilePath("test")
+      val file = path(TempFiles.createTempFilePath("test"))
       TempFiles.writeLines(file, Seq("hello\tworld", "this\tis\tme"), sc.isRemote)
       objectFromTextFile(file).run === "hello\tworld"
     }
     "back to a DList" >> { implicit sc: SC =>
-      val file = TempFiles.createTempFilePath("test-back")
+      val file = path(TempFiles.createTempFilePath("test-back"))
       TempFiles.writeLines(file, Seq("hello\tworld", "this\tis\tme"), sc.isRemote)
       (objectFromTextFile(file).map(_.split("\t").toSeq.head) join DList(1, 2)).run === Seq(("hello", 1), ("hello", 2))
     }
     "from a delimited Text File " >> { implicit sc: SC =>
-      val file = TempFiles.createTempFilePath("test-delimited")
+      val file = path(TempFiles.createTempFilePath("test-delimited"))
       TempFiles.writeLines(file, Seq("hello\tworld", "this\tis\tme"), sc.isRemote)
       objectFromDelimitedTextFile(file) { case values => values.mkString(" ") }.run === "hello world"
     }
     "from a Sequence file" >> {
       "get the key" >> { implicit sc: SC =>
-        val file = TempFiles.createTempFilePath("test-seq-key")
+        val file = path(TempFiles.createTempFilePath("test-seq-key"))
         DList((1, "2")).toSequenceFile(file).persist
         objectKeyFromSequenceFile[Int](file).run === 1
       }
       "get the value" >> { implicit sc: SC =>
-        val file = TempFiles.createTempFilePath("test-seq-value")
+        val file = path(TempFiles.createTempFilePath("test-seq-value"))
          DList((1, "2")).toSequenceFile(file).persist
          objectValueFromSequenceFile[String](file).run === "2"
       }
       "get the (key, value)" >> { implicit sc: SC =>
-        val file = TempFiles.createTempFilePath("test-seq-key-value")
+        val file = path(TempFiles.createTempFilePath("test-seq-key-value"))
         DList((1, "2")).toSequenceFile(file).persist
         objectFromSequenceFile[Int, String](file).run === (1, "2")
       }

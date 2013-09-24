@@ -35,6 +35,7 @@ import com.nicta.scoobi.impl.plan.comp._
 import org.apache.hadoop.fs.Path
 import com.nicta.scoobi.impl.io.GlobIterator
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
+import java.io.IOException
 
 /**
  * This trait provides way to create DLists from files
@@ -50,7 +51,7 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
   def objectFromTextFile(paths: String*): core.DObject[String] = {
     if (paths.size == 1) new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
         new GlobIterator(new Path(paths.head), GlobIterator.sourceIterator).toSeq
-      })).map((_: Seq[String]).head)
+      })).map((_: Seq[String]).headOption.getOrElse(throw new IOException("can't retrieve a DObject from paths "+paths.mkString("\n", "\n", "\n"))))
     else fromTextFile(paths:_*).head
   }
 
@@ -95,14 +96,14 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
   def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): core.DObject[V] = {
     if (paths.size == 1) new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
       new GlobIterator(new Path(paths.head+"/*"), GlobIterator.valueSequenceIterator(configuration, implicitly[WireFormat[V]], implicitly[SeqSchema[V]])).toSeq
-    })).map((_: Seq[V]).head)
+    })).map((_: Seq[V]).headOption.getOrElse(throw new IOException("can't retrieve a DObject from paths "+paths.mkString("\n", "\n", "\n"))))
     else valueFromSequenceFile[V](paths:_*).head
   }
   def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: Seq[String], checkValueType: Boolean = true): core.DObject[V] = SequenceInput.keyFromSequenceFile[V](paths, checkValueType).head
   def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: String*): core.DObject[(K, V)] = {
     if (paths.size == 1) new DObjectImpl(ReturnSC({ sc: ScoobiConfiguration => implicit val configuration = sc.configuration
       new GlobIterator(new Path(paths.head+"/*"), GlobIterator.sequenceIterator(configuration, implicitly[WireFormat[K]], implicitly[SeqSchema[K]], implicitly[WireFormat[V]], implicitly[SeqSchema[V]])).toSeq
-    })).map((_: Seq[(K, V)]).head)
+    })).map((_: Seq[(K, V)]).headOption.getOrElse(throw new IOException("can't retrieve a DObject from paths "+paths.mkString("\n", "\n", "\n"))))
     else SequenceInput.fromSequenceFile[K, V](paths).head
   }
   def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: Seq[String], checkKeyValueTypes: Boolean = true): core.DObject[(K, V)] =

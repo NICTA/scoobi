@@ -26,7 +26,7 @@ class GlobIterator[A](path: Path, iterator: Path => CloseableIterator[A])(implic
 
   def init {
     if (!allInitialised)  {
-      remainingReaders = fs.globStatus(path).toStream.map(status => iterator(status.getPath))
+      remainingReaders = Option(fs.globStatus(path)).getOrElse(Array()).toStream.map(status => iterator(status.getPath))
       allInitialised = true
     }
   }
