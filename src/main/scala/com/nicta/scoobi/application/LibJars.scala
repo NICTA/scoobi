@@ -18,11 +18,10 @@ package application
 
 import java.net.{URLClassLoader, URL}
 import java.io.File
-import org.apache.hadoop.filecache.DistributedCache
-import DistributedCache._
 import org.apache.hadoop.fs.Path
 import core._
 import impl.io.FileSystems
+import impl.util.Compatibility.hadoop2._
 import impl.ScoobiConfiguration._
 import impl.ScoobiConfigurationImpl._
 import org.apache.commons.logging.LogFactory
@@ -124,7 +123,7 @@ trait LibJars {
     uploadedJars.foreach { path =>
       val paths = Option(configuration.get("mapred.job.classpath.files"))
       if (!paths.isDefined || !paths.get.contains(path.toUri.getPath))
-        DistributedCache.addFileToClassPath(new Path(path.toUri.getPath), configuration)
+        cache.addFileToClassPath(new Path(path.toUri.getPath), configuration)
     }
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")

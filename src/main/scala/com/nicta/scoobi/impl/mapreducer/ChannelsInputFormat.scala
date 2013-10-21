@@ -20,7 +20,6 @@ package mapreducer
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.util.ReflectionUtils
-import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.mapreduce.lib.input.InvalidInputException
 import org.apache.commons.logging.LogFactory
 import scala.collection.JavaConversions._
@@ -32,6 +31,7 @@ import Configurations._
 import ChannelsInputFormat._
 import monitor.Loggable._
 import impl.util.Compatibility
+import Compatibility.hadoop2._
 import java.io.IOException
 
 /** An input format that delegates to multiple input formats, one for each
@@ -148,10 +148,10 @@ object ChannelsInputFormat {
     val job = new Job(new Configuration(conf))
     source.inputConfigure(job)
 
-    Option(job.getConfiguration.get(CACHE_FILES)).foreach { files =>
-      conf.addValues(CACHE_FILES, files.split(",").toSeq:_*)
+    Option(job.getConfiguration.get(cache.CACHE_FILES)).foreach { files =>
+      conf.addValues(cache.CACHE_FILES, files.split(",").toSeq:_*)
     }
-    conf.updateWith(job.getConfiguration) { case (k, v) if k != CACHE_FILES =>
+    conf.updateWith(job.getConfiguration) { case (k, v) if k != cache.CACHE_FILES =>
       (ChannelPrefix.prefix(source.id, k), v)
     }
   }

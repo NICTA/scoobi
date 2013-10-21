@@ -19,8 +19,8 @@ package mapreducer
 
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.filecache.DistributedCache
-import impl.util.DistCache
+import util._
+import Compatibility.hadoop2._
 import core._
 
 /** A reference to the storage location of a value that represents the "environment"
@@ -34,7 +34,7 @@ class Env(path: Path)(wf: WireReaderWriter) extends Environment {
     val dos = path.getFileSystem(configuration).create(path)
     wf.write(env, dos)
     dos.close()
-    DistributedCache.addCacheFile(path.toUri, configuration)
+    cache.addCacheFile(path.toUri, configuration)
   }
 
   /** Get an environment value from the distributed cache. */

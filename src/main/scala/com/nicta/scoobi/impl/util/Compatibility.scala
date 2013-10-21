@@ -27,6 +27,7 @@ import org.apache.hadoop.io.SequenceFile
 import core.ScoobiConfiguration
 import org.apache.commons.logging.LogFactory
 import com.nicta.scoobi.impl.io.Files
+import java.net.URI
 
 
 /**
@@ -36,7 +37,7 @@ import com.nicta.scoobi.impl.io.Files
 object Compatibility {
   private lazy val logger = LogFactory.getLog("scoobi.Compatibility")
 
-  private case class V2(useV2: Boolean,
+  private case class CDH4(useCdh4: Boolean,
                         taskAttemptContextConstructor: Constructor[_],
                         mapContextConstructor: Constructor[_],
                         jobContextConstructor: Constructor[_],
@@ -44,31 +45,31 @@ object Compatibility {
                         isDirectory: Method,
                         getConfiguration: Method)
 
-  private lazy val v2: V2 = {
-    // use the presence of JobContextImpl as a test for 2.x
-    val useV2 = try { Class.forName("org.apache.hadoop.mapreduce.task.JobContextImpl"); logger.debug("Hadoop CDH4 compatibility class is being used"); true }
-                catch { case _: Throwable => logger.debug("Hadoop CDH3 compatibility class is being used"); false }
+  private lazy val cdh4: CDH4 = {
+    // use the presence of JobContextImpl as a test for cdh4 classes
+    val useCdh4 = try { Class.forName("org.apache.hadoop.mapreduce.task.JobContextImpl"); logger.debug("Hadoop CDH4 compatibility class is being used"); true }
+                  catch { case _: Throwable => logger.debug("Hadoop CDH3 compatibility class is being used"); false }
 
     try {
       val taskAttemptContextClass =
-        Class.forName(if (useV2) "org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl"
+        Class.forName(if (useCdh4) "org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl"
                       else       "org.apache.hadoop.mapreduce.TaskAttemptContext")
       val taskAttemptContextConstructor = taskAttemptContextClass.getConstructor(classOf[Configuration], classOf[TaskAttemptID])
 
       val mapContextClass =
-        Class.forName(if (useV2) "org.apache.hadoop.mapreduce.task.MapContextImpl"
+        Class.forName(if (useCdh4) "org.apache.hadoop.mapreduce.task.MapContextImpl"
         else       "org.apache.hadoop.mapreduce.MapContext")
       val mapContextConstructor = mapContextClass.getConstructor(classOf[Configuration], classOf[TaskAttemptID],
         classOf[RecordReader[_,_]], classOf[RecordWriter[_,_]],
         classOf[OutputCommitter], classOf[StatusReporter], classOf[InputSplit])
 
       val jobContextClass =
-        Class.forName(if (useV2) "org.apache.hadoop.mapreduce.task.JobContextImpl"
+        Class.forName(if (useCdh4) "org.apache.hadoop.mapreduce.task.JobContextImpl"
         else       "org.apache.hadoop.mapreduce.JobContext")
       val jobContextConstructor = jobContextClass.getConstructor(classOf[Configuration], classOf[JobID])
 
       val isDirectory =
-        if (useV2) Class.forName("org.apache.hadoop.fs.FileStatus").getMethod("isDirectory")
+        if (useCdh4) Class.forName("org.apache.hadoop.fs.FileStatus").getMethod("isDirectory")
         else Class.forName("org.apache.hadoop.fs.FileStatus").getMethod("isDir")
 
       val sequenceFileReaderConstructor = Class.forName("org.apache.hadoop.io.SequenceFile$Reader").getConstructor(classOf[FileSystem], classOf[Path], classOf[Configuration])
@@ -76,47 +77,88 @@ object Compatibility {
       val getConfiguration = Class.forName("org.apache.hadoop.mapreduce.JobContext").getMethod("getConfiguration")
 
 
-      V2(useV2, taskAttemptContextConstructor, mapContextConstructor, jobContextConstructor, sequenceFileReaderConstructor, isDirectory, getConfiguration)
-    } catch { case e: Throwable => throw new IllegalArgumentException("Error while trying to instantiate specific instances for CDH"+(if (useV2) "4" else "3")+": "+e.getMessage, e) }
+      CDH4(useCdh4, taskAttemptContextConstructor, mapContextConstructor, jobContextConstructor, sequenceFileReaderConstructor, isDirectory, getConfiguration)
+    } catch { case e: Throwable => throw new IllegalArgumentException("Error while trying to instantiate specific instances for CDH"+(if (useCdh4) "4" else "3")+": "+e.getMessage, e) }
   }
 
   /** @return the key to use for the default file system */
-  lazy val defaultFSKeyName = if (v2.useV2) "fs.defaultFS" else "fs.default.name"
+  lazy val defaultFSKeyName = if (cdh4.useCdh4) "fs.defaultFS" else "fs.default.name"
 
   /** @return true if the file is a directory */
-  def isDirectory(fileStatus: FileStatus): Boolean = invoke(v2.isDirectory, fileStatus).asInstanceOf[Boolean]
+  def isDirectory(fileStatus: FileStatus): Boolean = invoke(cdh4.isDirectory, fileStatus).asInstanceOf[Boolean]
 
   /** @return a sequence file reader */
   def newSequenceFileReader(configuration: Configuration, path: Path): SequenceFile.Reader =
-    newInstance(v2.sequenceFileReaderConstructor, Files.fileSystem(path)(configuration), path, configuration).asInstanceOf[SequenceFile.Reader]
+    newInstance(cdh4.sequenceFileReaderConstructor, Files.fileSystem(path)(configuration), path, configuration).asInstanceOf[SequenceFile.Reader]
 
   /**
    * Creates TaskAttemptContext from a JobConf and jobId using the correct
    * constructor for based on the hadoop version.
    */
   def newTaskAttemptContext(conf: Configuration, id: TaskAttemptID): TaskAttemptContext =
-    newInstance(v2.taskAttemptContextConstructor, conf, id).asInstanceOf[TaskAttemptContext]
+    newInstance(cdh4.taskAttemptContextConstructor, conf, id).asInstanceOf[TaskAttemptContext]
 
   /**
    * Creates JobContext from a configuration and jobId using the correct
    * constructor for based on the hadoop version.
    */
   def newJobContext(conf: Configuration, id: JobID): JobContext =
-    newInstance(v2.jobContextConstructor, conf, id).asInstanceOf[JobContext]
+    newInstance(cdh4.jobContextConstructor, conf, id).asInstanceOf[JobContext]
 
   /**
    * Creates MapContext from a JobConf and jobId using the correct
    * constructor for based on the hadoop version.
    */
   def newMapContext(conf: Configuration, id: TaskAttemptID, reader: RecordReader[_,_], writer: RecordWriter[_,_], outputCommitter: OutputCommitter, reporter: StatusReporter, split: InputSplit): MapContext[Any,Any,Any,Any] =
-    newInstance(v2.mapContextConstructor, conf, id, reader, writer, outputCommitter, reporter, split).asInstanceOf[MapContext[Any,Any,Any,Any]]
+    newInstance(cdh4.mapContextConstructor, conf, id, reader, writer, outputCommitter, reporter, split).asInstanceOf[MapContext[Any,Any,Any,Any]]
 
   /**
    * Invokes getConfiguration() on JobContext. Works with both
    * hadoop 1 and 2.
    */
   def getConfiguration(context: JobContext): Configuration =
-    invoke(v2.getConfiguration, context).asInstanceOf[Configuration]
+    invoke(cdh4.getConfiguration, context).asInstanceOf[Configuration]
+
+  lazy val hadoop2 = Hadoop2(HadoopDistributedCache(useHadoop2))
+  lazy val useHadoop2 = try { Class.forName("org.apache.hadoop.mapreduce.filecache.DistributedCache"); logger.debug("Hadoop 2.0 compatibility class is being used"); true }
+  catch { case _: Throwable => logger.debug("Hadoop < 2.0 compatibility class is being used"); false }
+
+  case class Hadoop2(cache: HadoopDistributedCache)
+
+  case class HadoopDistributedCache(useHadoop2: Boolean) {
+    lazy val CACHE_FILES = if (useHadoop2) "mapreduce.job.cache.files" else "mapred.cache.files"
+
+    lazy val addCacheFileMethod       = getCacheMethod("addCacheFile", argumentsNb = 2)
+    lazy val getLocalCacheFilesMethod = getCacheMethod("getLocalCacheFiles", argumentsNb = 1)
+    lazy val getCacheFilesMethod      = getCacheMethod("getCacheFiles", argumentsNb = 1)
+    lazy val createSymlinkMethod      = getCacheMethod("createSymlink", argumentsNb = 1)
+    lazy val addFileToClassPathMethod = getCacheMethod("addFileToClassPath", argumentsNb = 2)
+
+    def addCacheFile(uri: URI, configuration: Configuration): Unit =
+      invokeStatic(addCacheFileMethod, uri, configuration)
+
+    def getLocalCacheFiles(configuration: Configuration): Array[Path] =
+      invokeStatic(getLocalCacheFilesMethod, configuration).asInstanceOf[Array[Path]]
+
+    def getCacheFiles(configuration: Configuration): Array[URI] =
+      invokeStatic(getCacheFilesMethod, configuration).asInstanceOf[Array[URI]]
+
+    def createSymlink(configuration: Configuration): Unit =
+      invokeStatic(createSymlinkMethod, configuration)
+
+    def addFileToClassPath(path: Path, configuration: Configuration): Unit =
+      invokeStatic(addFileToClassPathMethod, path, configuration)
+
+    private def getCacheMethod(methodName: String, argumentsNb: Int) =
+      getMethod("org.apache.hadoop.mapreduce.filecache.DistributedCache",
+                "org.apache.hadoop.filecache.DistributedCache", methodName, argumentsNb)
+
+    private def getMethod(hadoop2Class: String, hadoop1Class: String, methodName: String, argumentsNb: Int = 0) =
+      (if (useHadoop2) Class.forName(hadoop2Class) else Class.forName(hadoop1Class)).getMethods.
+        find(m => (m.getName == methodName) && (m.getParameterTypes.toSeq.size == argumentsNb)).
+        getOrElse(throw new Exception(s"method $methodName not found in class ${if (useHadoop2) hadoop2Class else hadoop1Class}"))
+
+  }
 
   private def newInstance(constructor: Constructor[_], args: AnyRef*) =
     try constructor.newInstance(args:_*)
@@ -126,9 +168,16 @@ object Compatibility {
     try method.invoke(instance, args:_*)
     catch { case e: Throwable => throwIllegalArgumentException(s"Can't invoke ${method.getName}", args, e) }
 
+  private def invokeStatic(method: Method, args: AnyRef*) =
+    try method.invoke(null, args:_*)
+    catch { case e: Throwable => throwIllegalArgumentException(s"Can't invoke ${method.getName}", args, e) }
+
   private def throwIllegalArgumentException(what: String, args: Seq[AnyRef], e: Throwable) =
     throw new IllegalArgumentException(s"$what, with arguments: ${args.mkString(", ")} -> ${e.getMessage}\n${cause(e)}")
 
   private def cause(e: Throwable) =
     Option(e.getCause).map(c => s"caused by ${c.getMessage}\n${c.getStackTrace.mkString("\n")}").getOrElse("")
+
+
 }
+

@@ -19,12 +19,10 @@ package io
 import java.util.Arrays._
 import org.apache.hadoop.mapreduce._
 import lib.input.InvalidInputException
-import org.apache.hadoop.filecache.DistributedCache
 
 import core._
-import testing.TestFiles
 import org.apache.hadoop.io.Writable
-import java.io.{File, DataOutput, DataInput}
+import java.io._
 
 class ConstantStringDataSource(val value: String) extends DataSource[String, String, String] {
 

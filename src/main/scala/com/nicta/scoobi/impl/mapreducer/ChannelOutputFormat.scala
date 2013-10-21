@@ -20,7 +20,6 @@ package mapreducer
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.util.ReflectionUtils
-import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.fs.Path
 import scala.collection.mutable.{Map => MMap}
 
@@ -28,6 +27,8 @@ import core._
 import Configurations._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import impl.util.Compatibility
+import Compatibility.hadoop2._
+
 
 /**
  * A class that simplifies writing output to different paths and with different types
@@ -116,10 +117,10 @@ object ChannelOutputFormat {
 
     val jobCopy = new Job(new Configuration(conf))
     sink.outputConfigure(jobCopy)
-    Option(jobCopy.getConfiguration.get(CACHE_FILES)).foreach { files =>
-      conf.addValues(CACHE_FILES, files.split(",").toSeq:_*)
+    Option(jobCopy.getConfiguration.get(cache.CACHE_FILES)).foreach { files =>
+      conf.addValues(cache.CACHE_FILES, files.split(",").toSeq:_*)
     }
-    conf.updateWith(jobCopy.getConfiguration) { case (k, v) if k != CACHE_FILES =>
+    conf.updateWith(jobCopy.getConfiguration) { case (k, v) if k != cache.CACHE_FILES =>
       (otherProperty(tag, sink.id) + k, v)
     }
   }

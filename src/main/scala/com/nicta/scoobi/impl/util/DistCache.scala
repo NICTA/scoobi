@@ -18,12 +18,11 @@ package impl
 package util
 
 import org.apache.hadoop.fs._
-import org.apache.hadoop.filecache._
+import Compatibility.hadoop2._
 import org.apache.hadoop.conf.Configuration
 import Configurations._
 import ScoobiConfiguration._
 import java.net.URI
-import DistributedCache._
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
 import control.Exceptions._
@@ -52,7 +51,7 @@ object DistCache {
    */
   def pushObject[T](configuration: Configuration, obj: T, tag: String, check: Boolean = true): Path = {
     val path = serialise[T](configuration, obj, tag) { path =>
-      DistributedCache.addCacheFile(path.toUri, configuration)
+      cache.addCacheFile(path.toUri, configuration)
     }
 
     if (check)
@@ -96,8 +95,8 @@ object DistCache {
    *  - use a WireFormat to deserialise the object
    */
   def pullPath[T](configuration: Configuration, path: Path)(f: FSDataInputStream => T): Option[T] = {
-    lazy val cacheFiles = (Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(p => new Path("file://"+p.toString)) ++
-                           Option(DistributedCache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))).toStream :+ path
+    lazy val cacheFiles = (Option(cache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(p => new Path("file://"+p.toString)) ++
+                           Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))).toStream :+ path
 
     logger.info("trying to pull an object from the cache at path: "+path)
     cacheFiles.filter(p => p.toString.endsWith(path.getName)).map { case p =>

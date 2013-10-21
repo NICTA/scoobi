@@ -30,9 +30,9 @@ import Configurations._
 import impl.ScoobiConfiguration
 import WireFormat._
 import rtt.RuntimeClass
-import org.apache.hadoop.filecache.DistributedCache
 import com.nicta.scoobi.testing.{TempFiles, TestFiles}
 import impl.util.Compatibility
+import Compatibility.hadoop2._
 import com.nicta.scoobi.io.text.TextSource
 import com.nicta.scoobi.testing.TestFiles._
 import com.nicta.scoobi.io.text.TextSource
@@ -110,7 +110,7 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     override def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
       super.inputConfigure(job)
       val file = TestFiles.createTempFile("cache")
-      DistributedCache.addCacheFile(file.toURI, job.getConfiguration)
+      cache.addCacheFile(file.toURI, job.getConfiguration)
     }
   }
 

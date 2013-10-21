@@ -20,7 +20,7 @@ package io
 import java.io.{IOException, File}
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs._
-import org.apache.hadoop.filecache.DistributedCache
+import impl.util.Compatibility.hadoop2._
 import com.nicta.scoobi.{impl, core}
 import core._
 import impl.ScoobiConfiguration._
@@ -43,7 +43,7 @@ trait FileSystems extends Files {
    * @return the original sequence of files
    */
   def uploadNewJars(sourceFiles: Seq[File], dest: String)(implicit configuration: ScoobiConfiguration): Seq[File] = {
-    DistributedCache.createSymlink(configuration)
+    cache.createSymlink(configuration)
     uploadNewFiles(sourceFiles, dest)
   }
 

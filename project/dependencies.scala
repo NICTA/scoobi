@@ -38,8 +38,16 @@ object dependencies {
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
   def hadoop(version: String) =
-    if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
-                                      "org.apache.avro"   % "avro-mapred"   % "1.7.4")
+    if (version.contains("hadoop2")) Seq("org.apache.hadoop" % "hadoop-common"                     % "2.1.0.2.0.5.0-67",
+                                         "org.apache.hadoop" % "hadoop-hdfs"                       % "2.1.0.2.0.5.0-67",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % "2.1.0.2.0.5.0-67",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.1.0.2.0.5.0-67",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.1.0.2.0.5.0-67",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.1.0.2.0.5.0-67",
+                                         "org.apache.hadoop" % "hadoop-annotations"                % "2.1.0.2.0.5.0-67",
+                                         "org.apache.avro"   % "avro-mapred"                       % "1.7.4")
+    else if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
+                                           "org.apache.avro"   % "avro-mapred"   % "1.7.4")
     else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm"),
                                       "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
                                       "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
@@ -66,7 +74,8 @@ object dependencies {
   )
 
   lazy val resolversSettings = resolvers ++= Seq(
-    "cloudera"           at "https://repository.cloudera.com/content/repositories/releases",
-    "sonatype-releases"  at "http://oss.sonatype.org/content/repositories/releases",
-    "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
+    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("snaspshots"),
+    "cloudera"             at "https://repository.cloudera.com/content/repositories/releases",
+    "hortonworks-releases" at "http://repo.hortonworks.com/content/repositories/releases")
 }
