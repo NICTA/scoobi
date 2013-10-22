@@ -33,7 +33,7 @@ object dependencies {
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
     "com.googlecode.kiama"              %% "kiama"                     % "1.5.1",
     "com.github.mdr"                    %% "ascii-graphs"              % "0.0.3",
-    "com.chuusai"                       %% "shapeless"                 % "1.2.4",
+    "com.chuusai"                       % "shapeless_2.10.2"           % "2.0.0-M1",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
