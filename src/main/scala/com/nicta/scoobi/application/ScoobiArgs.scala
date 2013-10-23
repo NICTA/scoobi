@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package application
 
 import HadoopLogFactory._
-import org.specs2.main.CommandLineArguments
+import org.specs2.main.{Arguments, CommandLineArguments}
 import Levels._
 /**
  * This trait defines all the options which can be used to modify the behavior of a Scoobi application
@@ -43,6 +43,8 @@ trait ScoobiArgs {
   def keepFiles = false
   /** @return true if the debug logs must show the computation graph */
   def showComputationGraph = false
+  /** @return true if the debug logs must show the computation graph and not evaluate it */
+  def showPlanOnly = false
 
 }
 
@@ -63,6 +65,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
   override def noLibJars            = is("nolibjars")
   override def keepFiles            = is("keepfiles")
   override def showComputationGraph = is("showgraph")
+  override def showPlanOnly         = is("!execute")
 
   def isInMemory                = is("inmemory")
   def isLocal                   = is("local")
@@ -81,7 +84,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
 
   private[scoobi]
   lazy val argumentsNames = Seq("times", "local", "!local", "useconfdir", "deletelibjars", "nolibjars",
-                                "keepfiles", "quiet", "verbose", "cluster", "!cluster", "inmemory", "!inmemory", "showgraph")
+                                "keepfiles", "quiet", "verbose", "cluster", "!cluster", "inmemory", "!inmemory", "!execute", "showgraph")
 
   private[scoobi]
   def isVerbose = argumentsValues.exists(_ == "verbose")
@@ -117,7 +120,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
 trait CommandLineScoobiUserArgs extends ScoobiUserArgs with CommandLineArguments {
   /** the scoobi arguments passed on the command line */
   lazy val scoobiArgs = {
-    val args = arguments.commandLine.arguments.dropWhile(a => a != "scoobi").drop(1).flatMap(_.split("\\."))
+    val args = arguments.commandLine.arguments.dropWhile(_ != "scoobi").drop(1).flatMap(_.split("\\."))
     if (args.isEmpty) sys.props.get("scoobi").map(_.split("\\.").toSeq).getOrElse(Seq())
     else              args
   }

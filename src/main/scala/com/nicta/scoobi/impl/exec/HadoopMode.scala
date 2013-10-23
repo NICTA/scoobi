@@ -65,7 +65,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
       val layers = createMapReduceLayers(node).info("Executing layers", showLayers)
-      layers.map(executeLayer(layers.map(_.mscrs.size).sum))
+      if (!showPlanOnly(sc)) layers.map(executeLayer(layers.map(_.mscrs.size).sum))
     }
 
     def showLayers = (layers: Seq[Layer]) =>
@@ -89,8 +89,12 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       (banner+"\n").info
 
       executeLayers(node)
-      val result = getValue(node)
-      saveSinks(Seq(result), node)(sc)
+      val result =
+        if (!showPlanOnly(sc)) {
+          val value = getValue(node)
+          saveSinks(Seq(value), node)(sc)
+          value
+        } else Seq()
 
       banner.info
       s"===== END OF SCOOBI JOB '${sc.jobId}'   ========".info

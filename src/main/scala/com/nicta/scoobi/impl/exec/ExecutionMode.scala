@@ -44,9 +44,13 @@ trait ExecutionMode extends ShowNode with Optimiser {
     toExecute
   }
 
-  /** @return true (default value) if the computation graph must not be displayed */
+  /** @return false (default value) if the computation graph must not be displayed */
   protected def showComputationGraph(implicit sc: ScoobiConfiguration) =
     sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)
+
+  /** @return false (default value) if the execution must only be shown but not executed */
+  protected def showPlanOnly(implicit sc: ScoobiConfiguration) =
+    sc.configuration.getBoolean("scoobi.debug.showPlanOnly", false)
 
   protected def checkSourceAndSinks(node: CompNode)(implicit sc: ScoobiConfiguration): Unit = {
     def checkNode(n: CompNode) = {
