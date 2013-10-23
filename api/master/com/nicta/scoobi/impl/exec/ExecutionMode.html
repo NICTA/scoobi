@@ -3532,7 +3532,7 @@ if the parent node has not been set while recursing for children, then it is Non
         <span class="name">showComputationGraph</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true (default value) if the computation graph must not be displayed</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false (default value) if the computation graph must not be displayed</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#showGraph" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="showGraph(node:com.nicta.scoobi.core.CompNode):String"></a>
       <a id="showGraph(CompNode):String"></a>
@@ -3546,6 +3546,19 @@ if the parent node has not been set while recursing for children, then it is Non
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>an ASCII representation of the nodes graph</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.exec.ExecutionMode#showPlanOnly" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="showPlanOnly(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Boolean"></a>
+      <a id="showPlanOnly(ScoobiConfiguration):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">showPlanOnly</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false (default value) if the execution must only be shown but not executed</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#showStructure" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="showStructure:com.nicta.scoobi.core.CompNode=&gt;String"></a>
       <a id="showStructure:(CompNode)⇒String"></a>
