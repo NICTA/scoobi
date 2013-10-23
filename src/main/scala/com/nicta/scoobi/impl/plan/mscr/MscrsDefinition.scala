@@ -39,7 +39,7 @@ import CollectFunctions._
  * - aggregating input and output channels as Mscr representing a full map reduce job
  * - iterating on any processing node that is not part of a Mscr
  */
-trait MscrsDefinition extends Layering with Optimiser {
+trait MscrsDefinition extends Layering with Optimiser { outer =>
   /**
    * create layers of MapReduce jobs from the computation graph defined by the start node
    * where each layer contains independent map reduce jobs
@@ -99,8 +99,12 @@ trait MscrsDefinition extends Layering with Optimiser {
     val outputLayers     = layersOf(outputs, isAnOutputNode)
     val firstOutputLayer = outputLayers.dropWhile(l => !l.exists(outputs.contains)).headOption.map(_.filter(isAnOutputNode)).getOrElse(Seq()).distinct
 
+    // some input process nodes might have been missed by in the inputNodes collection,
+    // get them in by going back from the output nodes to the leaves
+    // see #298
+    val additional = outer.inputNodes(layerNodes.collect(isAProcessNode)).collect(isAProcessNode)
     // remove visited nodes or nodes which depend on a node in the first layer
-    layerNodes.filterNot(n => firstOutputLayer.exists(out => transitiveUses(out).contains(n)))
+    (additional ++ layerNodes).distinct.filterNot(n => firstOutputLayer.exists(out => transitiveUses(out).contains(n)))
       .filterNot(visited.contains)
       .distinct
   }

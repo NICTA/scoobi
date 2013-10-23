@@ -24,7 +24,7 @@ import impl.plan.comp.{Return, ParallelDo, Load, CompNodeData}
 import CompNodeData._
 import io.ConstantStringDataSource
 import core.WireFormat._
-import core.{EmitterWriter, DoFunction, EmitterDoFunction}
+import com.nicta.scoobi.core.{Reduction, EmitterWriter, DoFunction, EmitterDoFunction}
 import core.Reduction.{Reduction => R}
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unstable")
@@ -185,6 +185,15 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
     result.run.toSet === Set((1,1), (2,2), (1,1), (2,2))
   }
   "31. reduce values with a Reduction" >> { implicit sc: SC =>
-    DList(("a", Iterable(1, 2, 3)), ("b", Iterable(2, 3, 4))).reduceValues(Reduction.Sum.int).run === Seq(("a", 6), ("b", 9))
+    DList(("a", Iterable(1, 2, 3)), ("b", Iterable(2, 3, 4))).reduceValues(Scoobi.Reduction.Sum.int).run === Seq(("a", 6), ("b", 9))
+  }
+  "32. flatten of a ParallelDo(Load) and ParallelDo(Load, env)" >> { implicit sc: SC =>
+    val (l1, l2) = (DList("hello world"), DList("hello world"))
+    def words(l: DList[String]) = l.mapFlatten(_.split(" ")).filterNot(_.isEmpty)
+
+    val counts1 = words(l1).map((_, 1))
+    val counts2 = (DObject(1) zip DObject(1) join words(l2)).map { case (_, word) => (word, 1) }
+
+    (counts1 ++ counts2).groupByKey.combine(Scoobi.Reduction.Sum.int).run.toSet === Set(("hello", 2), ("world", 2))
   }
 }

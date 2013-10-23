@@ -221,6 +221,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     val in = DList(1, 1, 1)
     in.run.toSeq must_== Seq(1, 1, 1)
   }
+
 }
 
 case class PoorHashString(s: String) {
