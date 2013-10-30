@@ -246,6 +246,29 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     override def toString = "GenericAvro"
   }
 
+  /**
+   * WireFormat instance for Avro Specific Fixed
+   *
+   * This requires an implicit AvroSchema instance
+   */
+  implicit def FixedAvroFmt[T <: GenericData.Fixed : Manifest : AvroSchema] = new FixedAvroWireFormat[T]
+  class FixedAvroWireFormat[T <: GenericData.Fixed : Manifest : AvroSchema] extends WireFormat[T] {
+    def toWire(x : T, out : DataOutput) {
+      val bytes = x.bytes()
+      out.writeInt(bytes.size)
+      out.write(bytes)
+    }
+    def fromWire(in : DataInput) : T = {
+      val size = in.readInt
+      val bytes = new Array[Byte](size)
+      in.readFully(bytes)
+      val instance = manifest[T].runtimeClass.newInstance().asInstanceOf[T]
+      instance.bytes(bytes)
+      instance
+    }
+    override def toString = "FixedAvro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
+  }
+
 
   /**
    * "Primitive" types.
