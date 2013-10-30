@@ -18,7 +18,7 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapred.{JobConf, TaskCompletionEvent}
+import org.apache.hadoop.mapred.{JobClient, JobConf, TaskCompletionEvent}
 import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.{WritableComparable, WritableComparator, RawComparator}
@@ -181,7 +181,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
        * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
        * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
       val inputBytes: Long = mscr.sources.map(_.inputSize).sum
-      val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
+      val inputGigabytes: Int = (inputBytes / configuration.getBytesPerReducer).toInt + 1
       val numReducers: Int = inputGigabytes.max(configuration.getMinReducers).min(configuration.getMaxReducers)
       job.setNumReduceTasks(numReducers)
 
@@ -247,8 +247,8 @@ object MapReduceJob {
       jar.addContainingJar(getClass)
       jar.addContainingJar(mainClass)
     }
-    configuration.userJars.foreach { jar.addJar(_) }
-    configuration.userDirs.foreach { jar.addClassDirectory(_) }
+    configuration.userJars.foreach(jar.addJar)
+    configuration.userDirs.foreach(jar.addClassDirectory)
     configuration.userClasses.map { case (name, bytecode) => jar.addClassFromBytecode(name, bytecode) }
   }
 
@@ -282,7 +282,7 @@ class TaskDetailsLogger(job: Job) {
 
   /** Paginate through the TaskCompletionEvent's, logging details about completed tasks */
   def logTaskCompletionDetails() {
-    Iterator.continually(job.getTaskCompletionEvents(startIdx)).takeWhile(!_.isEmpty).foreach { taskCompEvents =>
+    Iterator.continually(getTaskCompletionEvents(startIdx)).takeWhile(!_.isEmpty).foreach { taskCompEvents =>
       taskCompEvents foreach { taskCompEvent =>
         val taskAttemptId = taskCompEvent.getTaskAttemptId
         val logUrl = createTaskLogUrl(taskCompEvent.getTaskTrackerHttp, taskAttemptId.toString)
@@ -299,6 +299,19 @@ class TaskDetailsLogger(job: Job) {
       startIdx += taskCompEvents.length
     }
   }
+
+  /**
+   * This is a tentative to get the task completion events with an interface that is compatible with both
+   * hadoop < 2.0 and hadoop 2.0
+   */
+  private def getTaskCompletionEvents(index: Int) =
+    getJobClient.getJob(org.apache.hadoop.mapred.JobID.forName(job.getJobID.toString)).getTaskCompletionEvents(index)
+
+  /**
+   * The getJobClient method is package-protected for hadoop < 2.0 and public after that.
+   * Here we use reflection to get a uniform access to the job client
+   */
+  private lazy val getJobClient: JobClient = invokeProtected[JobClient](classOf[Job], job, "getJobClient")
 
   private def createTaskLogUrl(trackerUrl: String, taskAttemptId: String): String = {
     trackerUrl + "/tasklog?attemptid=" + taskAttemptId + "&all=true"

@@ -130,6 +130,13 @@ trait Classes {
     }: _*}
   }
 
+  /** invoke a method using reflection even if it is private or protected */
+  def invokeProtected[T](klass: Class[_], instance: Any, methodName: String) = {
+    val method = klass.getDeclaredMethod(methodName)
+    method.setAccessible(true)
+    method.invoke(instance).asInstanceOf[T]
+  }
+
   /** @return the file path corresponding to a full URL */
   private def filePath(url: URL): String =
     URLDecoder.decode(url.getPath.replaceAll("file:", "").replaceAll("\\+", "%2B").replaceAll("!.*$", ""), "UTF-8")
