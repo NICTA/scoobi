@@ -1,0 +1,10 @@
+{"type": "record",
+ "name": "SampleRecord",
+ "namespace": "com.nicta.scoobi.testavroschema",
+ "doc": "A sample record.",
+ "fields": [
+     {"name": "str", "type": ["string", "null"]},
+     {"name": "num", "type": "int"},
+     {"name": "hash", "type": {"type": "fixed", "size": 20, "name": "Sha1"}}
+ ]
+}
