@@ -38,13 +38,13 @@ object dependencies {
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
   def hadoop(version: String) =
-    if (version.contains("hadoop2")) Seq("org.apache.hadoop" % "hadoop-common"                     % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-hdfs"                       % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-annotations"                % "2.1.0.2.0.5.0-67",
+    if (version.contains("hadoop2")) Seq("org.apache.hadoop" % "hadoop-common"                     % "2.2.0",
+                                         "org.apache.hadoop" % "hadoop-hdfs"                       % "2.2.0",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % "2.2.0",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.2.0",
+                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0",
+                                         "org.apache.hadoop" % "hadoop-annotations"                % "2.2.0",
                                          "org.apache.avro"   % "avro-mapred"                       % "1.7.4")
     else if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
                                            "org.apache.avro"   % "avro-mapred"   % "1.7.4")
@@ -76,6 +76,5 @@ object dependencies {
   lazy val resolversSettings = resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snaspshots"),
-    "cloudera"             at "https://repository.cloudera.com/content/repositories/releases",
-    "hortonworks-releases" at "http://repo.hortonworks.com/content/repositories/releases")
+    "cloudera"             at "https://repository.cloudera.com/content/repositories/releases")
 }
