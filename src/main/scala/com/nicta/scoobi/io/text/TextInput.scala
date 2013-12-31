@@ -75,6 +75,21 @@ trait TextInput {
     fromTextSource[(String, String)](new TextSource(paths, inputConverter = converter, check = check))
   }
 
+  /** Create a distributed list from a list of one ore more files or directories (in the case of
+    * a directory, the input forms all files in that directory). The file(s) contain a number
+    * of fields delimited by a separator. Use an extractor function to pull out the required
+    * fields to create the distributed list. */
+  def fromDelimitedTextFiles[A : WireFormat]
+  (path: Seq[String], sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
+  (extractFn: PartialFunction[Seq[String], A]): DList[A] = {
+
+    val lines = fromTextSource(textSource(path, check))
+    lines.mapFlatten { line =>
+      val fields = line.split(sep).toList
+      if (extractFn.isDefinedAt(fields)) List(extractFn(fields)) else Nil
+    }
+  }
+
 
   /** Create a distributed list from a text file that is a number of fields delimited
     * by some separator. Use an extractor function to pull out the required fields to
@@ -82,12 +97,7 @@ trait TextInput {
   def fromDelimitedTextFile[A : WireFormat]
       (path: String, sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
       (extractFn: PartialFunction[Seq[String], A]): DList[A] = {
-
-    val lines = fromTextSource(textSource(Seq(path), check))
-    lines.mapFlatten { line =>
-      val fields = line.split(sep).toList
-      if (extractFn.isDefinedAt(fields)) List(extractFn(fields)) else Nil
-    }
+      fromDelimitedTextFiles(Seq(path), sep, check)(extractFn)
   }
 
 
