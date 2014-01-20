@@ -28,6 +28,7 @@ import impl.exec.JobExecException
 import impl.plan.comp.CompNodeData._
 import org.apache.avro.generic.GenericData.Record
 import TestFiles._
+import org.specs2.matcher.Matcher
 
 class AvroFileSpec extends NictaSimpleJobs {
 
@@ -75,7 +76,7 @@ class AvroFileSpec extends NictaSimpleJobs {
 
     // load test data from the avro file
     val loadedTestData = fromAvroFile[(Int, Seq[(Float, String)], Map[String, Int])](tmpAvroFile)
-    loadedTestData.run must haveTheSameElementsAs(testData, equality)
+    loadedTestData.run must contain(exactly((testData map isEqual):_*))
   }
 
   "Writing (String, List[(Double,Boolean,String)], Array[Long]) Avro file" >> { implicit sc: SC =>
@@ -91,7 +92,7 @@ class AvroFileSpec extends NictaSimpleJobs {
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean, String)], Array[Long])] = fromAvroFile(filePath)
-    loadedTestData.run must haveTheSameElementsAs(testData, equality)
+    loadedTestData.run must contain(exactly((testData map isEqual):_*))
   }
 
   "Expecting exception because of miss match in expected and actual schema" >> { implicit sc: SC =>
@@ -144,7 +145,7 @@ class AvroFileSpec extends NictaSimpleJobs {
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean)])] = fromAvroFile(filePath)
-    loadedTestData.run must haveTheSameElementsAs(expectedData, equality)
+    loadedTestData.run must contain(exactly((expectedData map isEqual):_*))
   }
 
   "Avro file written through non scoobi API with a union type in the schema, then read through scoobi" >> { implicit sc: SC =>
@@ -221,6 +222,8 @@ class AvroFileSpec extends NictaSimpleJobs {
     persist(input.toAvroFile(dir, overwrite = true))
     dir
   }
+
+  val isEqual: Any => Matcher[Any] = (t1: Any) => (t2: Any) => (equality(t1, t2), s"$t1 is not equal to $t2")
 
   val equality = (t1: Any, t2: Any) => (t1, t2) match {
     case (tt1: Array[_], tt2: Array[_])       => tt1.toSeq == tt2.toSeq

@@ -38,19 +38,21 @@ object dependencies {
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
   def hadoop(version: String) =
-    if (version.contains("hadoop2")) Seq("org.apache.hadoop" % "hadoop-common"                     % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-hdfs"                       % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.1.0.2.0.5.0-67",
-                                         "org.apache.hadoop" % "hadoop-annotations"                % "2.1.0.2.0.5.0-67",
-                                         "org.apache.avro"   % "avro-mapred"                       % "1.7.4")
+    if (version.contains("hadoop2"))   Seq("org.apache.hadoop" % "hadoop-common"                     % "2.2.0",
+                                           "org.apache.hadoop" % "hadoop-hdfs"                       % "2.2.0",
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % "2.2.0",
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0",
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.2.0",
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0",
+                                           "org.apache.hadoop" % "hadoop-annotations"                % "2.2.0",
+                                           "org.apache.avro"   % "avro-mapred"                       % "1.7.4")
+
     else if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
                                            "org.apache.avro"   % "avro-mapred"   % "1.7.4")
-    else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm"),
-                                      "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
-                                      "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
+
+    else                               Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm"),
+                                           "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
+                                           "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
 
   def scalaz(scalazVersion: String = "7.0.2") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
@@ -59,15 +61,13 @@ object dependencies {
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  def specs2(specs2Version: String = "2.1.1") = Seq(
-    "org.specs2"                        %% "specs2"                    % specs2Version      % "optional",
-    "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
-    "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
-    "org.pegdown"                       %  "pegdown"                   % "1.2.1"            % "test",
-    "org.scala-tools.testing"           %  "test-interface"            % "0.5"              % "test",
-    "org.hamcrest"                      %  "hamcrest-all"              % "1.1"              % "test",
-    "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
-    "junit"                             %  "junit"                     % "4.7"              % "test")
+  def specs2(specs2Version: String = "2.3.2") = Seq(
+    "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional",
+    "org.specs2"                        %% "specs2-mock"               % specs2Version      % "test",
+    "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      % "test",
+    "org.specs2"                        %% "specs2-junit"              % specs2Version      % "test",
+    "org.specs2"                        %% "specs2-html"               % specs2Version      % "test",
+    "org.specs2"                        %% "specs2-analysis"           % specs2Version      % "test")
 
   def repl = Seq(
     "org.scala-lang"                    %  "jline"                     % "2.10.2"
