@@ -31,7 +31,7 @@ object dependencies {
     "org.apache.avro"                   %  "avro"                      % "1.7.4",
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
-    "com.googlecode.kiama"              %% "kiama"                     % "1.5.2",
+    "com.googlecode.kiama"              %% "kiama"                     % "1.5.1",
     "com.github.mdr"                    %% "ascii-graphs"              % "0.0.3",
     "com.chuusai"                       % "shapeless_2.10.2"           % "2.0.0-M1",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
@@ -59,14 +59,15 @@ object dependencies {
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  def specs2(specs2Version: String = "2.3.7") = Seq(
-    "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional",
-    "org.specs2"                        %% "specs2-mock"               % specs2Version      % "test",
-    "org.scalacheck"                    %% "scalacheck"                % "1.11.2"           % "test",
-    "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      % "test",
-    "org.specs2"                        %% "specs2-junit"              % specs2Version      % "test",
-    "org.specs2"                        %% "specs2-html"               % specs2Version      % "test",
-    "org.specs2"                        %% "specs2-analysis"           % specs2Version      % "test")
+  def specs2(specs2Version: String = "2.1.1") = Seq(
+    "org.specs2"                        %% "specs2"                    % specs2Version      % "optional",
+    "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
+    "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
+    "org.pegdown"                       %  "pegdown"                   % "1.2.1"            % "test",
+    "org.scala-tools.testing"           %  "test-interface"            % "0.5"              % "test",
+    "org.hamcrest"                      %  "hamcrest-all"              % "1.1"              % "test",
+    "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
+    "junit"                             %  "junit"                     % "4.7"              % "test")
 
   def repl = Seq(
     "org.scala-lang"                    %  "jline"                     % "2.10.2"

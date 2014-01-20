@@ -31,7 +31,7 @@ class RandomDListsSpecification extends NictaSimpleJobs with CompNodeData {
     val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
     val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))
 
-    locally aka "the local hadoop results" must contain(exactly(inMemory:_*))
+    locally aka "the local hadoop results" must haveTheSameElementsAs(inMemory)
 
     "====== EXAMPLE OK ======\n".pp; ok
   }

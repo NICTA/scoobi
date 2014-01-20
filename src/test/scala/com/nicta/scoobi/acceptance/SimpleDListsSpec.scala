@@ -68,7 +68,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
     val l1 = l0.groupByKey // (1, Iterable("a"))
     val l2 = l0.map { case (i, a) => (i, Iterable(a)) } // (1, Iterable("a"))
     val l = (l1 ++ l2).groupByKey // (1, Iterable(Iterable("a"), Iterable("a")))
-    l.run must contain(exactly((1, Iterable(Iterable("a"), Iterable("a")))))
+    l.run must haveTheSameElementsAs(Seq((1, Iterable(Seq("a"), Seq("a")))))
   }
   "12. 2 parallelDos on a flatten" in { implicit sc: SC =>
     (DList("hello") ++ DList("world")).materialise.run.toSet === Set("hello", "world")
