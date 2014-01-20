@@ -93,6 +93,6 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
 
   trait optimiser extends factory with Optimiser
 
-  implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.value(new factory{}))
+  implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.const(new factory{}))
 }
 
