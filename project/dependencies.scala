@@ -45,7 +45,7 @@ object dependencies {
                                            "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % hadoopVersion,
                                            "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion,
                                            "org.apache.hadoop" % "hadoop-annotations"                % hadoopVersion,
-                                           "org.apache.avro"   % "avro-mapred"                       % "1.7.4")
+                                           "org.apache.avro"   % "avro-mapred"                       % "1.7.4" classifier "hadoop2")
 
     else if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
                                            "org.apache.avro"   % "avro-mapred"   % "1.7.4")
