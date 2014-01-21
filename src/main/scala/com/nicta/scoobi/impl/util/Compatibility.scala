@@ -119,7 +119,7 @@ object Compatibility {
    */
   def newJob(conf: Configuration): Job =
     if (useHadoop2) hadoop2.newJob(conf)
-    else            newInstance(cdh4.jobConstructor2, conf).asInstanceOf[Job]
+    else            newInstance(cdh4.jobConstructor1, conf).asInstanceOf[Job]
 
   /**
    * Creates a new Job from a configuration and jobId using the correct
@@ -137,7 +137,7 @@ object Compatibility {
     newInstance(cdh4.mapContextConstructor, conf, id, reader, writer, outputCommitter, reporter, split).asInstanceOf[MapContext[Any,Any,Any,Any]]
 
   /**
-   * Invokes getConfiguration() on JobContext. Works with both
+   * Invokes Configuration() on JobContext. Works with both
    * hadoop 1 and 2.
    */
   def getConfiguration(context: JobContext): Configuration =
