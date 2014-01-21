@@ -31,20 +31,20 @@ object dependencies {
     "org.apache.avro"                   %  "avro"                      % "1.7.4",
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
-    "com.googlecode.kiama"              %% "kiama"                     % "1.5.1",
+    "com.googlecode.kiama"              %% "kiama"                     % "1.5.2",
     "com.github.mdr"                    %% "ascii-graphs"              % "0.0.3",
-    "com.chuusai"                       % "shapeless_2.10.2"           % "2.0.0-M1",
+    "com.chuusai"                       %  "shapeless_2.10.2"          % "2.0.0-M1",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
-  def hadoop(version: String) =
-    if (version.contains("hadoop2"))   Seq("org.apache.hadoop" % "hadoop-common"                     % "2.2.0",
-                                           "org.apache.hadoop" % "hadoop-hdfs"                       % "2.2.0",
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % "2.2.0",
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0",
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.2.0",
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0",
-                                           "org.apache.hadoop" % "hadoop-annotations"                % "2.2.0",
+  def hadoop(version: String, hadoopVersion: String = "2.2.0.2.0.6.0-101") =
+    if (version.contains("hadoop2"))   Seq("org.apache.hadoop" % "hadoop-common"                     % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-hdfs"                       % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-annotations"                % hadoopVersion,
                                            "org.apache.avro"   % "avro-mapred"                       % "1.7.4")
 
     else if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",

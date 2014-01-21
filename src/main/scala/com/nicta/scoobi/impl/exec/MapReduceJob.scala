@@ -53,7 +53,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
 
   implicit lazy val job = {
     configuration.jobStepIs(mscrNumber, mscrsNumber)
-    new Job(configuration, configuration.jobId+"-"+configuration.jobStep)
+    Compatibility.newJob(configuration.configuration, configuration.jobId+"-"+configuration.jobStep)
   }
   
   /** Take this MapReduce job and run it on Hadoop. */
@@ -300,18 +300,8 @@ class TaskDetailsLogger(job: Job) {
     }
   }
 
-  /**
-   * This is a tentative to get the task completion events with an interface that is compatible with both
-   * hadoop < 2.0 and hadoop 2.0
-   */
   private def getTaskCompletionEvents(index: Int) =
-    getJobClient.getJob(org.apache.hadoop.mapred.JobID.forName(job.getJobID.toString)).getTaskCompletionEvents(index)
-
-  /**
-   * The getJobClient method is package-protected for hadoop < 2.0 and public after that.
-   * Here we use reflection to get a uniform access to the job client
-   */
-  private lazy val getJobClient: JobClient = invokeProtected[JobClient](classOf[Job], job, "getJobClient")
+    job.getTaskCompletionEvents(index)
 
   private def createTaskLogUrl(trackerUrl: String, taskAttemptId: String): String = {
     trackerUrl + "/tasklog?attemptid=" + taskAttemptId + "&all=true"

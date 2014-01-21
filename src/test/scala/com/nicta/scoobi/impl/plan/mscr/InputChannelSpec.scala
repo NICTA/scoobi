@@ -199,7 +199,7 @@ Processing
       val channel = floatingInputChannel(l1, Seq(pd1, pd2))
       channel.map("1", "stARt", channel.context)
       channel.context.keys must beDistinct
-      channel.context.values === Seq("START", "start")
+      channel.context.values.toSet === Set("START", "start")
     }
 
     eg := {
@@ -219,7 +219,7 @@ Processing
 
       val channel = gbkInputChannel(l1, Seq(gbk1, gbk2))
       channel.map("1", "stARt", channel.context)
-      channel.context.values === Seq("START now", "START later")
+      channel.context.values.toSet === Set("START now", "START later")
     }
 
     eg := {

@@ -80,7 +80,7 @@ object Source {
   private[scoobi]
   def read(source: Source, read: Any => Any = identity)(implicit sc: ScoobiConfiguration): Seq[Any] = {
     val vb = new VectorBuilder[Any]()
-    val job = new Job(new Configuration(sc.configuration))
+    val job = Compatibility.newJob(new Configuration(sc.configuration))
     val inputFormat = ReflectionUtils.newInstance(source.inputFormat, sc.configuration)
 
     job.setInputFormatClass(source.inputFormat)

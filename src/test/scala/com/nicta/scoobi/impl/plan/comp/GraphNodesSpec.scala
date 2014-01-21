@@ -48,11 +48,11 @@ class GraphNodesSpec extends UnitSpecification with AllExpectations {
     forall(Seq(l1, pd1, gbk1, pds1, mat1)) { n => root(n) ==== mat1 }
   }
   "the parents of a node are all its direct parents" >> new nodes {
-    (pd1 -> parents) ==== Vector(pds1, mat1)
-    (l1 -> parents)  ==== Vector(pd1, pds1, mat1)
+    (pd1 -> parents) ==== Vector(gbk1, pds1, mat1)
+    (l1 -> parents)  ==== Vector(pd1, gbk1, pds1, mat1)
   }
   "the descendents of a node is the recursive list of all children" >> new nodes {
-    (mat1 -> descendents) ==== Vector(pds1, gbk1, pd1, pds1.env, l1, pd1.env)
+    (mat1 -> descendents) ==== Vector(pds1, pd1, gbk1, pds1.env, l1, pd1.env)
   }
   "the uses of a node are all the nodes having this node in their children" >> new nodes {
     (pds1 -> uses) ==== Set(mat1)

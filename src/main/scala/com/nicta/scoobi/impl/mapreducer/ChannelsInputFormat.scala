@@ -50,7 +50,7 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
        * MapReduce job didn't produce any file (@see issue #60)
        */
       try {
-        format.getSplits(new Job(configuration)).map { (pathSplit: InputSplit) =>
+        format.getSplits(Compatibility.newJob(configuration)).map { (pathSplit: InputSplit) =>
           new TaggedInputSplit(configuration, channel, pathSplit, format.getClass)
         }
       } catch {
@@ -145,7 +145,7 @@ object ChannelsInputFormat {
    * Also include the properties which might have been modified by the source (like the DistributedCache files)
    */
   private def configureSource(source: Source)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
-    val job = new Job(new Configuration(conf))
+    val job = Compatibility.newJob(new Configuration(conf))
     source.inputConfigure(job)
 
     Option(job.getConfiguration.get(cache.CACHE_FILES)).foreach { files =>

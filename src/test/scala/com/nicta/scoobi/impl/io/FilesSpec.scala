@@ -35,7 +35,7 @@ class FilesSpec extends UnitSpecification {
 
     fs.createNewFile(path)
 
-    Files.globStatus(path) must_== Seq[FileStatus](path)
+    Files.globStatus(basePath).map(_.getPath.getName) must contain(path.getName)
   }
 
   "Getting FileStatus on multiple files in single dir." in new CommonFS {
@@ -112,7 +112,7 @@ trait CommonFS extends After {
 
   implicit def toFileStatus(path: Path): FileStatus = fs.getFileStatus(path)
 
-  def createEmptyFiles(paths: Path*) = paths foreach { fs.createNewFile(_) }
+  def createEmptyFiles(paths: Path*) = paths foreach fs.createNewFile
 
   def pathExists(path: Path) = tryOrElse {
     FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*")).length > 0

@@ -82,7 +82,7 @@ public class TweetCount {
  public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
 
-    Job job = new Job(conf, "tweetcount");
+    Job job = Job.getInstance(conf, "tweetcount");
 
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(IntWritable.class);

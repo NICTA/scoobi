@@ -54,7 +54,7 @@ class ChannelOutputFormat(val context: TaskAttemptContext) {
      * the job thus supporting arbitrary output formats. */
     def mkTaskContext = {
       val conf = context.getConfiguration
-      val job = new Job(new Configuration(conf))
+      val job = Compatibility.newJob(new Configuration(conf))
 
       /* Set standard properties. */
       val format = conf.getClass(ChannelOutputFormat.formatProperty(tag, sinkId), null)
@@ -115,7 +115,7 @@ object ChannelOutputFormat {
     conf.set(keyClassProperty  (tag, sink.id), sink.outputKeyClass.getName)
     conf.set(valueClassProperty(tag, sink.id), sink.outputValueClass.getName)
 
-    val jobCopy = new Job(new Configuration(conf))
+    val jobCopy = Compatibility.newJob(new Configuration(conf))
     sink.outputConfigure(jobCopy)
     Option(jobCopy.getConfiguration.get(cache.CACHE_FILES)).foreach { files =>
       conf.addValues(cache.CACHE_FILES, files.split(",").toSeq:_*)

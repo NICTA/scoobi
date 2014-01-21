@@ -34,7 +34,7 @@ import org.kiama.rewriting.Rewriter._
 import CompNodeData._
 
 trait CompNodeData extends Data with ScalaCheckMatchers with CompNodeFactory { outer =>
-  override implicit def defaultParameters = Parameters(1000, 1, 5f, 8, 1)
+  override implicit def defaultParameters = Parameters(100, 1, 5f, 8, 1)
 
   /**
    * Arbitrary instance for a CompNode
@@ -87,7 +87,7 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CompNodeFactory { o
 /** this trait allows to set the arguments from the command line */
 trait CompNodeDataWithArgumens extends CompNodeData with CommandLineArguments {
   override implicit def defaultParameters = Parameters(
-    arguments.commandLine.int("mintestsok").                    getOrElse(1000),
+    arguments.commandLine.int("mintestsok").                    getOrElse(100),
     arguments.commandLine.int("minsize").                       getOrElse(1),
     arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),
     arguments.commandLine.int("maxsize").                       getOrElse(8),

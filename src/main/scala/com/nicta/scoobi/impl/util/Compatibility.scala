@@ -41,6 +41,8 @@ object Compatibility {
                         taskAttemptContextConstructor: Constructor[_],
                         mapContextConstructor: Constructor[_],
                         jobContextConstructor: Constructor[_],
+                        jobConstructor1:       Constructor[_],
+                        jobConstructor2:       Constructor[_],
                         sequenceFileReaderConstructor: Constructor[_],
                         isDirectory: Method,
                         getConfiguration: Method)
@@ -68,6 +70,10 @@ object Compatibility {
         else       "org.apache.hadoop.mapreduce.JobContext")
       val jobContextConstructor = jobContextClass.getConstructor(classOf[Configuration], classOf[JobID])
 
+      val jobClass = Class.forName("org.apache.hadoop.mapreduce.Job")
+      val jobConstructor1 = jobClass.getConstructor(classOf[Configuration])
+      val jobConstructor2 = jobClass.getConstructor(classOf[Configuration], classOf[String])
+
       val isDirectory =
         if (useCdh4) Class.forName("org.apache.hadoop.fs.FileStatus").getMethod("isDirectory")
         else Class.forName("org.apache.hadoop.fs.FileStatus").getMethod("isDir")
@@ -77,7 +83,9 @@ object Compatibility {
       val getConfiguration = Class.forName("org.apache.hadoop.mapreduce.JobContext").getMethod("getConfiguration")
 
 
-      CDH4(useCdh4, taskAttemptContextConstructor, mapContextConstructor, jobContextConstructor, sequenceFileReaderConstructor, isDirectory, getConfiguration)
+      CDH4(useCdh4, taskAttemptContextConstructor, mapContextConstructor, jobContextConstructor,
+           jobConstructor1, jobConstructor2,
+           sequenceFileReaderConstructor, isDirectory, getConfiguration)
     } catch { case e: Throwable => throw new IllegalArgumentException("Error while trying to instantiate specific instances for CDH"+(if (useCdh4) "4" else "3")+": "+e.getMessage, e) }
   }
 
@@ -100,10 +108,26 @@ object Compatibility {
 
   /**
    * Creates JobContext from a configuration and jobId using the correct
-   * constructor for based on the hadoop version.
+   * constructor based on the hadoop version.
    */
   def newJobContext(conf: Configuration, id: JobID): JobContext =
     newInstance(cdh4.jobContextConstructor, conf, id).asInstanceOf[JobContext]
+
+  /**
+   * Creates a new Job from a configuration and jobId using the correct
+   * constructor based on the hadoop version.
+   */
+  def newJob(conf: Configuration): Job =
+    if (useHadoop2) hadoop2.newJob(conf)
+    else            newInstance(cdh4.jobConstructor2, conf).asInstanceOf[Job]
+
+  /**
+   * Creates a new Job from a configuration and jobId using the correct
+   * constructor based on the hadoop version.
+   */
+  def newJob(conf: Configuration, name: String): Job =
+    if (useHadoop2) hadoop2.newJob(conf, name)
+    else            newInstance(cdh4.jobConstructor2, conf, name).asInstanceOf[Job]
 
   /**
    * Creates MapContext from a JobConf and jobId using the correct
@@ -123,7 +147,19 @@ object Compatibility {
   lazy val useHadoop2 = try { Class.forName("org.apache.hadoop.mapreduce.filecache.DistributedCache"); logger.debug("Hadoop 2.0 compatibility class is being used"); true }
   catch { case _: Throwable => logger.debug("Hadoop < 2.0 compatibility class is being used"); false }
 
-  case class Hadoop2(cache: HadoopDistributedCache)
+  case class Hadoop2(cache: HadoopDistributedCache) {
+    lazy val jobGetInstanceMethod1 = getMethod("org.apache.hadoop.mapreduce.Job", "getInstance", types = Seq("org.apache.hadoop.conf.Configuration"))
+    lazy val jobGetInstanceMethod2 = getMethod("org.apache.hadoop.mapreduce.Job", "getInstance", types = Seq("org.apache.hadoop.conf.Configuration", "java.lang.String"))
+
+    def newJob(conf: Configuration): Job = invokeStatic(jobGetInstanceMethod1, conf).asInstanceOf[Job]
+    def newJob(conf: Configuration, name: String): Job = invokeStatic(jobGetInstanceMethod2, conf, name).asInstanceOf[Job]
+
+    private def getMethod(hadoop2Class: String, methodName: String, types: Seq[String] = Seq()) =
+      Class.forName(hadoop2Class).getMethods.
+        find(m => (m.getName == methodName) && (m.getParameterTypes.map(_.getName).toSeq == types)).
+        getOrElse(throw new Exception(s"method $methodName not found in class $hadoop2Class"))
+
+  }
 
   case class HadoopDistributedCache(useHadoop2: Boolean) {
     lazy val CACHE_FILES = if (useHadoop2) "mapreduce.job.cache.files" else "mapred.cache.files"

@@ -52,9 +52,10 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
     val l1 = load
     val (pd1, pd2) = (pd(l1).addSink(s1), pd(l1).addSink(s2))
     val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
-    val mt1 = mt(pd(gbk1, gbk2).addSink(s3))
+    val pd3 = pd(gbk1, gbk2).addSink(s3)
+    val mt1 = mt(pd3)
 
-    allSinks(mt1).toSet === Set(s1, s2, s3, gbk1.bridgeStore ,gbk2.bridgeStore)
+    allSinks(mt1).toSet === Set(s1, s2, s3, pd1.bridgeStore, pd2.bridgeStore, pd3.bridgeStore, gbk1.bridgeStore ,gbk2.bridgeStore)
   }
 
   "it is possible to get all the nodes which use a given node as an environment" >> new factory {
@@ -93,10 +94,12 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
   def configuration = ScoobiConfigurationImpl.unitEnv(new Configuration)
 }
 
-trait nodes extends factory {
+trait nodes extends factory with org.specs2.mutable.Before {
   lazy val l1   = load
   lazy val pd1  = pd(l1)
   lazy val gbk1 = gbk(pd1)
-  lazy val pds1 = pd(gbk1, pd1)
+  lazy val pds1 = pd(pd1, gbk1)
   lazy val mat1 = mt(pds1)
+
+  def before = mat1
 }

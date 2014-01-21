@@ -21,7 +21,7 @@ import core._
 import plan.comp._
 import org.apache.commons.logging.Log
 import monitor.Loggable._
-import org.apache.hadoop.mapreduce.{TaskAttemptID, Job}
+import org.apache.hadoop.mapreduce.{TaskType, TaskAttemptID, Job}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import ScoobiConfigurationImpl._
@@ -84,7 +84,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
     sinks.foreach(_.outputSetup(sc))
     sinks.foreach { sink =>
-      val job = new Job(new Configuration(sc.configuration))
+      val job = Compatibility.newJob(new Configuration(sc.configuration))
 
       val outputFormat = ReflectionUtils.newInstance(sink.outputFormat, job.getConfiguration)
 
@@ -102,7 +102,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
       sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
 
-      val taskContext = Compatibility.newTaskAttemptContext(job.getConfiguration, new TaskAttemptID)
+      val taskContext = Compatibility.newTaskAttemptContext(job.getConfiguration, new TaskAttemptID("", 0, TaskType.JOB_CLEANUP, 0, 0))
       val rw = outputFormat.getRecordWriter(taskContext)
       val oc = outputFormat.getOutputCommitter(taskContext)
 
