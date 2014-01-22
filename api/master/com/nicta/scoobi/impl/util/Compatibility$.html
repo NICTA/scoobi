@@ -296,7 +296,7 @@ hadoop 1.x and 2.x via reflection.
         <span class="name">getConfiguration</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.JobContext">JobContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Invokes getConfiguration() on JobContext.</p><div class="fullcomment"><div class="comment cmt"><p>Invokes getConfiguration() on JobContext. Works with both
+      <p class="shortcomment cmt">Invokes Configuration() on JobContext.</p><div class="fullcomment"><div class="comment cmt"><p>Invokes Configuration() on JobContext. Works with both
 hadoop 1 and 2.
 </p></div></div>
     </li><li name="com.nicta.scoobi.impl.util.Compatibility#hadoop2" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -364,6 +364,34 @@ hadoop 1 and 2.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.Compatibility#newJob" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="newJob(conf:org.apache.hadoop.conf.Configuration,name:String):org.apache.hadoop.mapreduce.Job"></a>
+      <a id="newJob(Configuration,String):Job"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">newJob</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.Job">Job</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates a new Job from a configuration and jobId using the correct
+constructor based on the hadoop version.</p>
+    </li><li name="com.nicta.scoobi.impl.util.Compatibility#newJob" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="newJob(conf:org.apache.hadoop.conf.Configuration):org.apache.hadoop.mapreduce.Job"></a>
+      <a id="newJob(Configuration):Job"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">newJob</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.Job">Job</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates a new Job from a configuration and jobId using the correct
+constructor based on the hadoop version.</p>
     </li><li name="com.nicta.scoobi.impl.util.Compatibility#newJobContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="newJobContext(conf:org.apache.hadoop.conf.Configuration,id:org.apache.hadoop.mapreduce.JobID):org.apache.hadoop.mapreduce.JobContext"></a>
       <a id="newJobContext(Configuration,JobID):JobContext"></a>
@@ -377,7 +405,7 @@ hadoop 1 and 2.
       </span>
       </h4>
       <p class="shortcomment cmt">Creates JobContext from a configuration and jobId using the correct
-constructor for based on the hadoop version.</p>
+constructor based on the hadoop version.</p>
     </li><li name="com.nicta.scoobi.impl.util.Compatibility#newMapContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="newMapContext(conf:org.apache.hadoop.conf.Configuration,id:org.apache.hadoop.mapreduce.TaskAttemptID,reader:org.apache.hadoop.mapreduce.RecordReader[_,_],writer:org.apache.hadoop.mapreduce.RecordWriter[_,_],outputCommitter:org.apache.hadoop.mapreduce.OutputCommitter,reporter:org.apache.hadoop.mapreduce.StatusReporter,split:org.apache.hadoop.mapreduce.InputSplit):org.apache.hadoop.mapreduce.MapContext[Any,Any,Any,Any]"></a>
       <a id="newMapContext(Configuration,TaskAttemptID,RecordReader[_,_],RecordWriter[_,_],OutputCommitter,StatusReporter,InputSplit):MapContext[Any,Any,Any,Any]"></a>

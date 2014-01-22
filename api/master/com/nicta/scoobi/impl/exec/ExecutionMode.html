@@ -901,7 +901,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RewriterCore</dd></dl></div>
     </li><li name="org.kiama.rewriting.RewriterCore#childSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="childSeq[CC[U]&lt;:Seq[U]](s:org.kiama.rewriting.Strategy,i:Int,t:CC[Any])(implicitcbf:scala.collection.generic.CanBuildFrom[CC[Any],Any,CC[Any]]):Option[CC[Any]]"></a>
+      <a id="childSeq[CC[U]&lt;:scala.collection.immutable.Seq[U]](s:org.kiama.rewriting.Strategy,i:Int,t:CC[Any])(implicitcbf:scala.collection.generic.CanBuildFrom[CC[Any],Any,CC[Any]]):Option[CC[Any]]"></a>
       <a id="childSeq[CC[U]&lt;:Seq[U]](Strategy,Int,CC[Any])(CanBuildFrom[CC[Any],Any,CC[Any]]):Option[CC[Any]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -909,7 +909,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">childSeq</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="U">U</span>]</span> &lt;: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC.U">U</span>]</span>]</span><span class="params">(<span name="s">s: <span class="extype" name="org.kiama.rewriting.Strategy">Strategy</span></span>, <span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="t">t: <span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>], <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>]]</span>
+        <span class="name">childSeq</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="U">U</span>]</span> &lt;: <span class="extype" name="scala.collection.immutable.Seq">Seq</span>[<span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC.U">U</span>]</span>]</span><span class="params">(<span name="s">s: <span class="extype" name="org.kiama.rewriting.Strategy">Strategy</span></span>, <span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="t">t: <span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>], <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.kiama.rewriting.RewriterCore.childSeq.CC">CC</span>[<span class="extype" name="scala.Any">Any</span>]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RewriterCore</dd></dl></div>
@@ -929,34 +929,34 @@
 as a tree. This is a way to avoid conflicts if we have 2 processes trying to initialise the same graph
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
     </li><li name="org.kiama.attribution.AttributionCore#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="circular[T&lt;:AnyRef,U](name:String,init:U)(f:T=&gt;U):T=&gt;U"></a>
-      <a id="circular[T&lt;:AnyRef,U](String,U)((T)⇒U):(T)⇒U"></a>
+      <a id="circular[T&lt;:AnyRef,U](name:String,init:U)(f:T=&gt;U):AttributionCore.this.CircularAttribute[T,U]"></a>
+      <a id="circular[T&lt;:AnyRef,U](String,U)((T)⇒U):CircularAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>
+        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: <a href="#CircularAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,U]" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.CircularAttribute">CircularAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
     </li><li name="org.kiama.attribution.AttributionCore#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="circular[T&lt;:AnyRef,U](init:U)(f:T=&gt;U):T=&gt;U"></a>
-      <a id="circular[T&lt;:AnyRef,U](U)((T)⇒U):(T)⇒U"></a>
+      <a id="circular[T&lt;:AnyRef,U](init:U)(f:T=&gt;U):AttributionCore.this.CircularAttribute[T,U]"></a>
+      <a id="circular[T&lt;:AnyRef,U](U)((T)⇒U):CircularAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>
+        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: <a href="#CircularAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,U]" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.CircularAttribute">CircularAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd><dt>Annotations</dt><dd>
                 <span class="name">@macroImpl</span><span class="args">(<span>
       
-      <span class="defval" name="`macro`(&quot;versionFormat&quot; = 1, &quot;className&quot; = &quot;org.kiama.attribution.AttributionCommonMacros&quot;, &quot;methodName&quot; = &quot;circularMacro&quot;, &quot;signature&quot; = List(-1, -1, -1))[T, U]">...</span>
+      <span class="defval" name="`macro`(&quot;versionFormat&quot; = 1, &quot;className&quot; = &quot;org.kiama.attribution.AttributionMacros&quot;, &quot;methodName&quot; = &quot;circularMacro&quot;, &quot;signature&quot; = List(-1, -1, -1))[T, U, AttributionCore.this.CircularAttribute[T,U]]">...</span>
     </span>)</span>
               
         </dd></dl></div>
@@ -1372,15 +1372,15 @@ They are all the recursive children reachable from this node
               
         </dd></dl></div>
     </li><li name="org.kiama.rewriting.RewriterCore#dup" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="dup[T&lt;:Product](t:T,children:Array[AnyRef]):T"></a>
-      <a id="dup[T&lt;:Product](T,Array[AnyRef]):T"></a>
+      <a id="dup[T&lt;:Product](t:T,children:scala.collection.immutable.Seq[AnyRef]):T"></a>
+      <a id="dup[T&lt;:Product](T,Seq[AnyRef]):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dup</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="scala.Product">Product</span></span>]</span><span class="params">(<span name="t">t: <span class="extype" name="org.kiama.rewriting.RewriterCore.dup.T">T</span></span>, <span name="children">children: <span class="extype" name="scala.Array">Array</span>[<a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>]</span>)</span><span class="result">: <span class="extype" name="org.kiama.rewriting.RewriterCore.dup.T">T</span></span>
+        <span class="name">dup</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="scala.Product">Product</span></span>]</span><span class="params">(<span name="t">t: <span class="extype" name="org.kiama.rewriting.RewriterCore.dup.T">T</span></span>, <span name="children">children: <span class="extype" name="scala.collection.immutable.Seq">Seq</span>[<a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>]</span>)</span><span class="result">: <span class="extype" name="org.kiama.rewriting.RewriterCore.dup.T">T</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>RewriterCore</dd></dl></div>
@@ -2802,7 +2802,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/Optimiser.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Optimiser">Optimiser</a></dd></dl></div>
     </li><li name="org.kiama.rewriting.RewriterCore#para" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="para[T](f:(Any,Seq[T])=&gt;T):Any=&gt;T"></a>
+      <a id="para[T](f:(Any,scala.collection.immutable.Seq[T])=&gt;T):Any=&gt;T"></a>
       <a id="para[T]((Any,Seq[T])⇒T):(Any)⇒T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2810,7 +2810,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">para</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Any">Any</span>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.kiama.rewriting.RewriterCore.para.T">T</span>]) ⇒ <span class="extype" name="org.kiama.rewriting.RewriterCore.para.T">T</span></span>)</span><span class="result">: (<span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="org.kiama.rewriting.RewriterCore.para.T">T</span></span>
+        <span class="name">para</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.collection.immutable.Seq">Seq</span>[<span class="extype" name="org.kiama.rewriting.RewriterCore.para.T">T</span>]) ⇒ <span class="extype" name="org.kiama.rewriting.RewriterCore.para.T">T</span></span>)</span><span class="result">: (<span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="org.kiama.rewriting.RewriterCore.para.T">T</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RewriterCore</dd></dl></div>
