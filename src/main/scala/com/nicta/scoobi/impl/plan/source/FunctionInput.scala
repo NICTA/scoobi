@@ -41,7 +41,7 @@ import Configurations._
 import impl.collection.Seqs._
 import impl.collection.FunctionBoundedLinearSeq
 import plan.DListImpl
-import util.{DistCache}
+import com.nicta.scoobi.impl.util.{Compatibility, DistCache}
 import FunctionInput._
 
 /** Smart function for creating a distributed lists from a Scala function. */
@@ -96,11 +96,11 @@ class FunctionInputFormat[A] extends InputFormat[NullWritable, A] {
     new FunctionRecordReader[A](split.asInstanceOf[FunctionInputSplit[A]])
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
-    val conf = context.getConfiguration
-    val n = context.getConfiguration.getInt(LengthProperty, 0)
-    val id = context.getConfiguration.getInt(IdProperty, 0)
+    val conf = Compatibility.getConfiguration(context)
+    val n    = conf.getInt(LengthProperty, 0)
+    val id   = conf.getInt(IdProperty, 0)
 
-    val f = DistCache.pullObject[Int => A](context.getConfiguration, functionProperty(id)).getOrElse((i:Int) => sys.error("no function found in the distributed cache for: "+functionProperty(id)))
+    val f = DistCache.pullObject[Int => A](conf, functionProperty(id)).getOrElse((i:Int) => sys.error("no function found in the distributed cache for: "+functionProperty(id)))
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
     val splitSize = n / numSplitsHint

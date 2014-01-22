@@ -171,12 +171,12 @@ object ChannelsInputFormat {
 
   /** Get a map of all the input formats per channel id. */
   private def getInputFormats(context: JobContext): Map[Int, (InputFormat[_,_], Configuration)] = {
-    val conf = context.getConfiguration
+    val conf = Compatibility.getConfiguration(context)
     val Entry = """(.*);(.*)""".r
 
     conf.get(INPUT_FORMAT_PROPERTY).split(",").toList.map {
       case Entry(ch, infmt) => {
-        val configuration = extractChannelConfiguration(context.getConfiguration, ch.toInt)
+        val configuration = extractChannelConfiguration(conf, ch.toInt)
         (ch.toInt, (ReflectionUtils.newInstance(conf.getClassLoader.loadClass(infmt), configuration).asInstanceOf[InputFormat[_,_]], configuration))
       }
     }.toMap

@@ -40,7 +40,7 @@ import impl._
 import Configurations._
 import impl.collection.Seqs._
 import plan.DListImpl
-import com.nicta.scoobi.impl.util.{Serialiser, DistCache}
+import com.nicta.scoobi.impl.util.{Compatibility, Serialiser, DistCache}
 import SeqInput._
 import WireFormat._
 import com.nicta.scoobi.impl.rtt.Configured
@@ -118,12 +118,12 @@ class SeqInputFormat[A] extends InputFormat[NullWritable, A] {
     new SeqRecordReader[A](split.asInstanceOf[SeqInputSplit[A]])
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
-    val conf = context.getConfiguration
-    val n = context.getConfiguration.getInt(LengthProperty, 0)
-    val id = context.getConfiguration.getInt(IdProperty, 0)
+    val conf = Compatibility.getConfiguration(context)
+    val n    = conf.getInt(LengthProperty, 0)
+    val id   = conf.getInt(IdProperty, 0)
 
-    val seq = DistCache.pullObject[Seq[A]](context.getConfiguration, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
-    val wf  = DistCache.pullObject[WireFormat[A]](context.getConfiguration, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
+    val seq = DistCache.pullObject[Seq[A]](conf, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
+    val wf  = DistCache.pullObject[WireFormat[A]](conf, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
     val splitSize = {
@@ -238,12 +238,12 @@ class LazySeqInputFormat[A] extends InputFormat[NullWritable, A] {
     new SeqRecordReader[A](split.asInstanceOf[SeqInputSplit[A]])
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
-    val conf = context.getConfiguration
-    val n = context.getConfiguration.getInt(SeqSizeProperty, 1)
-    val id = context.getConfiguration.getInt(IdProperty, 0)
+    val conf = Compatibility.getConfiguration(context)
+    val n    = conf.getInt(SeqSizeProperty, 1)
+    val id   = conf.getInt(IdProperty, 0)
 
-    val seq = DistCache.pullObject[() => Seq[A]](context.getConfiguration, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); () => Seq()})
-    val wf  = DistCache.pullObject[WireFormat[A]](context.getConfiguration, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
+    val seq = DistCache.pullObject[() => Seq[A]](conf, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); () => Seq()})
+    val wf  = DistCache.pullObject[WireFormat[A]](conf, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
     val splitSize = n / numSplitsHint
