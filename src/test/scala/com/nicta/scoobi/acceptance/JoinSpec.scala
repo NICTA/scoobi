@@ -43,61 +43,61 @@ class JoinSpec extends NictaSimpleJobs {
   def departmentsByIdString(implicit sc: SC) = departments.by(_.id).map { case (k, v) => (k.toString, v) }
 
   "Inner join" >> { implicit sc: SC =>
-    (employeesByDepartmentId join departmentsById).run.mkString === Seq(
+    (employeesByDepartmentId join departmentsById).run.map(_.toString).toSet === Set(
       "(31,(Rafferty,Sales))",
       "(33,(Jones,Engineering))",
       "(33,(Steinberg,Engineering))",
       "(34,(Robinson,Clerical))",
-      "(34,(Smith,Clerical))").mkString
+      "(34,(Smith,Clerical))")
   }
 
   "Left join" >> { implicit sc: SC =>
-    (employeesByDepartmentId joinLeft departmentsById).run.mkString === Seq(
+    (employeesByDepartmentId joinLeft departmentsById).run.map(_.toString).toSet === Set(
       "(-1,(John,None))",
       "(31,(Rafferty,Some(Sales)))",
       "(33,(Jones,Some(Engineering)))",
       "(33,(Steinberg,Some(Engineering)))",
       "(34,(Robinson,Some(Clerical)))",
-      "(34,(Smith,Some(Clerical)))").mkString
+      "(34,(Smith,Some(Clerical)))")
   }
 
   "Right join" >> { implicit sc: SC =>
-    (employeesByDepartmentId joinRight departmentsById).run.mkString === Seq(
+    (employeesByDepartmentId joinRight departmentsById).run.map(_.toString).toSet === Set(
       "(31,(Some(Rafferty),Sales))",
       "(33,(Some(Jones),Engineering))",
       "(33,(Some(Steinberg),Engineering))",
       "(34,(Some(Robinson),Clerical))",
       "(34,(Some(Smith),Clerical))",
-      "(35,(None,Marketing))").mkString
+      "(35,(None,Marketing))")
   }
 
   "Full outer join" >> { implicit sc: SC =>
-    (employeesByDepartmentId joinFullOuter departmentsById).run.mkString === Seq(
+    (employeesByDepartmentId joinFullOuter departmentsById).run.map(_.toString).toSet === Set(
       "(-1,(Some(John),None))",
       "(31,(Some(Rafferty),Some(Sales)))",
       "(33,(Some(Jones),Some(Engineering)))",
       "(33,(Some(Steinberg),Some(Engineering)))",
       "(34,(Some(Robinson),Some(Clerical)))",
       "(34,(Some(Smith),Some(Clerical)))",
-      "(35,(None,Some(Marketing)))").mkString
+      "(35,(None,Some(Marketing)))")
   }
 
   "Block inner join" >> { implicit sc: SC =>
-    (employeesByDepartmentId blockJoin departmentsById).run.map(_.toString).sorted.mkString === Seq(
+    (employeesByDepartmentId blockJoin departmentsById).run.map(_.toString).toSet === Set(
       "(31,(Rafferty,Sales))",
       "(33,(Jones,Engineering))",
       "(33,(Steinberg,Engineering))",
       "(34,(Robinson,Clerical))",
-      "(34,(Smith,Clerical))").sorted.mkString
+      "(34,(Smith,Clerical))")
   }
 
   "Block inner join with 3 replications" >> { implicit sc: SC =>
-    ((employeesByDepartmentId replicateBy 3) blockJoin departmentsById).run.map(_.toString).sorted.mkString === Seq(
+    ((employeesByDepartmentId replicateBy 3) blockJoin departmentsById).run.map(_.toString).toSet === Set(
       "(31,(Rafferty,Sales))",
       "(33,(Jones,Engineering))",
       "(33,(Steinberg,Engineering))",
       "(34,(Robinson,Clerical))",
-      "(34,(Smith,Clerical))").sorted.mkString
+      "(34,(Smith,Clerical))")
   }
 }
 
