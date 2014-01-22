@@ -37,7 +37,7 @@ object dependencies {
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
-  def hadoop(version: String, hadoopVersion: String = "2.2.0.2.0.6.0-101") =
+  def hadoop(version: String, hadoopVersion: String = "2.2.0") =
     if (version.contains("hadoop2"))   Seq("org.apache.hadoop" % "hadoop-common"                     % hadoopVersion,
                                            "org.apache.hadoop" % "hadoop-hdfs"                       % hadoopVersion,
                                            "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % hadoopVersion,
@@ -62,12 +62,12 @@ object dependencies {
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
   def specs2(specs2Version: String = "2.3.2") = Seq(
-    "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional",
-    "org.specs2"                        %% "specs2-mock"               % specs2Version      % "test",
-    "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      % "test",
-    "org.specs2"                        %% "specs2-junit"              % specs2Version      % "test",
-    "org.specs2"                        %% "specs2-html"               % specs2Version      % "test",
-    "org.specs2"                        %% "specs2-analysis"           % specs2Version      % "test")
+    "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional") ++ Seq(
+    "org.specs2"                        %% "specs2-mock"               % specs2Version      ,
+    "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      ,
+    "org.specs2"                        %% "specs2-junit"              % specs2Version      ,
+    "org.specs2"                        %% "specs2-html"               % specs2Version      ,
+    "org.specs2"                        %% "specs2-analysis"           % specs2Version      ).map(_ % "test")
 
   def repl = Seq(
     "org.scala-lang"                    %  "jline"                     % "2.10.2"
