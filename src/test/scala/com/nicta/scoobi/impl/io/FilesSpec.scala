@@ -24,18 +24,24 @@ import testing.mutable.UnitSpecification
 import control.Exceptions._
 
 class FilesSpec extends UnitSpecification {
-"IO Files methods.".endp
+  "IO Files methods.".endp
 
   "Getting FileStatus on non-existent Path returns an empty Seq." in new CommonFS {
     Files.globStatus(new Path("non-existent-path"))(conf) must_== Seq.empty
   }
 
-  "Getting FileStatus on Path, specified as a glob, which points to a single file." in new CommonFS {
+  "Getting FileStatus on Path, specified explicitly, which points to a single file." in new CommonFS {
     val path = createSpecBasePath("singleFile")
-
     fs.createNewFile(path)
 
     Files.globStatus(basePath).map(_.getPath.getName) must contain(path.getName)
+  }
+
+  "Getting FileStatus on Path, specified as a glob, which points to a single file." in new CommonFS {
+    val path = createSpecBasePath("singleFile.txt")
+    fs.createNewFile(path)
+
+    Files.globStatus(new Path(basePath, "*.txt")).map(_.getPath.getName) must contain(path.getName)
   }
 
   "Getting FileStatus on multiple files in single dir." in new CommonFS {
@@ -57,7 +63,7 @@ class FilesSpec extends UnitSpecification {
 
     createEmptyFiles(path1, path2, path3, path4)
 
-    Files.globStatus(new Path(basePath, "globDir1/*/*")) must_== Seq[FileStatus](path1, path2, path3, path4)
+    Files.globStatus(new Path(basePath, "globDir1/*/*/*")).map(_.getPath.getName) must_== Seq[FileStatus](path1, path2, path3, path4).map(_.getPath.getName)
   }
 
   "Path exists check on file Glob" in new CommonFS {

@@ -104,7 +104,11 @@ trait Files {
     /** Get a Set of FileStatus objects for a given Path specified as a glob */
   def globStatus(path: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit configuration: Configuration): Seq[FileStatus] =
     tryOrElse {
-      fileSystem(path).globStatus(new Path(path, "*"), pathFilter).toSeq
+      val pathToSearch =
+        if (path.toString.contains("*") || !fileSystem(path).isDirectory(path)) path
+        else                                                                    new Path(path, "*")
+
+      Option(fileSystem(path).globStatus(pathToSearch, pathFilter)).map(_.toSeq).getOrElse(Seq())
     }(Seq())
 
   @deprecated(message = "use globStatus instead", since = "0.7.3")
