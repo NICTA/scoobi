@@ -65,7 +65,13 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
       val layers = createMapReduceLayers(node).info("Executing layers", showLayers)
-      if (!showPlanOnly(sc)) layers.map(executeLayer(layers.map(_.mscrs.size).sum))
+      if (!showPlanOnly(sc)) {
+        val perLayerJobs = layers.map { _.mscrs.size }
+        val totalJobs = perLayerJobs.sum
+        val prevLayerJobs = (0 until perLayerJobs.size).map { i => perLayerJobs.slice(0, i).sum }
+        assert(prevLayerJobs.size == layers.size)
+        layers.zip(prevLayerJobs).foreach { case (layer, prevJobs) => executeLayer(prevJobs, totalJobs)(layer) }
+      }
     }
 
     def showLayers = (layers: Seq[Layer]) =>
@@ -104,19 +110,19 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
   }
 
-  private def executeLayer(totalMscrsNumber: Int): Layer => Unit =
+  private def executeLayer(prevLayersMscrs: Int, totalMscrsNumber: Int): Layer => Unit =
     attr { case layer =>
-      Execution(layer, totalMscrsNumber).execute
+      Execution(layer, prevLayersMscrs, totalMscrsNumber).execute
     }
 
   /**
    * Execution of a "layer" of Mscrs
    */
-  private case class Execution(layer: Layer, totalMscrsNumber: Int) {
+  private case class Execution(layer: Layer, prevLayersMscrs: Int, totalMscrsNumber: Int) {
 
     def execute {
       (s"Executing layer ${layer.id}\n"+layer).info
-      runMscrs(layer.mscrs, totalMscrsNumber)
+      runMscrs(layer.mscrs, prevLayersMscrs, totalMscrsNumber)
 
       layer.sinks.info("Layer sinks: ").foreach(markSinkAsFilled)
       ("===== END OF LAYER "+layer.id+" ======\n").info
@@ -128,10 +134,12 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
      * Only the execution part is done concurrently, not the configuration.
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
-    private def runMscrs(mscrs: Seq[Mscr], totalMscrsNumber: Int) {
+    private def runMscrs(mscrs: Seq[Mscr], prevLayersMscrs: Int, totalMscrsNumber: Int) {
       ("executing map reduce jobs"+mscrs.mkString("\n", "\n", "\n")).info
 
-      val configured = mscrs.toList.zipWithIndex.map { case (mscr, i) => configureMscr(i + 1, totalMscrsNumber)(mscr) }
+      val configured = mscrs.toList.zipWithIndex.map { case (mscr, i) =>
+        configureMscr(prevLayersMscrs + i + 1, totalMscrsNumber)(mscr)
+      }
 
       if (sc.concurrentJobs) {
         "executing the map reduce jobs concurrently".debug
