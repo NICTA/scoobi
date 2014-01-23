@@ -111,12 +111,19 @@ case class InMemoryMode() extends ExecutionMode {
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
-    val emitter = new EmitterWriter with NoScoobiJobContext { def write(v: Any) { vb += v } }
+    val emitter = new EmitterWriter with NoHeartbeat {
+      val counters = new org.apache.hadoop.mapreduce.Counters
+      def write(v: Any) { vb += v }
+      def incrementCounter(groupName: String, name: String, increment: Long): Unit =
+        counters.getGroup(groupName).findCounter(name).increment(increment)
+      def getCounter(groupName: String, name: String): Long = counters.getGroup(groupName).findCounter(name).getValue
+    }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).headOption.getOrElse(()))
     dofn.setupFunction(env)
     (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
     dofn.cleanupFunction(env, emitter)
+    sc.updateCounters(emitter.counters)
     vb.result.debug(_ => "computeParallelDo")
   }
 
