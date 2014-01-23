@@ -65,10 +65,13 @@ trait SequenceOutput {
    * to disk as the "value" component in a Sequence File.
    *  @deprecated(message="use list.valueToSequenceFile(...) instead", since="0.7.0")
    */
-  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) =
+  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false,
+                             check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) =
     dl.addSink(valueSchemaSequenceFile(path, overwrite, check, checkpoint))
 
-  def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) = {
+  def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false,
+                                 check: Sink.OutputCheck = Sink.defaultOutputCheck,
+                                 checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) = {
     val keyClass = classOf[NullWritable]
     val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
 
@@ -101,9 +104,7 @@ trait SequenceOutput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: convV.SeqType) = (convK.fromWritable(k), convV.fromWritable(v))
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
-    new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), expiryPolicy, checkpoint)) with SinkSource {
-      def toSource = new SeqSource(Seq(path), SequenceInput.defaultSequenceInputFormat, converter)
-    }
+    new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), expiryPolicy, checkpoint))
   }
 
   def sequenceSink[K <: Writable, V <: Writable](path: String, overwrite: Boolean = false,
@@ -117,9 +118,7 @@ trait SequenceOutput {
       def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (kv._1, kv._2)
     }
-    new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), expiryPolicy, checkpoint)) with SinkSource {
-      def toSource = new SeqSource(Seq(path), SequenceInput.defaultSequenceInputFormat, converter)
-    }
+    new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), expiryPolicy, checkpoint))
   }
 
 }
@@ -134,11 +133,13 @@ case class SeqSink[K, V, B](path: String,
                             overwrite: Boolean,
                             check: Sink.OutputCheck = Sink.defaultOutputCheck,
                             checkpoint: Option[Checkpoint] = None,
-                            compression: Option[Compression] = None) extends DataSink[K, V, B] {
+                            compression: Option[Compression] = None) extends DataSink[K, V, B] with SinkSource {
 
   private lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
 
   protected val output = new Path(path)
+
+  def toSource = new SeqSource(Seq(path), SequenceInput.defaultSequenceInputFormat, outputConverter)
 
   def outputFormat(implicit sc: ScoobiConfiguration) = classOf[SequenceFileOutputFormat[K, V]]
   def outputKeyClass(implicit sc: ScoobiConfiguration) = keyClass
