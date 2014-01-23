@@ -112,18 +112,19 @@ case class InMemoryMode() extends ExecutionMode {
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
     val emitter = new EmitterWriter with NoHeartbeat {
-      val counters = new org.apache.hadoop.mapreduce.Counters
       def write(v: Any) { vb += v }
+
       def incrementCounter(groupName: String, name: String, increment: Long): Unit =
-        counters.getGroup(groupName).findCounter(name).increment(increment)
-      def getCounter(groupName: String, name: String): Long = counters.getGroup(groupName).findCounter(name).getValue
+        sc.counters.getGroup(groupName).findCounter(name).increment(increment)
+
+      def getCounter(groupName: String, name: String): Long =
+        sc.counters.getGroup(groupName).findCounter(name).getValue
     }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).headOption.getOrElse(()))
     dofn.setupFunction(env)
     (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
     dofn.cleanupFunction(env, emitter)
-    sc.updateCounters(emitter.counters)
     vb.result.debug(_ => "computeParallelDo")
   }
 
@@ -133,7 +134,7 @@ case class InMemoryMode() extends ExecutionMode {
 
     /* Partitioning */
     val partitions: IndexedSeq[Vector[(Any, Any)]] = {
-      val numPart = 10    // TODO - set this based on input size? or vary it randomly?
+      val numPart = sc.configuration.getInt("mapreduce.job.reduces", 1)
       val vbs = IndexedSeq.fill(numPart)(new VectorBuilder[(Any, Any)]())
       in foreach { case kv @ (k, _) =>
         val p = gpk.partitionKey(k, numPart)
