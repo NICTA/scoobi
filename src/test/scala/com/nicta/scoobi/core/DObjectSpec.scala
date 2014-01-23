@@ -16,14 +16,14 @@
 package com.nicta.scoobi
 package core
 
-import testing.{InputStringTestFile, TestFiles}
+import com.nicta.scoobi.testing.{TempFiles, InputStringTestFile, TestFiles}
 import testing.mutable.NictaSimpleJobs
 import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
-import org.specs2.matcher.TerminationMatchers
+import org.specs2.matcher.{FileMatchers, TerminationMatchers}
 
-class DObjectSpec extends NictaSimpleJobs with TerminationMatchers {
+class DObjectSpec extends NictaSimpleJobs with TerminationMatchers with FileMatchers {
 
   tag("issue 113")
   "it must be possible to take the minimum and the maximum of a list" >> { implicit sc: SC =>
@@ -59,5 +59,9 @@ class DObjectSpec extends NictaSimpleJobs with TerminationMatchers {
     DObject((1 to 100000000).toStream.toSeq).run must terminate(sleep = 5.seconds)
   }
 
-
+  "A DObject can be persisted even if not computed from a DList" >> { implicit sc: ScoobiConfiguration =>
+    val path = TempFiles.createTempFilePath("test")
+    DObject(1).toTextFile(path).persist
+    path.pp must beAnExistingPath
+  }
 }
