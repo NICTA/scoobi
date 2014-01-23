@@ -31,7 +31,7 @@ trait Grouping[K] extends KeyGrouping {
   private[scoobi] def groupKey(k1: Any, k2: Any)     = groupCompare(k1.asInstanceOf[K], k2.asInstanceOf[K])
 
   /** Specifies how key-values are partitioned among Reducer tasks. */
-  def partition(key: K, num: Int): Int = if (num == 0) 0 else ((key.hashCode & Int.MaxValue) % num)
+  def partition(key: K, num: Int): Int = if (num == 0) 0 else (key.hashCode & Int.MaxValue) % num
 
   /** Specifies the order in which grouped values are presented to a Reducer
    * task, for a given partition. */
@@ -43,11 +43,11 @@ trait Grouping[K] extends KeyGrouping {
 
   /** Interface to `scalaz.Order` on `sortCompare` */
   def sortOrder: Order[K] =
-    Order.order(sortCompare(_, _))
+    Order.order(sortCompare)
 
   /** Interface to `scalaz.Order` on `groupCompare` */
   def groupOrder: Order[K] =
-    Order.order(groupCompare(_, _))
+    Order.order(groupCompare)
 
   /** Interface to `scala.Ordering` on `sortCompare` */
   def sortOrdering: Ordering[K] =
