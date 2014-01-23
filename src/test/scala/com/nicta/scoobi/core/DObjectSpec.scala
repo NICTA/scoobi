@@ -20,6 +20,7 @@ import com.nicta.scoobi.testing.{TempFiles, InputStringTestFile, TestFiles}
 import testing.mutable.NictaSimpleJobs
 import Scoobi._
 import impl.plan.comp.CompNodeData
+import impl.io._
 import CompNodeData._
 import org.specs2.matcher.{FileMatchers, TerminationMatchers}
 
@@ -60,8 +61,8 @@ class DObjectSpec extends NictaSimpleJobs with TerminationMatchers with FileMatc
   }
 
   "A DObject can be persisted even if not computed from a DList" >> { implicit sc: ScoobiConfiguration =>
-    val path = TempFiles.createTempFilePath("test")
-    DObject(1).toTextFile(path).persist
-    path.pp must beAnExistingPath
+    val path = TestFiles.path(TestFiles.createTempFile("test"))
+    DObject(1).toTextFile(path, overwrite = true).persist
+    Files.pathExists(path)(sc.configuration) must beTrue
   }
 }
