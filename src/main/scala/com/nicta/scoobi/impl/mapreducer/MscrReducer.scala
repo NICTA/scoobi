@@ -50,9 +50,20 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
     /* Get the right output value type and output directory for the current channel,
      * specified by the key's tag. */
     outputChannels.channel(key.tag) foreach { channel =>
-    /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
-      val untaggedValues = new UntaggedValues(key.tag, new java.lang.Iterable[TaggedValue] { def iterator = values.iterator })
+      var valuesNumber = 0
+
+      /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
+      val untaggedValues = new UntaggedValues(key.tag, new java.lang.Iterable[TaggedValue] {
+        private val valuesIterator = values.iterator
+        def iterator = new Iterator[TaggedValue] {
+          def next = { valuesNumber += 1; valuesIterator.next }
+          def hasNext = valuesIterator.hasNext
+        }
+      })
       channel.reduce(key.get(key.tag), untaggedValues, channelOutput)(context.getConfiguration)
+
+      val reducerNumber = context.getTaskAttemptID.getTaskID.getId
+      context.getCounter(Configurations.REDUCER_VALUES_COUNTER, s"reducer-$reducerNumber").increment(valuesNumber)
     }
   }
 

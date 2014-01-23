@@ -16,17 +16,22 @@
 package com.nicta.scoobi
 package acceptance
 
-import testing.mutable.script.NictaSimpleJobs
+import testing.script.NictaSimpleJobs
 import Scoobi._
-import core.Counters
+import com.nicta.scoobi.core.{Reduction, Counters}
+import Reduction.Reduction._
 import impl.plan.comp.CompNodeData._
+import scala.collection.JavaConversions._
+import org.specs2.specification.Groups
+import com.nicta.scoobi.impl.Configurations
 
-class CountersSpec extends NictaSimpleJobs { s2"""
+class CountersSpec extends NictaSimpleJobs with Groups { def is = s2"""
 
  It is possible to increment counters when doing DList operations
   + inside a map with a paralleDo
   + inside a reduce
   + across several hadoop jobs
+  + to get the number of values per reducer
 
 """
 
@@ -64,6 +69,19 @@ class CountersSpec extends NictaSimpleJobs { s2"""
 
       list.run
       sc.counters.getGroup("group1").findCounter("counter1").getValue must be_==(6).when(sc.isLocal)
+    }
+
+    eg := { implicit sc: SC =>
+      sc.setMinReducers(2)
+      sc.setMaxReducers(2)
+      sc.disableCombiners
+
+      DList(("hello", 1), ("hello", 1), ("hi", 1), ("hi", 1), ("hi", 1)).groupByKey.combine(Sum.int).run
+      val counts = sc.counters.getGroup(Configurations.REDUCER_VALUES_COUNTER).iterator.toSeq.map(c => (c.getName, c.getValue)).toSet
+
+      if (sc.isLocal)       counts === Set(("reducer-0", 5))
+      else if (sc.isRemote) counts === Set(("reducer-0", 2), ("reducer-1", 3))
+      else                  ok
     }
   }
 }

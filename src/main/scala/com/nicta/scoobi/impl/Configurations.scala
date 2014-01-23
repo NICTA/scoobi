@@ -43,6 +43,7 @@ trait Configurations {
   val MAPREDUCE_REDUCERS_MAX             = "scoobi.mapreduce.reducers.max"
   val MAPREDUCE_REDUCERS_BYTESPERREDUCER = "scoobi.mapreduce.reducers.bytesperreducer"
   val DISABLE_COMBINERS                  = "scoobi.mapreduce.disablecombiners"
+  val REDUCER_VALUES_COUNTER             = "reducer-values"
 
   /**
    * This conversion transforms a Configuration, seen as an Iterable[Map.Entry[String, String]]

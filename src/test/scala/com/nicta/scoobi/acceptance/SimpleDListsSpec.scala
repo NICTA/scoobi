@@ -18,14 +18,13 @@ package acceptance
 
 import testing.mutable.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
-import impl.plan.DListImpl
 import com.nicta.scoobi.impl.plan.comp.factory._
-import impl.plan.comp.{Return, ParallelDo, Load, CompNodeData}
+import impl.plan.comp.CompNodeData
 import CompNodeData._
-import io.ConstantStringDataSource
 import core.WireFormat._
-import com.nicta.scoobi.core.{Reduction, EmitterWriter, DoFunction, EmitterDoFunction}
+import com.nicta.scoobi.core.{Reduction}
 import core.Reduction.{Reduction => R}
+import scala.collection.JavaConversions._
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unstable")
 
