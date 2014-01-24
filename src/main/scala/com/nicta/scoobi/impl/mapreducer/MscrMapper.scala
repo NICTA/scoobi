@@ -51,6 +51,16 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
   private var tv: TaggedValue = _
   private var hasReduceTasks = true
 
+  private var countValuesPerMapper = false
+  private var mapperFunction = bareMapperFunction
+  private val bareMapperFunction = (key: Any, value: Any, context: TaskInputOutputContext[Any, Any, Any, Any]) =>
+    taggedInputChannels.foreach(channel => channel.map(key, value, new InputOutputContext(context)))
+  private val countingMapperFunction = (key: Any, value: Any, context: TaskInputOutputContext[Any, Any, Any, Any]) => {
+    context.getCounter(Configurations.MAPPER_VALUES_COUNTER, s"mapper-$mapperNumber").increment(1)
+    taggedInputChannels.foreach(channel => channel.map(key, value, new InputOutputContext(context)))
+  }
+  private var mapperNumber = 0
+
   override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
     ClasspathDiagnostics.logInfo
     val jobStep = ScoobiConfiguration(context.getConfiguration).jobStep
@@ -75,11 +85,17 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
       allOutputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, s"scoobi.reducers-$jobStep").getOrElse(OutputChannels(Seq()))
       allOutputChannels.setup(channelOutputFormat)(context.getConfiguration)
     } else taggedInputChannels.foreach(_.setup(new InputOutputContext(mapContext)))
+
+    countValuesPerMapper = context.getConfiguration.getBoolean(Configurations.COUNT_MAPPER_VALUES, false)
+    mapperNumber         = context.getTaskAttemptID.getTaskID.getId
+
+    if (countValuesPerMapper) mapperFunction = countingMapperFunction
   }
 
   override def map(key: Any, value: Any, context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
     val taskContext = context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]]
-    taggedInputChannels.foreach(_.map(key, value, new InputOutputContext(taskContext)))
+
+    mapperFunction.apply(key, value, taskContext)
 
     // if there are no reducers pass the mapped value of a given tag to the corresponding output channel
     if (!hasReduceTasks) {

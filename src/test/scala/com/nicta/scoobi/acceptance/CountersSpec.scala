@@ -31,6 +31,7 @@ class CountersSpec extends NictaSimpleJobs with Groups { def is = s2"""
   + inside a map with a paralleDo
   + inside a reduce
   + across several hadoop jobs
+  + to get the number of values per mapper
   + to get the number of values per reducer
 
 """
@@ -69,6 +70,17 @@ class CountersSpec extends NictaSimpleJobs with Groups { def is = s2"""
 
       list.run
       sc.counters.getGroup("group1").findCounter("counter1").getValue must be_==(6).when(sc.isLocal)
+    }
+
+    eg := { implicit sc: SC =>
+      sc.setCountValuesPerMapper(true)
+
+      DList(("hello", 1), ("hello", 2), ("hi", 3), ("hi", 4), ("hi", 5)).groupByKey.combine(Sum.int).run
+      val counts = sc.counters.getGroup(Configurations.MAPPER_VALUES_COUNTER).iterator.toSeq.map(c => (c.getName, c.getValue)).toSet
+
+      if (sc.isLocal)       counts === Set(("mapper-0", 5))
+      else if (sc.isRemote) counts === Set(("mapper-0",2), ("mapper-1",2), ("mapper-2",1))
+      else                  ok
     }
 
     eg := { implicit sc: SC =>

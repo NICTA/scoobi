@@ -66,10 +66,9 @@ object repl {
       val distname = s"scoobi-repl-${version}"
       val distdir = target / distname
       val disttar = target / s"${distname}.tar.gz"
-      (files x flat).foreach({
-        case (src, trg) =>
-          IO.copyFile(src, distdir / trg)
-      })
+      pair(files, flat).foreach { case (src, trg) =>
+        IO.copyFile(src, distdir / trg)
+      }
       Process(Seq("chmod", "+x", (distdir / "scoobi").getAbsolutePath)).! match {
         case 0 => ()
         case n => sys.error(s"Failed to chmod scoobi [$n]")

@@ -37,6 +37,7 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
   private var outputChannels: OutputChannels = _
   private var channelOutput: ChannelOutputFormat = _
   private var countValuesPerReducer: Boolean = false
+  private var reducerNumber = 0
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {
     val configuration = context.getConfiguration
@@ -47,6 +48,7 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
     outputChannels.setup(channelOutput)(context.getConfiguration)
 
     countValuesPerReducer = context.getConfiguration.getBoolean(Configurations.COUNT_REDUCER_VALUES, false)
+    reducerNumber = context.getTaskAttemptID.getTaskID.getId
   }
 
   override def reduce(key: TaggedKey, values: java.lang.Iterable[TaggedValue], context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {
@@ -70,7 +72,6 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
       channel.reduce(key.get(key.tag), new UntaggedValues(key.tag, iterable), channelOutput)(context.getConfiguration)
 
       if (countValuesPerReducer) {
-        val reducerNumber = context.getTaskAttemptID.getTaskID.getId
         context.getCounter(Configurations.REDUCER_VALUES_COUNTER, s"reducer-$reducerNumber").increment(valuesNumber)
       }
     }
