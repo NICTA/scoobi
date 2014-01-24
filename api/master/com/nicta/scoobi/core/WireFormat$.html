@@ -822,6 +822,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SpecificFixedAvroWireFormat[T&lt;:org.apache.avro.specific.SpecificFixed]extendsWireFormat[T]"></a>
+      <a id="SpecificFixedAvroWireFormat[T&lt;:SpecificFixed]:SpecificFixedAvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="WireFormatImplicits$SpecificFixedAvroWireFormat.html"><span class="name">SpecificFixedAvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificFixed">SpecificFixed</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroWireFormat.T">T</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits.StringWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="StringWireFormatextendsWireFormat[String]"></a>
       <a id="StringWireFormat:StringWireFormat"></a>
@@ -1412,6 +1425,20 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </span>
       </h4>
       <p class="shortcomment cmt">Option type.</p><div class="fullcomment"><div class="comment cmt"><p>Option type.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#SpecificFixedAvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SpecificFixedAvroFmt[T&lt;:org.apache.avro.specific.SpecificFixed](implicitevidence$14:Manifest[T],implicitevidence$15:com.nicta.scoobi.io.avro.AvroSchema[T]):WireFormatImplicits.this.SpecificFixedAvroWireFormat[T]"></a>
+      <a id="SpecificFixedAvroFmt[T&lt;:SpecificFixed](Manifest[T],AvroSchema[T]):SpecificFixedAvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SpecificFixedAvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificFixed">SpecificFixed</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>, <span name="arg1">arg1: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>)</span><span class="result">: <a href="#SpecificFixedAvroWireFormat[T&lt;:org.apache.avro.specific.SpecificFixed]extendsWireFormat[T]" class="extmbr" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroWireFormat">SpecificFixedAvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">WireFormat instance for Avro SpecificFixed</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro SpecificFixed</p><p>This requires an implicit AvroSchema instance
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#StringFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="StringFmt:com.nicta.scoobi.core.WireFormat[String]"></a>
@@ -2600,7 +2627,7 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#taggedTypeWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="taggedTypeWireFormat[T,U](implicitevidence$15:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[scalaz.@@[T,U]]"></a>
+      <a id="taggedTypeWireFormat[T,U](implicitevidence$19:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[scalaz.@@[T,U]]"></a>
       <a id="taggedTypeWireFormat[T,U](WireFormat[T]):WireFormat[@@[T,U]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
