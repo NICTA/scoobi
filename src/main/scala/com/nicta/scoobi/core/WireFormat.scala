@@ -22,7 +22,7 @@ import collection.generic.CanBuildFrom
 import collection.mutable.{ListBuffer, Builder}
 import org.apache.avro.io.EncoderFactory
 import com.nicta.scoobi.io.avro.AvroSchema
-import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificRecordBase}
+import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificFixed, SpecificRecordBase}
 import org.apache.avro.generic._
 import org.apache.avro.io.DecoderFactory
 import annotation.implicitNotFound
@@ -247,12 +247,12 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   }
 
   /**
-   * WireFormat instance for Avro Specific Fixed
+   * WireFormat instance for Avro SpecificFixed
    *
    * This requires an implicit AvroSchema instance
    */
-  implicit def FixedAvroFmt[T <: GenericData.Fixed : Manifest : AvroSchema] = new FixedAvroWireFormat[T]
-  class FixedAvroWireFormat[T <: GenericData.Fixed : Manifest : AvroSchema] extends WireFormat[T] {
+  implicit def SpecificFixedAvroFmt[T <: SpecificFixed : Manifest : AvroSchema] = new SpecificFixedAvroWireFormat[T]
+  class SpecificFixedAvroWireFormat[T <: SpecificFixed : Manifest : AvroSchema] extends WireFormat[T] {
     def toWire(x : T, out : DataOutput) {
       val bytes = x.bytes()
       out.writeInt(bytes.size)
@@ -266,7 +266,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       instance.bytes(bytes)
       instance
     }
-    override def toString = "FixedAvro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
+    override def toString = "SpecificFixedAvro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
   }
 
 
