@@ -327,6 +327,20 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Scoobi's configuration, initialised with a job id</p><div class="fullcomment"><div class="comment cmt"><p>Scoobi's configuration, initialised with a job id</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#countValuesPerReducer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="countValuesPerReducer:Boolean"></a>
+      <a id="countValuesPerReducer:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">countValuesPerReducer</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if we must count the number of values per reducer
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#counters" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="counters:org.apache.hadoop.mapreduce.Counters"></a>
       <a id="counters:Counters"></a>
@@ -949,6 +963,21 @@ reducers based off the size of the input data to the M/R job.
       </span>
       </h4>
       <p class="shortcomment cmt">set to true if the mscr jobs must be executed concurrently</p>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#setCountValuesPerReducer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setCountValuesPerReducer(b:Boolean):Unit"></a>
+      <a id="setCountValuesPerReducer(Boolean):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setCountValuesPerReducer</span><span class="params">(<span name="b">b: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">if true count the number of values per reducer
+</p><div class="fullcomment"><div class="comment cmt"><p>if true count the number of values per reducer
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#setDirectories" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setDirectories:com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
       <a id="setDirectories:ScoobiConfigurationImpl"></a>
