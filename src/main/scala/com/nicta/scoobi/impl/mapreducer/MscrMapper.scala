@@ -19,7 +19,7 @@ package impl
 package mapreducer
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.{Mapper => HMapper, TaskInputOutputContext, MapContext}
+import org.apache.hadoop.mapreduce.{Mapper => HMapper, Counter, TaskInputOutputContext, MapContext}
 
 import core._
 import rtt._
@@ -52,14 +52,7 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
   private var hasReduceTasks = true
 
   private var countValuesPerMapper = false
-  private var mapperFunction = bareMapperFunction
-  private val bareMapperFunction = (key: Any, value: Any, context: TaskInputOutputContext[Any, Any, Any, Any]) =>
-    taggedInputChannels.foreach(channel => channel.map(key, value, new InputOutputContext(context)))
-  private val countingMapperFunction = (key: Any, value: Any, context: TaskInputOutputContext[Any, Any, Any, Any]) => {
-    context.getCounter(Configurations.MAPPER_VALUES_COUNTER, s"mapper-$mapperNumber").increment(1)
-    taggedInputChannels.foreach(channel => channel.map(key, value, new InputOutputContext(context)))
-  }
-  private var mapperNumber = 0
+  private var counter: Counter = _
 
   override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
     ClasspathDiagnostics.logInfo
@@ -87,15 +80,15 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     } else taggedInputChannels.foreach(_.setup(new InputOutputContext(mapContext)))
 
     countValuesPerMapper = context.getConfiguration.getBoolean(Configurations.COUNT_MAPPER_VALUES, false)
-    mapperNumber         = context.getTaskAttemptID.getTaskID.getId
-
-    if (countValuesPerMapper) mapperFunction = countingMapperFunction
+    val mapperNumber         = context.getTaskAttemptID.getTaskID.getId
+    counter = context.getCounter(Configurations.MAPPER_VALUES_COUNTER, s"mapper-$mapperNumber")
   }
 
   override def map(key: Any, value: Any, context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
     val taskContext = context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]]
 
-    mapperFunction.apply(key, value, taskContext)
+    if (countValuesPerMapper) counter.increment(1)
+    taggedInputChannels.foreach(channel => channel.map(key, value, new InputOutputContext(taskContext)))
 
     // if there are no reducers pass the mapped value of a given tag to the corresponding output channel
     if (!hasReduceTasks) {
