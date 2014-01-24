@@ -75,6 +75,7 @@ class CountersSpec extends NictaSimpleJobs with Groups { def is = s2"""
       sc.setMinReducers(2)
       sc.setMaxReducers(2)
       sc.disableCombiners
+      sc.setCountValuesPerReducer(true)
 
       DList(("hello", 1), ("hello", 1), ("hi", 1), ("hi", 1), ("hi", 1)).groupByKey.combine(Sum.int).run
       val counts = sc.counters.getGroup(Configurations.REDUCER_VALUES_COUNTER).iterator.toSeq.map(c => (c.getName, c.getValue)).toSet

@@ -36,6 +36,7 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
 
   private var outputChannels: OutputChannels = _
   private var channelOutput: ChannelOutputFormat = _
+  private var countValuesPerReducer: Boolean = false
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {
     val configuration = context.getConfiguration
@@ -44,26 +45,34 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
 
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
     outputChannels.setup(channelOutput)(context.getConfiguration)
+
+    countValuesPerReducer = context.getConfiguration.getBoolean(Configurations.COUNT_REDUCER_VALUES, false)
   }
 
   override def reduce(key: TaggedKey, values: java.lang.Iterable[TaggedValue], context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {
+    var valuesNumber = 0
+
     /* Get the right output value type and output directory for the current channel,
      * specified by the key's tag. */
     outputChannels.channel(key.tag) foreach { channel =>
-      var valuesNumber = 0
+      val iterable = if (countValuesPerReducer) {
+        new java.lang.Iterable[TaggedValue] {
+          private val valuesIterator = values.iterator
+          def iterator = new Iterator[TaggedValue] {
+            def next = { valuesNumber += 1; valuesIterator.next }
+            def hasNext = valuesIterator.hasNext
+          }
+        }
+      } else values
 
       /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
-      val untaggedValues = new UntaggedValues(key.tag, new java.lang.Iterable[TaggedValue] {
-        private val valuesIterator = values.iterator
-        def iterator = new Iterator[TaggedValue] {
-          def next = { valuesNumber += 1; valuesIterator.next }
-          def hasNext = valuesIterator.hasNext
-        }
-      })
-      channel.reduce(key.get(key.tag), untaggedValues, channelOutput)(context.getConfiguration)
+      val untaggedValues =
+      channel.reduce(key.get(key.tag), new UntaggedValues(key.tag, iterable), channelOutput)(context.getConfiguration)
 
-      val reducerNumber = context.getTaskAttemptID.getTaskID.getId
-      context.getCounter(Configurations.REDUCER_VALUES_COUNTER, s"reducer-$reducerNumber").increment(valuesNumber)
+      if (countValuesPerReducer) {
+        val reducerNumber = context.getTaskAttemptID.getTaskID.getId
+        context.getCounter(Configurations.REDUCER_VALUES_COUNTER, s"reducer-$reducerNumber").increment(valuesNumber)
+      }
     }
   }
 

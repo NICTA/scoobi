@@ -68,6 +68,8 @@ trait ScoobiConfiguration {
   def getMinReducers: Int
   def setBytesPerReducer(sizeInBytes: Long)
   def getBytesPerReducer: Long
+  def setCountValuesPerReducer(b: Boolean)
+  def countValuesPerReducer: Boolean
 
   def jobNameIs(name: String)
   def jobName: Option[String]

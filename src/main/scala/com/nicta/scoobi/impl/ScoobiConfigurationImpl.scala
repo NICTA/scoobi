@@ -262,6 +262,16 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
    */
   def getBytesPerReducer = configuration.getLong(MAPREDUCE_REDUCERS_BYTESPERREDUCER, 1024 * 1024 * 1024)
 
+  /** 
+   * if true count the number of values per reducer
+   */
+  def setCountValuesPerReducer(b: Boolean) { configuration.setBoolean(COUNT_REDUCER_VALUES, b) }
+
+  /**
+   * @return true if we must count the number of values per reducer
+   */
+  def countValuesPerReducer: Boolean = configuration.getBoolean(COUNT_REDUCER_VALUES, false)
+  
   /**
    * set a new job name to help recognize the job better
    */
