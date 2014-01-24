@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package guide
 
 import Scoobi._
+import com.nicta.scoobi.impl.Configurations
 
 class DistributedLists extends ScoobiPage { def is = "Distributed Lists".title ^
   s2"""
@@ -163,6 +164,22 @@ val list = DList(1, 2, 3).parallelDo((input: Int, beat: Heartbeat) => {
   beat.tick
   input + 1
 })
+}}
+
+##### Data counters
+
+Two counters can be enabled in order to monitor the number of values going through each mapper or each reducer ${snippet{
+val sc: ScoobiConfiguration = ???
+
+sc.setCountValuesPerMapper(true)
+sc.setCountValuesPerReducer(true)
+
+// return a list of counters where each counter has the number of values for a given mapper
+sc.counters.getGroup(Configurations.MAPPER_VALUES_COUNTER)
+
+// return a list of counters where each counter has the number of values for a given reducer
+sc.counters.getGroup(Configurations.REDUCER_VALUES_COUNTER)
+
 }}
 
 ### Grouping
