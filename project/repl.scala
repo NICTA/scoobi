@@ -63,10 +63,10 @@ object repl {
   def mkdist =
     (assembly in (Repl, assembly), target, version in ThisBuild).map((assembly, target, version) => {
       val files = Seq(assembly, file("src/main/bin/scoobi"))
-      val distname = s"scoobi-repl-${version}"
+      val distname = s"scoobi-repl-$version"
       val distdir = target / distname
-      val disttar = target / s"${distname}.tar.gz"
-      pair(files, flat).foreach { case (src, trg) =>
+      val disttar = target / s"$distname.tar.gz"
+      (files pair flat).foreach { case (src, trg) =>
         IO.copyFile(src, distdir / trg)
       }
       Process(Seq("chmod", "+x", (distdir / "scoobi").getAbsolutePath)).! match {
