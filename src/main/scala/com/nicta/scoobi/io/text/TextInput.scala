@@ -40,7 +40,11 @@ trait TextInput {
     * the input forms all files in that directory). */
   def fromTextFile(paths: String*): DList[String] = fromTextSource[String](textSource(paths))
 
-  def fromTextFile(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[String] = fromTextSource[String](textSource(paths, check))
+  def fromTextFileWithPath(paths: String*): DList[(String, String)] =
+    DListImpl(textSourceWithPath(paths))
+
+  def fromTextFile(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[String] =
+    fromTextSource[String](textSource(paths, check))
 
   def fromTextSource[A : WireFormat](source: TextSource[A]) = DListImpl(source)
 
@@ -48,8 +52,17 @@ trait TextInput {
     def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
   }
 
+  def defaultTextConverterWithPath = new InputConverter[Text, Text, (String, String)] {
+    def fromKeyValue(context: InputContext, k: Text, v: Text) = (k.toString, v.toString)
+  }
+
   /** create a text source */
-  def textSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) = new TextSource[String](paths, inputConverter = defaultTextConverter, check = check)
+  def textSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
+    new TextSource[String](paths, inputConverter = defaultTextConverter, check = check)
+
+  /** create a text source */
+  def textSourceWithPath(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
+    new TextSourceWithPath[(String, String)](paths, inputConverter = defaultTextConverterWithPath, check = check)
 
   /** Create a distributed list from one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
@@ -139,4 +152,21 @@ case class TextSource[A : WireFormat](paths: Seq[String],
   def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Files.pathSize(p)(sc)).sum
 }
 
+/** Class that abstracts all the common functionality of reading from text files. */
+case class TextSourceWithPath[A : WireFormat](paths: Seq[String],
+                                              inputFormat: Class[_ <: FileInputFormat[Text, Text]] = classOf[PathTextInputFormat],
+                                              inputConverter: InputConverter[Text, Text, A] = TextInput.defaultTextConverterWithPath,
+                                              check: Source.InputCheck = Source.defaultInputCheck)
+  extends DataSource[Text, Text, A] {
 
+  private val inputPaths = paths.map(p => new Path(p))
+  override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
+
+  def inputCheck(implicit sc: ScoobiConfiguration) { check(inputPaths, sc) }
+
+  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+    inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+  }
+
+  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Files.pathSize(p)(sc)).sum
+}

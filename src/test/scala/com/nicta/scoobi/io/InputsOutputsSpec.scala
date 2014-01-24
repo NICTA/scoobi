@@ -80,4 +80,20 @@ class InputsOutputsSpec extends NictaSimpleJobs {
 
     fromTextFile(directory).run.normalise === "Vector(a1, b1)"
   }
+
+  "3. it is possible to read files from a list of directories where the directory name gets translated to a type" >> { implicit sc: SC =>
+    val directory = path(TempFiles.createTempDir("input").getPath)
+    implicit val fs = sc.fileSystem
+    fs.mkdirs(new Path(directory+"/year=2014/month=01/day=22"))
+    fs.mkdirs(new Path(directory+"/year=2014/month=01/day=23"))
+
+    TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=22/file.part"), Seq("a", "b"), isRemote)
+    TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=23/file.part"), Seq("c", "d"), isRemote)
+
+    fromTextFileWithPath(directory+"/*/*/*/*").map { case (path, value) =>
+      val parts = path.split("/").dropRight(1).reverse.take(3).map(p => Seq("year=", "month=", "day=").foldLeft(p)(_.replace(_, "")))
+      val (year, month, day) = (parts(2), parts(1), parts(0))
+      (s"$year/$month/$day", value)
+    }.run.normalise === "Vector((2014/01/22,a), (2014/01/22,b), (2014/01/23,c), (2014/01/23,d))"
+  }
 }
