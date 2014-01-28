@@ -111,6 +111,18 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def map[B : WireFormat](f: A => B): DList[B] =
     parallelDo((input: A, emitter: Emitter[B]) => emitter.emit(f(input)))
 
+  /** map the keys of a DList[(K, V)] */
+  def mapKeys[K, V, B](f: K => B)(implicit ev: A <:< (K, V), wfv: WireFormat[V], wfb: WireFormat[B]): DList[(B, V)] = map { kv =>
+    val (k, v) = ev(kv)
+    (f(k), v)
+  }
+
+  /** map the values of a DList[(K, V)] */
+  def mapValues[K, V, B](f: V => B)(implicit ev: A <:< (K, V), wfk: WireFormat[K], wfb: WireFormat[B]): DList[(K, B)] = map { kv =>
+    val (k, v) = ev(kv)
+    (k, f(v))
+  }
+
   /** Keep elements from the distributed list that pass a specified predicate function */
   def filter(p: A => Boolean): DList[A] = parallelDo((input: A, emitter: Emitter[A]) => if (p(input)) { emitter.emit(input) })
 
