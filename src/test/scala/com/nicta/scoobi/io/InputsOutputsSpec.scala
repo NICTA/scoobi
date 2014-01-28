@@ -91,10 +91,10 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=22/file.part"), Seq("a", "b"), isRemote)
     TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=23/file.part"), Seq("c", "d"), isRemote)
 
-    fromTextFileWithPath(directory+"/*/*/*/*").map { case (path, value) =>
+    fromTextFileWithPath(directory+"/*/*/*/*").mapKeys { path: String =>
       val parts = path.split("/").dropRight(1).reverse.take(3).map(p => Seq("year=", "month=", "day=").foldLeft(p)(_.replace(_, "")))
       val (year, month, day) = (parts(2), parts(1), parts(0))
-      (s"$year/$month/$day", value)
+      s"$year/$month/$day"
     }.run.normalise === "Vector((2014/01/22,a), (2014/01/22,b), (2014/01/23,c), (2014/01/23,d))"
   }
 
@@ -105,5 +105,28 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     list.toPartitionedTextFile(directory, partition = (s: String) => s, overwrite = true).run
 
     Seq("22", "23") must contain((date: String) => new File(directory+"/2014/01/"+date).listFiles.toSeq must contain(aFile).forall).forall
+  }
+
+  "5. Round-trip of writing and reading partitioned text files" >> { implicit sc: SC =>
+    val directory = path(TempFiles.createTempDir("output").getPath)
+    val list = DList((Date(2014, 1, 22), "a"), (Date(2014, 1, 22), "b"), (Date(2014, 1, 23), "c"), (Date(2014, 1, 23), "d"))
+
+    val written = list.toPartitionedTextFile(directory, partition = (_:Date).toPath, overwrite = true).run
+    val read    = fromTextFileWithPath(directory+"/*/*/*/*").mapKeys(Date.fromPath)
+
+    read.run.normalise === written.normalise
+  }
+
+  implicit val wf: WireFormat[Date] = mkCaseWireFormat(Date.apply _, Date.unapply _)
+}
+
+case class Date(year: Int, month: Int, day: Int) {
+  def toPath = s"year=$year/month=$month/day=$day"
+}
+
+object Date {
+  def fromPath(path: String) = {
+    val parts = path.split("/").dropRight(1).reverse.take(3).map(p => Seq("year=", "month=", "day=").foldLeft(p)(_.replace(_, "")))
+    Date(year = parts(2).toInt, month = parts(1).toInt, day = parts(0).toInt)
   }
 }
