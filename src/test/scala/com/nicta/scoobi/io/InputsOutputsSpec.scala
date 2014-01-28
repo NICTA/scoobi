@@ -91,7 +91,7 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=22/file.part"), Seq("a", "b"), isRemote)
     TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=23/file.part"), Seq("c", "d"), isRemote)
 
-    fromTextFileWithPath(directory+"/*/*/*/*").mapKeys { path: String =>
+    fromPartitionedTextFiles(directory+"/*/*/*/*").mapKeys { path: String =>
       val parts = path.split("/").dropRight(1).reverse.take(3).map(p => Seq("year=", "month=", "day=").foldLeft(p)(_.replace(_, "")))
       val (year, month, day) = (parts(2), parts(1), parts(0))
       s"$year/$month/$day"
@@ -112,7 +112,7 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     val list = DList((Date(2014, 1, 22), "a"), (Date(2014, 1, 22), "b"), (Date(2014, 1, 23), "c"), (Date(2014, 1, 23), "d"))
 
     val written = list.toPartitionedTextFile(directory, partition = (_:Date).toPath, overwrite = true).run
-    val read    = fromTextFileWithPath(directory+"/*/*/*/*").mapKeys(Date.fromPath)
+    val read    = fromPartitionedTextFiles(directory+"/*/*/*/*").mapKeys(Date.fromPath)
 
     read.run.normalise === written.normalise
   }

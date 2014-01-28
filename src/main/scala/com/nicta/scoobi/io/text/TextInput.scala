@@ -40,8 +40,8 @@ trait TextInput {
     * the input forms all files in that directory). */
   def fromTextFile(paths: String*): DList[String] = fromTextSource[String](textSource(paths))
 
-  def fromTextFileWithPath(paths: String*): DList[(String, String)] =
-    DListImpl(textSourceWithPath(paths))
+  def fromPartitionedTextFiles(paths: String*): DList[(String, String)] =
+    DListImpl(partitionedTextSource(paths))
 
   def fromTextFile(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[String] =
     fromTextSource[String](textSource(paths, check))
@@ -61,8 +61,8 @@ trait TextInput {
     new TextSource[String](paths, inputConverter = defaultTextConverter, check = check)
 
   /** create a text source */
-  def textSourceWithPath(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
-    new TextSourceWithPath[(String, String)](paths, inputConverter = defaultTextConverterWithPath, check = check)
+  def partitionedTextSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
+    new PartitionedTextSource[(String, String)](paths, inputConverter = defaultTextConverterWithPath, check = check)
 
   /** Create a distributed list from one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
@@ -153,7 +153,7 @@ case class TextSource[A : WireFormat](paths: Seq[String],
 }
 
 /** Class that abstracts all the common functionality of reading from text files. */
-case class TextSourceWithPath[A : WireFormat](paths: Seq[String],
+case class PartitionedTextSource[A : WireFormat](paths: Seq[String],
                                               inputFormat: Class[_ <: FileInputFormat[Text, Text]] = classOf[PathTextInputFormat],
                                               inputConverter: InputConverter[Text, Text, A] = TextInput.defaultTextConverterWithPath,
                                               check: Source.InputCheck = Source.defaultInputCheck)
