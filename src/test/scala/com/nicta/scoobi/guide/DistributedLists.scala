@@ -182,6 +182,8 @@ sc.counters.getGroup(Configurations.REDUCER_VALUES_COUNTER)
 
 }}
 
+*Important note: * counting values per Mapper/Reducer will create one counter per mapper and one per reducer. However there is a limit on the number of counters which can be created. You can increase this number by changing the `mapreduce.job.counters.limit` property.
+
 ### Grouping
 
 We have already seen the `groupByKey` method. `DList` also has a `groupBy` method that allows you to specicfy how the key is determined:
