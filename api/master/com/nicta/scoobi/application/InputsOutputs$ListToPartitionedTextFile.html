@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ObjectToDelimitedTextFile - com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile</title>
-          <meta name="description" content="ObjectToDelimitedTextFile - com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile" />
-          <meta name="keywords" content="ObjectToDelimitedTextFile com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile" />
+          <title>ListToPartitionedTextFile - com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile</title>
+          <meta name="description" content="ListToPartitionedTextFile - com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile" />
+          <meta name="keywords" content="ListToPartitionedTextFile com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'com.nicta.scoobi.application.InputsOutputs$ObjectToDelimitedTextFile';
+            var hash = 'com.nicta.scoobi.application.InputsOutputs$ListToPartitionedTextFile';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,7 +26,7 @@
       <div id="definition">
         <img src="../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.application">application</a>.<a href="InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></p>
-        <h1>ObjectToDelimitedTextFile</h1>
+        <h1>ListToPartitionedTextFile</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,7 +35,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">ObjectToDelimitedTextFile</span><span class="tparams">[<span name="A">A &lt;: <span class="extype" name="scala.Product">Product</span></span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">ListToPartitionedTextFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile"><span>ObjectToDelimitedTextFile</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile"><span>ListToPartitionedTextFile</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,16 +79,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(o:com.nicta.scoobi.core.DObject[A])(implicitevidence$7:Manifest[A]):InputsOutputs.this.ObjectToDelimitedTextFile[A]"></a>
-      <a id="&lt;init&gt;:ObjectToDelimitedTextFile[A]"></a>
+              <ol><li name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(list:com.nicta.scoobi.core.DList[(K,V)])(implicitevidence$4:Manifest[K],implicitevidence$5:Manifest[V]):InputsOutputs.this.ListToPartitionedTextFile[K,V]"></a>
+      <a id="&lt;init&gt;:ListToPartitionedTextFile[K,V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ObjectToDelimitedTextFile</span><span class="params">(<span name="o">o: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile.A">A</span>]</span>)</span>
+        <span class="name">ListToPartitionedTextFile</span><span class="params">(<span name="list">list: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile.V">V</span>)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile.V">V</span>]</span>)</span>
       </span>
       </h4>
       
@@ -282,6 +282,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile#list" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="list:com.nicta.scoobi.core.DList[(K,V)]"></a>
+      <a id="list:DList[(K,V)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">list</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile.V">V</span>)]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -321,19 +334,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile#o" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="o:com.nicta.scoobi.core.DObject[A]"></a>
-      <a id="o:DObject[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">o</span><span class="result">: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile.A">A</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -347,16 +347,16 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs.ObjectToDelimitedTextFile#toDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toDelimitedTextFile(path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.core.DObject[String]"></a>
-      <a id="toDelimitedTextFile(String,String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit):DObject[String]"></a>
+    </li><li name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile#toPartitionedTextFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="toPartitionedTextFile(path:String,partition:K=&gt;String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):ListToPartitionedTextFile.this.list.T"></a>
+      <a id="toPartitionedTextFile(String,(K)⇒String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toDelimitedTextFile</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;\t&quot;</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../../package.html">Sink.defaultOutputCheck</a></span></span></span>)</span><span class="result">: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="java.lang.String">String</span>]</span>
+        <span class="name">toPartitionedTextFile</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="partition">partition: (<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToPartitionedTextFile.K">K</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../../package.html">Sink.defaultOutputCheck</a></span></span></span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
       </span>
       </h4>
       

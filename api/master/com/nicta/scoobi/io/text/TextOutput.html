@@ -270,7 +270,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextOutput#listToDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="listToDelimitedTextFile[A&lt;:Product](dl:com.nicta.scoobi.core.DList[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$3:Manifest[A]):com.nicta.scoobi.core.DList[String]"></a>
+      <a id="listToDelimitedTextFile[A&lt;:Product](dl:com.nicta.scoobi.core.DList[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$5:Manifest[A]):com.nicta.scoobi.core.DList[String]"></a>
       <a id="listToDelimitedTextFile[A&lt;:Product](DList[A],String,String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):DList[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -322,7 +322,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextOutput#objectToDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="objectToDelimitedTextFile[A&lt;:Product](o:com.nicta.scoobi.core.DObject[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$4:Manifest[A]):com.nicta.scoobi.core.DObject[String]"></a>
+      <a id="objectToDelimitedTextFile[A&lt;:Product](o:com.nicta.scoobi.core.DObject[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$6:Manifest[A]):com.nicta.scoobi.core.DObject[String]"></a>
       <a id="objectToDelimitedTextFile[A&lt;:Product](DObject[A],String,String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):DObject[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -347,6 +347,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextOutput#textFilePartitionedSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="textFilePartitionedSink[K,V](path:String,partition:K=&gt;String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$3:Manifest[K],implicitevidence$4:Manifest[V]):com.nicta.scoobi.io.text.TextFilePartitionedSink[K,V]"></a>
+      <a id="textFilePartitionedSink[K,V](String,(K)⇒String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[K],Manifest[V]):TextFilePartitionedSink[K,V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">textFilePartitionedSink</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="partition">partition: (<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.textFilePartitionedSink.K">K</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../core/package.html">Sink.defaultOutputCheck</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.textFilePartitionedSink.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.textFilePartitionedSink.V">V</span>]</span>)</span><span class="result">: <a href="TextFilePartitionedSink.html" class="extype" name="com.nicta.scoobi.io.text.TextFilePartitionedSink">TextFilePartitionedSink</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.textFilePartitionedSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextOutput.textFilePartitionedSink.V">V</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.io.text.TextOutput#textFileSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="textFileSink[A](path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$2:Manifest[A]):com.nicta.scoobi.io.text.TextFileSink[A]"></a>
       <a id="textFileSink[A](String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):TextFileSink[A]"></a>
