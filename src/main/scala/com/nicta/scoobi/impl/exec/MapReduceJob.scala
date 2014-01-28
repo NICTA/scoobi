@@ -94,7 +94,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
     configureJar(jar)
     jar.close(configuration)
 
-    FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory(job))
+    FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory)
 
     this
   }
@@ -224,8 +224,8 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
 
   private[scoobi] def collectOutputs = {
     /* Move named file-based sinks to their correct output paths. */
-    mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory(job))))
-    configuration.deleteTemporaryOutputDirectory(job)
+    mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory)))
+    configuration.deleteTemporaryOutputDirectory
     configuration.updateCounters(job.getCounters)
     this
   }

@@ -92,12 +92,12 @@ trait ScoobiConfiguration {
   def scoobiDir: String
   def workingDir: String
   def workingDirectory: Path
-  def temporaryOutputDirectory(job: Job): Path
+  def temporaryOutputDirectory: Path
   def temporaryJarFile: File
 
   def deleteScoobiDirectory: Boolean
   def deleteWorkingDirectory: Boolean
-  def deleteTemporaryOutputDirectory(job: Job): Boolean
+  def deleteTemporaryOutputDirectory: Boolean
 
   def fileSystem: FileSystem
   @deprecated(message = "use 'fileSystem' instead", since = "0.7.0")

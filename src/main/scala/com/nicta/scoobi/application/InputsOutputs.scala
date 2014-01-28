@@ -67,6 +67,14 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
   implicit class ListToTextFile[A](val list: core.DList[A]) {
     def toTextFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = list.addSink(textFileSink(path, overwrite, check))
   }
+
+  implicit class ListToPartitionedTextFile[K : Manifest, V : Manifest](val list: core.DList[(K, V)]) {
+    def toPartitionedTextFile(path: String,
+                              partition: K => String,
+                              overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
+      list.addSink(textFilePartitionedSink(path, partition, overwrite, check))
+  }
+
   implicit class ListToDelimitedTextFile[A <: Product : Manifest](val list: core.DList[A]) {
     def toDelimitedTextFile(path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
       listToDelimitedTextFile(list, path, sep, overwrite, check)

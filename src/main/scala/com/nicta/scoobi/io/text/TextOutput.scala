@@ -45,6 +45,11 @@ trait TextOutput {
   def textFileSink[A : Manifest](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
     new TextFileSink(path, overwrite, check)
 
+  def textFilePartitionedSink[K : Manifest, V : Manifest](path: String,
+                                                          partition: K => String,
+                                                          overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
+    new TextFilePartitionedSink(path, partition, overwrite, check)(implicitly[Manifest[K]], implicitly[Manifest[V]])
+
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a delimited text file. */
   def listToDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = {
     def anyToString(any: Any, sep: String): String = any match {
@@ -72,18 +77,7 @@ case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, 
 
   def outputFormat(implicit sc: ScoobiConfiguration) = classOf[TextOutputFormat[NullWritable, A]]
   def outputKeyClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
-  def outputValueClass(implicit sc: ScoobiConfiguration) = implicitly[Manifest[A]] match {
-    case Manifest.Boolean => classOf[java.lang.Boolean].asInstanceOf[Class[A]]
-    case Manifest.Char    => classOf[java.lang.Character].asInstanceOf[Class[A]]
-    case Manifest.Short   => classOf[java.lang.Short].asInstanceOf[Class[A]]
-    case Manifest.Int     => classOf[java.lang.Integer].asInstanceOf[Class[A]]
-    case Manifest.Long    => classOf[java.lang.Long].asInstanceOf[Class[A]]
-    case Manifest.Float   => classOf[java.lang.Float].asInstanceOf[Class[A]]
-    case Manifest.Double  => classOf[java.lang.Double].asInstanceOf[Class[A]]
-    case Manifest.Byte    => classOf[java.lang.Byte].asInstanceOf[Class[A]]
-    case mf               => mf.runtimeClass.asInstanceOf[Class[A]]
-  }
-
+  def outputValueClass(implicit sc: ScoobiConfiguration) = TextFileSink.runtimeClass[A]
   def outputCheck(implicit sc: ScoobiConfiguration) {
     check(output, overwrite, sc)
   }
@@ -107,4 +101,18 @@ case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, 
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
 
   override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
+}
+
+object TextFileSink {
+  def runtimeClass[A : Manifest] = implicitly[Manifest[A]] match {
+    case Manifest.Boolean => classOf[java.lang.Boolean].asInstanceOf[Class[A]]
+    case Manifest.Char    => classOf[java.lang.Character].asInstanceOf[Class[A]]
+    case Manifest.Short   => classOf[java.lang.Short].asInstanceOf[Class[A]]
+    case Manifest.Int     => classOf[java.lang.Integer].asInstanceOf[Class[A]]
+    case Manifest.Long    => classOf[java.lang.Long].asInstanceOf[Class[A]]
+    case Manifest.Float   => classOf[java.lang.Float].asInstanceOf[Class[A]]
+    case Manifest.Double  => classOf[java.lang.Double].asInstanceOf[Class[A]]
+    case Manifest.Byte    => classOf[java.lang.Byte].asInstanceOf[Class[A]]
+    case mf               => mf.runtimeClass.asInstanceOf[Class[A]]
+  }
 }

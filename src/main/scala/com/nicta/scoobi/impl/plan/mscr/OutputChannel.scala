@@ -21,7 +21,7 @@ package mscr
 import core._
 import comp._
 import scalaz.Equal
-import io.FileSystems
+import com.nicta.scoobi.impl.io.{Files, FileSystems}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
 import org.apache.commons.logging.LogFactory
@@ -104,6 +104,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   def collectOutputs(outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) {
     import fileSystems._
     implicit val configuration = sc.configuration
+    val tempDir = sc.temporaryOutputDirectory
 
     outer.logger.debug("outputs files are "+outputFiles.mkString("\n") )
     // copy the each result file to its sink
@@ -114,7 +115,13 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 
         val outputs = outputFiles.filter(isResultFile(tag, sink.id))
         outer.logger.debug("outputs result files for tag "+tag+" and sink id "+sink.id+" are "+outputs.map(_.getName).mkString("\n") )
-        outputs.foreach(moveTo(outDir))
+        outputs.foreach { path =>
+          val fromTempDir = path.toUri.getPath.replace(Files.dirPath(tempDir.toUri.getPath), "")
+          val withoutAttempt = fromTempDir.split("/").filterNot(_.startsWith("_")).mkString("/")
+          val newPath = new Path(withoutAttempt)
+
+          moveTo(outDir).apply(path, newPath)
+        }
       }
     }
     // copy the success file to every output directory

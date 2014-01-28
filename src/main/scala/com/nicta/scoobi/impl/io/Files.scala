@@ -38,16 +38,17 @@ trait Files {
   def fileSystem(path: Path)(implicit configuration: Configuration) = FileSystem.get(path.toUri, configuration)
 
   /** @return a function moving a Path to a given directory */
-  def moveTo(dir: String)(implicit configuration: Configuration): Path => Boolean = moveTo(new Path(dirPath(dir)))
+  def moveTo(dir: String)(implicit configuration: Configuration): Path => Boolean = (path: Path) =>
+    moveTo(new Path(dirPath(dir))).apply(path, new Path(path.getName))
 
   /** @return a function moving a Path to a given directory */
-  def moveTo(dir: Path)(implicit configuration: Configuration): Path => Boolean = (path: Path) => {
+  def moveTo(dir: Path)(implicit configuration: Configuration): (Path, Path) => Boolean = (path: Path, newPath: Path) => {
     !pathExists(path) || {
       val from = fileSystem(path)
       val to   = fileSystem(dir)
 
-      if (sameFileSystem(from, to)) from.rename(path, new Path(dir, path.getName))
-      else                          FileUtil.copy(from, path, to, new Path(dir, path.getName),
+      if (sameFileSystem(from, to)) from.rename(path, new Path(dir, newPath))
+      else                          FileUtil.copy(from, path, to, new Path(dir, newPath),
                                                   true /* deleteSource */, false /* overwrite */, configuration)
     }
   }

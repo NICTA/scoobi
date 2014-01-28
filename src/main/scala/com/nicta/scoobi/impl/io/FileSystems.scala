@@ -25,11 +25,7 @@ import com.nicta.scoobi.{impl, core}
 import core._
 import impl.ScoobiConfiguration._
 import impl.monitor.Loggable._
-import java.net.URI
-import util.Compatibility
-import org.apache.hadoop.fs.permission.FsAction
-import org.apache.hadoop.security.UserGroupInformation
-
+import scala.collection.JavaConversions._
 /**
  * Utility methods for copying files in the local / remote filesystem or across file systems
  */
@@ -84,7 +80,11 @@ trait FileSystems extends Files {
   /** @return the list of files in a given directory on the file system */
   def listPaths(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
     if (!fileSystem.exists(dest)) Seq()
-    else                          fileSystem.listStatus(dest).map(_.getPath)
+    else {
+      val paths = fileSystem.listStatus(dest).toSeq.map(_.getPath)
+      val (directories, files) = paths.partition(fileSystem.isDirectory)
+      files ++ directories.flatMap(listPaths)
+    }
   }
 
   /**

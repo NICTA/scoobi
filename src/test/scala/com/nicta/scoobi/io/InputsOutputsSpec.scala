@@ -30,8 +30,9 @@ import impl.plan.comp.CompNodeData._
 import java.io.File
 import impl.io.FileSystems
 import org.apache.hadoop.fs.Path
+import org.specs2.matcher.FileMatchers
 
-class InputsOutputsSpec extends NictaSimpleJobs {
+class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
 
   override def isCluster = false
 
@@ -81,7 +82,7 @@ class InputsOutputsSpec extends NictaSimpleJobs {
     fromTextFile(directory).run.normalise === "Vector(a1, b1)"
   }
 
-  "3. it is possible to read files from a list of directories where the directory name gets translated to a type" >> { implicit sc: SC =>
+  "3. it is possible to read files from a list of directories where the directory name gets translated to the key" >> { implicit sc: SC =>
     val directory = path(TempFiles.createTempDir("input").getPath)
     implicit val fs = sc.fileSystem
     fs.mkdirs(new Path(directory+"/year=2014/month=01/day=22"))
@@ -95,5 +96,14 @@ class InputsOutputsSpec extends NictaSimpleJobs {
       val (year, month, day) = (parts(2), parts(1), parts(0))
       (s"$year/$month/$day", value)
     }.run.normalise === "Vector((2014/01/22,a), (2014/01/22,b), (2014/01/23,c), (2014/01/23,d))"
+  }
+
+  "4. it is possible to write files where the key is translated to a specific path" >> { implicit sc: SC =>
+    val directory = path(TempFiles.createTempDir("output").getPath)
+    val list = DList(("2014/01/22", "a"), ("2014/01/22", "b"), ("2014/01/23", "c"), ("2014/01/23", "d"))
+
+    list.toPartitionedTextFile(directory, partition = (s: String) => s, overwrite = true).run
+
+    Seq("22", "23") must contain((date: String) => new File(directory+"/2014/01/"+date).listFiles.toSeq must contain(aFile).forall).forall
   }
 }
