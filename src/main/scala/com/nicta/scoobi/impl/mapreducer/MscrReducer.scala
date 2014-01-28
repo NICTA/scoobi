@@ -68,7 +68,6 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
       } else values
 
       /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
-      val untaggedValues =
       channel.reduce(key.get(key.tag), new UntaggedValues(key.tag, iterable), channelOutput)(context.getConfiguration)
 
       if (countValuesPerReducer) {

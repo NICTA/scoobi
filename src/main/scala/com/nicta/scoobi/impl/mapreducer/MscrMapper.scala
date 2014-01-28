@@ -80,8 +80,11 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     } else taggedInputChannels.foreach(_.setup(new InputOutputContext(mapContext)))
 
     countValuesPerMapper = context.getConfiguration.getBoolean(Configurations.COUNT_MAPPER_VALUES, false)
-    val mapperNumber         = context.getTaskAttemptID.getTaskID.getId
-    counter = context.getCounter(Configurations.MAPPER_VALUES_COUNTER, s"mapper-$mapperNumber")
+
+    if (countValuesPerMapper) {
+      val mapperNumber = context.getTaskAttemptID.getTaskID.getId
+      counter = context.getCounter(Configurations.MAPPER_VALUES_COUNTER, s"mapper-$mapperNumber")
+    }
   }
 
   override def map(key: Any, value: Any, context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
