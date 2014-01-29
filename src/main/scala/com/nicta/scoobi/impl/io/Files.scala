@@ -47,8 +47,11 @@ trait Files {
       val from = fileSystem(path)
       val to   = fileSystem(dir)
 
-      if (sameFileSystem(from, to)) from.rename(path, new Path(dir, newPath))
-      else                          FileUtil.copy(from, path, to, new Path(dir, newPath),
+      val destPath = new Path(dir, newPath)
+      if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
+
+      if (sameFileSystem(from, to)) from.rename(path, destPath)
+      else                          FileUtil.copy(from, path, to, destPath,
                                                   true /* deleteSource */, false /* overwrite */, configuration)
     }
   }

@@ -28,6 +28,8 @@ import ScoobiConfigurationImpl._
 import util.Compatibility
 import com.nicta.scoobi.impl.rtt.ScoobiMetadata
 import org.apache.hadoop.util.ReflectionUtils
+import com.nicta.scoobi.impl.io.Files
+import org.apache.hadoop.fs.Path
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -97,6 +99,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
       ScoobiMetadata.saveMetadata("scoobi.metadata."+sink.outputValueClass.getName, elementWireformat, job.getConfiguration)
 
       job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}out${sink.id}")
+      job.getConfiguration.set("mapred.work.output.dir", sink.outputPath.getOrElse(sink.id).toString)
       job.getConfiguration.set("avro.mo.config.namedOutput", s"ch${node.id}out${sink.id}")
 
       sink.configureCompression(job.getConfiguration)
@@ -114,6 +117,24 @@ trait ExecutionMode extends ShowNode with Optimiser {
       rw.close(taskContext)
       oc.commitTask(taskContext)
       oc.commitJob(job)
+
+      implicit val fs = sc.fileSystem
+
+      sink.outputPath.foreach { outputDir =>
+        val outputs = fs.listFiles(outputDir, true)
+
+        while (outputs.hasNext) {
+          val outputFilePath = outputs.next.getPath.toUri.getPath
+
+          val fromOutputDir = outputFilePath.replace(Files.dirPath(outputDir.toUri.getPath), "")
+          val withoutAttempt = fromOutputDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
+
+          if (withoutAttempt != fromOutputDir) {
+            val newPath = new Path(withoutAttempt)
+            Files.moveTo(outputDir)(sc.configuration).apply(new Path(outputFilePath), newPath)
+          }
+        }
+      }
     }
     sinks.foreach(_.outputTeardown(sc))
   }

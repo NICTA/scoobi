@@ -44,7 +44,7 @@ case class TextFilePartitionedSink[K : Manifest, V : Manifest](
       logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
       Files.deletePath(output)(sc.configuration)
     }
-    DistCache.pushObject[K => String](sc.configuration, partition, "pathPartitionFunction_"+output.toString)
+    DistCache.pushObject[K => String](sc.configuration, partition, TextFilePartitionedSink.functionTag(sc.configuration, outputPath.getOrElse(id).toString))
   }
 
   lazy val outputConverter = new OutputConverter[K, V, (K, V)] {
@@ -56,17 +56,27 @@ case class TextFilePartitionedSink[K : Manifest, V : Manifest](
   override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
 }
 
+object TextFilePartitionedSink {
+  def functionTag(configuration: Configuration, defaultWorkDir: String = "-") = {
+    val outputDir = configuration.get("mapred.work.output.dir", defaultWorkDir)
+    val withoutProtocol = new Path(outputDir).toString.split("/").drop(2).mkString("/")
+    "pathPartitionFunction_"+withoutProtocol
+  }
+
+}
+
 class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
 
   def getRecordWriter(context: TaskAttemptContext): RecordWriter[K, V] = {
+    val partitionFunctionTag = TextFilePartitionedSink.functionTag(context.getConfiguration)
     val outputDir = FileOutputFormat.getOutputPath(context)
-    
+
     new RecordWriter[K, V] {
       private val recordWriters =
         new collection.mutable.HashMap[Path, RecordWriter[NullWritable, V]]
 
       def write(key: K, value: V) {
-        val finalPath = generatePathForKeyValue(key, value, outputDir)(context.getConfiguration)
+        val finalPath = generatePathForKeyValue(key, value, outputDir, partitionFunctionTag)(context.getConfiguration)
         val rw = recordWriters.get(finalPath) match {
           case None    => val newWriter = getBaseRecordWriter(context, finalPath); recordWriters.put(finalPath, newWriter); newWriter
           case Some(x) => x
@@ -81,8 +91,8 @@ class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
     }
   }
 
-  protected def generatePathForKeyValue(key: K, value: V, outputDir: Path)(configuration: Configuration): Path = {
-    val partitionFunction = DistCache.pullObject[K => String](configuration, "pathPartitionFunction_"+outputDir.toString)
+  protected def generatePathForKeyValue(key: K, value: V, outputDir: Path, functionTag: String)(configuration: Configuration): Path = {
+    val partitionFunction = DistCache.pullObject[K => String](configuration, functionTag)
     new Path(outputDir, partitionFunction.map(_(key)).getOrElse(key.toString))
   }
 

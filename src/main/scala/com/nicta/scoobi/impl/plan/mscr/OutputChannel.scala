@@ -120,7 +120,8 @@ trait MscrOutputChannel extends OutputChannel { outer =>
           val withoutAttempt = fromTempDir.split("/").filterNot(_.startsWith("_")).mkString("/")
           val newPath = new Path(withoutAttempt)
 
-          moveTo(outDir).apply(path, newPath)
+          val moved = moveTo(outDir).apply(path, newPath)
+          if (!moved) outer.logger.error(s"can not move \n $path to \n ${new Path(outDir, newPath)}")
         }
       }
     }
