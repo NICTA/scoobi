@@ -746,6 +746,32 @@ applying a specified function.</p><div class="fullcomment"><div class="comment c
 applying a specified function. The resulting collection of elements form a
 new distributed list
 </p></div></div>
+    </li><li name="com.nicta.scoobi.core.DList#mapKeys" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mapKeys[K,V,B](f:K=&gt;B)(implicitev:&lt;:&lt;[A,(K,V)],implicitwfv:com.nicta.scoobi.core.WireFormat[V],implicitwfb:com.nicta.scoobi.core.WireFormat[B]):com.nicta.scoobi.core.DList[(B,V)]"></a>
+      <a id="mapKeys[K,V,B]((K)⇒B)(&lt;:&lt;[A,(K,V)],WireFormat[V],WireFormat[B]):DList[(B,V)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapKeys</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.K">K</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>, (<span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.V">V</span>)]</span>, <span name="wfv">wfv: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.V">V</span>]</span>, <span name="wfb">wfb: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.B">B</span>, <span class="extype" name="com.nicta.scoobi.core.DList.mapKeys.V">V</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">map the keys of a DList[(K, V)]</p>
+    </li><li name="com.nicta.scoobi.core.DList#mapValues" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mapValues[K,V,B](f:V=&gt;B)(implicitev:&lt;:&lt;[A,(K,V)],implicitwfk:com.nicta.scoobi.core.WireFormat[K],implicitwfb:com.nicta.scoobi.core.WireFormat[B]):com.nicta.scoobi.core.DList[(K,B)]"></a>
+      <a id="mapValues[K,V,B]((V)⇒B)(&lt;:&lt;[A,(K,V)],WireFormat[K],WireFormat[B]):DList[(K,B)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapValues</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.DList.mapValues.V">V</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.DList.mapValues.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>, (<span class="extype" name="com.nicta.scoobi.core.DList.mapValues.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.DList.mapValues.V">V</span>)]</span>, <span name="wfk">wfk: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.mapValues.K">K</span>]</span>, <span name="wfb">wfb: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.DList.mapValues.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.core.DList.mapValues.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.DList.mapValues.B">B</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">map the values of a DList[(K, V)]</p>
     </li><li name="com.nicta.scoobi.core.DList#max" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="max(implicitcmp:Ordering[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="max(Ordering[A]):DObject[A]"></a>
