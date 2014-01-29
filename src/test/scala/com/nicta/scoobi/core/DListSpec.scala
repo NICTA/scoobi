@@ -137,9 +137,10 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   "A shuffled DList contains the same elements" >> { implicit sc: SC =>
     val shuffleProp = (list: List[Int]) => {
       val orig = list.toDList
-      run(orig.shuffle isEqual orig) must_== true
+      val result = run(orig.shuffle isEqual orig)
+      result must_== true
     }
-    Prop.forAll(shuffleProp).set(minTestsOk = 5, minSize = 0, maxSize = 100000)
+    Prop.forAll(arbitrary[List[Int]])(shuffleProp).set(minTestsOk = 1, minSize = 3, maxSize = 3, workers = 1)
   }
 
   tag("issue 256")
