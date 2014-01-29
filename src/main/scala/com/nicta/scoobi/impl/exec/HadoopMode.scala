@@ -155,10 +155,10 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       implicit val mscrConfiguration = sc.duplicate
       val step = s"$mscrNumber of $totalMscrsNumber"
 
-      s"Loading input nodes for map reduce job ${mscr.id} $step".debug
+      s"Loading input nodes for map reduce job $step".debug
       mscr.inputNodes.foreach(load)
 
-      s"Configuring map reduce job ${mscr.id} $step".debug
+      s"Configuring map reduce job $step".debug
       (MapReduceJob(mscr, layer.id, mscrNumber, totalMscrsNumber).configure, step)
     }
 
