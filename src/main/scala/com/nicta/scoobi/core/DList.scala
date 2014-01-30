@@ -65,9 +65,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * key-value-collection distributed list. */
   def combine[K, V](f: Reduction[V])(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wv: WireFormat[V]): DList[(K, V)]
 
-  @deprecated(message="use materialise instead", since="0.6.0")
-  def materialize: DObject[Iterable[A]] = materialise
-
   /**
    * Turn a distributed list into a normal, non-distributed collection that can be accessed
    * by the client
@@ -98,10 +95,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * new distributed list
    */
   def mapFlatten[B : WireFormat](f: A => Iterable[B]): DList[B] =
-    parallelDo((input: A, emitter: Emitter[B]) => f(input).foreach { emitter.emit(_) })
-
-  @deprecated(message = "use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A => DList[B]", since = "0.7.0")
-  def flatMap[B : WireFormat](f: A => Iterable[B]): DList[B] = mapFlatten(f)
+    parallelDo((input: A, emitter: Emitter[B]) => f(input) foreach emitter.emit)
 
   /**
    * For each element of the distributed list produce a new element by applying a

@@ -578,7 +578,7 @@ intString.valueToSequenceFile("hdfs://path/to/output").persist
 
 ##### Avro file
 
-To persist a `DList` to an Avro file, Scoobi provides the method [`${termName(toAvroFile(???, ""))}`]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented: ${snippet{
+To persist a `DList` to an Avro file, Scoobi provides the method [`toAvroFile("")`]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented: ${snippet{
 
 val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = DList(???)
 xs.toAvroFile("hdfs://path/to/file").persist

@@ -94,9 +94,6 @@ trait Emitter[A] extends EmitterWriter {
   def emit(value: A)
 }
 
-@deprecated(message = "use DoFn instead or use a function (A, Emitter[B]) => Unit", since = "0.7")
-trait BasicDoFn[A, B] extends DoFn[A, B]
-
 /**
  * Internal version of a EnvDoFn functions without type information
  */

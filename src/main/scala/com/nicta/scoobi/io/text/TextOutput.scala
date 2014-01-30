@@ -36,13 +36,6 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 /** Smart functions for persisting distributed lists by storing them as text files. */
 trait TextOutput {
 
-  /**
-   * Persist a distributed list as a text file.
-   * @deprecated(message="use list.toTextFile(...) instead", since="0.7.0")
-   */
-  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
-    dl.addSink(textFileSink(path, overwrite, check))
-
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a delimited text file. */
   def listToDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = {
     def anyToString(any: Any, sep: String): String = any match {

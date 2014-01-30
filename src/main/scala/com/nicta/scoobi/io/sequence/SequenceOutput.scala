@@ -37,14 +37,6 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
 trait SequenceOutput {
 
-  /**
-   * Specify a distributed list to be persistent by converting its elements to Writables and storing it
-   * to disk as the "key" component in a Sequence File.
-   *  @deprecated(message="use list.keyToSequenceFile(...) instead", since="0.7.0")
-   */
-  def keyToSequenceFile[K](dl: DList[K], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)(implicit convK: SeqSchema[K]) =
-    dl.addSink(keySchemaSequenceFile(path, overwrite, check))
-
   def keySchemaSequenceFile[K](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)(implicit convK: SeqSchema[K]) = {
 
     val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
@@ -59,15 +51,6 @@ trait SequenceOutput {
     }
     new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter, overwrite, check)
   }
-
-  /**
-   * Specify a distributed list to be persistent by converting its elements to Writables and storing it
-   * to disk as the "value" component in a Sequence File.
-   *  @deprecated(message="use list.valueToSequenceFile(...) instead", since="0.7.0")
-   */
-  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false,
-                             check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) =
-    dl.addSink(valueSchemaSequenceFile(path, overwrite, check, checkpoint))
 
   def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false,
                                  check: Sink.OutputCheck = Sink.defaultOutputCheck,
@@ -84,14 +67,6 @@ trait SequenceOutput {
     }
     new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), expiryPolicy, checkpoint))
   }
-
-  /**
-   * Specify a distributed list to be persistent by converting its elements to Writables and storing it
-   * to disk as "key-values" in a Sequence File
-   * @deprecated(message="use list.toSequenceFile(...) instead", since="0.7.0")
-   */
-  def toSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration) =
-    dl.addSink(schemaSequenceSink(path, overwrite, check, checkpoint)(convK, convV, sc))
 
   def schemaSequenceSink[K, V](path: String, overwrite: Boolean = false,
                                check: Sink.OutputCheck = Sink.defaultOutputCheck,

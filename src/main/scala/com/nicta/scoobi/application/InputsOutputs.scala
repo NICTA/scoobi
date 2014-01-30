@@ -87,10 +87,6 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
     def toDelimitedTextFile(path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
       objectToDelimitedTextFile(o, path, sep, overwrite, check)
   }
-  /** @deprecated(message="use list.toTextFile(...) instead", since="0.7.0") */
-  def toDelimitedTextFile[A <: Product : Manifest](dl: core.DList[A], path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
-    listToDelimitedTextFile(dl, path, sep, overwrite, check)
-
   /** Sequence File I/O */
   type SeqSchema[A] = com.nicta.scoobi.io.sequence.SeqSchema[A]
 

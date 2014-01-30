@@ -41,14 +41,6 @@ import java.util.zip.Deflater
 /** Functions for persisting distributed lists by storing them as Avro files. */
 trait AvroOutput {
 
-  /**
-   * Specify a distributed list to be persistent by storing it to disk as an Avro File
-   * @deprecated(message="use list.toAvroFile(...) instead", since="0.7.0")
-   */
-  def toAvroFile[B](list: DList[B], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck,
-                    checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
-    list.addSink(avroSink(path, overwrite, check, checkpoint, expiryPolicy))
-
   def avroSink[B](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck,
                   checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit sc: ScoobiConfiguration, schema: AvroSchema[B]) = {
     val converter = new OutputConverter[AvroKey[schema.AvroType], NullWritable, B] {

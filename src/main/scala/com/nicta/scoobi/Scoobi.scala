@@ -44,8 +44,6 @@ object Scoobi extends core.WireFormatImplicits
 
   type DoFn[A, B] = com.nicta.scoobi.core.DoFn[A, B]
 
-  @deprecated(message = "use DoFn instead or use a function (A, Emitter[B]) => Unit", since = "0.7")
-  type BasicDoFn[A, B] = com.nicta.scoobi.core.BasicDoFn[A, B]
   type EnvDoFn[A, B, E] = com.nicta.scoobi.core.EnvDoFn[A, B, E]
 
   val Grouping = com.nicta.scoobi.core.Grouping

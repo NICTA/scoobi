@@ -33,8 +33,6 @@ import core.Mode.InMemory
  */
 trait ScoobiConfiguration {
   def configuration: Configuration
-  @deprecated(message="use 'configuration' instead", since="0.7.0")
-  def conf: Configuration = configuration
   def userJars: Set[String]
   def userDirs: Set[String]
   def userClasses: Map[String, Array[Byte]]
@@ -100,8 +98,6 @@ trait ScoobiConfiguration {
   def deleteTemporaryOutputDirectory: Boolean
 
   def fileSystem: FileSystem
-  @deprecated(message = "use 'fileSystem' instead", since = "0.7.0")
-  def fs: FileSystem = fileSystem
   def newEnv(wf: WireReaderWriter): Environment
 
   def persist[A](ps: Seq[Persistent[_]]): Seq[Persistent[_]]
