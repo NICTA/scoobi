@@ -24,7 +24,7 @@ import scalaz.Equal
 import com.nicta.scoobi.impl.io.{Files, FileSystems}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
-import org.apache.commons.logging.LogFactory
+import org.apache.commons.logging.{Log, LogFactory}
 import mapreducer._
 import ChannelOutputFormat._
 import monitor.Loggable._
@@ -102,36 +102,32 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 
   /** copy all outputs files to the destinations specified by sink files */
   def collectOutputs(outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) {
-    import fileSystems._
-    implicit val configuration = sc.configuration
-    val tempDir = sc.temporaryOutputDirectory
+    import fileSystems._; implicit val configuration = sc.configuration
 
     outer.logger.debug("outputs files are "+outputFiles.mkString("\n") )
     // copy the each result file to its sink
     sinks.foreach { sink =>
       sink.outputPath foreach { outDir =>
         mkdir(outDir)
-        outer.logger.debug("creating directory "+outDir)
-
-        val outputs = outputFiles.filter(isResultFile(tag, sink.id))
-        outer.logger.debug("outputs result files for tag "+tag+" and sink id "+sink.id+" are "+outputs.map(_.getName).mkString("\n") )
-        outputs.foreach { path =>
-          val fromTempDir = path.toUri.getPath.replace(Files.dirPath(tempDir.toUri.getPath), "")
-          val withoutAttempt = fromTempDir.split("/").filterNot(_.startsWith("_")).mkString("/")
-          val newPath = new Path(withoutAttempt)
-
-          val moved = moveTo(outDir).apply(path, newPath)
-          if (!moved) outer.logger.error(s"can not move \n $path to \n ${new Path(outDir, newPath)}")
-        }
+        outer.logger.debug("created directory "+outDir)
+        moveOutputFiles(sink, outDir, outputFiles)
       }
     }
     // copy the success file to every output directory
     outputFiles.find(_.getName ==  "_SUCCESS").foreach { successFile =>
-      sinks.flatMap(_.outputPath).foreach { outDir =>
-        mkdir(outDir)
-        copyTo(outDir).apply(successFile)
-      }
+      sinks.flatMap(_.outputPath).foreach { outDir => copyTo(outDir).apply(successFile) }
     }
+  }
+
+  /**
+   * move the files of a given sink to its output directory.
+   */
+  private def moveOutputFiles(sink: Sink, outDir: Path, outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) = {
+    val outputs = outputFiles.filter(isResultFile(tag, sink.id))
+    outer.logger.debug("outputs result files for tag "+tag+" and sink id "+sink.id+" are "+outputs.map(_.getName).mkString("\n"))
+
+    // move files and cleanup temporary files if any
+    outputs foreach OutputChannel.moveFileFromTo(srcDir = sc.temporaryOutputDirectory, destDir = outDir)
   }
 
   /**
@@ -254,7 +250,28 @@ case class BypassOutputChannel(input: ParallelDo, nodes: Layering = new Layering
  * Utility functions for Output channels
  */
 object OutputChannel {
+
   implicit def outputChannelEqual = new Equal[OutputChannel] {
     def equal(a1: OutputChannel, a2: OutputChannel) = a1.tag == a2.tag
+  }
+
+  /**
+   * This function moves a file to the expected output directory
+   *
+   * Some files (created with partitionedTextFileSink) might have a path portion like
+   *   year=2013/month=12/day=01/_temporary/_attempt_201301010000_0001_m_000001_0
+   *
+   * The code below removes the _temporary and _attempt part from path before moving the file and makes sure that
+   *   year=2013/month=12/day=01 remains
+   */
+  def moveFileFromTo(srcDir: Path, destDir: Path)(implicit sc: ScoobiConfiguration, fileSystems: FileSystems, outerLogger: Log): Path => Unit = { path =>
+    import fileSystems._; implicit val configuration = sc.configuration
+
+    val fromSourceDir  = path.toUri.getPath.replace(Files.dirPath(srcDir.toUri.getPath), "")
+    val withoutAttempt = fromSourceDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
+    val newPath        = new Path(withoutAttempt)
+
+    val moved = moveTo(destDir).apply(path, newPath)
+    if (!moved) outerLogger.error(s"can not move \n $path to \n ${new Path(destDir, newPath)}")
   }
 }

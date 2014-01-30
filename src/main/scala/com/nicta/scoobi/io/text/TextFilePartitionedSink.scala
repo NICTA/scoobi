@@ -57,6 +57,12 @@ case class TextFilePartitionedSink[K : Manifest, V : Manifest](
 }
 
 object TextFilePartitionedSink {
+
+  /**
+   * we need a specific tag to save the partition function in the distributed cache
+   * we use the mapred.work.output.dir property to make sure that each function will be associated
+   * to the correct PartitionedTextOutputFormat
+   */
   def functionTag(configuration: Configuration, defaultWorkDir: String = "-") = {
     val outputDir = configuration.get("mapred.work.output.dir", defaultWorkDir)
     val withoutProtocol = new Path(outputDir).toString.split("/").drop(2).mkString("/")

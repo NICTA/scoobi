@@ -34,7 +34,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   }
 
   "it must be possible to create an empty DList from a missing file and persist it" >> { implicit sc: SC =>
-    val list = fromTextFile(Seq("missing"), check = Source.noInputCheck)
+    val list = fromTextFiles(Seq("missing"), check = Source.noInputCheck)
     list.run === Vector()
   }
 

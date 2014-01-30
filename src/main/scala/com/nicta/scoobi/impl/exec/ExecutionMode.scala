@@ -30,6 +30,7 @@ import com.nicta.scoobi.impl.rtt.ScoobiMetadata
 import org.apache.hadoop.util.ReflectionUtils
 import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import org.apache.hadoop.fs.Path
+import com.nicta.scoobi.impl.plan.mscr.OutputChannel
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -99,6 +100,8 @@ trait ExecutionMode extends ShowNode with Optimiser {
       ScoobiMetadata.saveMetadata("scoobi.metadata."+sink.outputValueClass.getName, elementWireformat, job.getConfiguration)
 
       job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}out${sink.id}")
+      // it is necessary to set the work output dir to the configuration so that the partition function, if any,
+      // can be retrieved by the TextFilePartitionedSink (see `functionTag` in that class)
       job.getConfiguration.set("mapred.work.output.dir", sink.outputPath.getOrElse(sink.id).toString)
       job.getConfiguration.set("avro.mo.config.namedOutput", s"ch${node.id}out${sink.id}")
 
@@ -119,20 +122,10 @@ trait ExecutionMode extends ShowNode with Optimiser {
       oc.commitJob(job)
 
       implicit val fs = sc.fileSystem
+      implicit val fileSystems = FileSystems
 
       sink.outputPath.foreach { outputDir =>
-        val outputs = FileSystems.listPaths(outputDir)
-
-        outputs foreach { outputFilePath =>
-
-          val fromOutputDir = outputFilePath.toUri.getPath.replace(Files.dirPath(outputDir.toUri.getPath), "")
-          val withoutAttempt = fromOutputDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
-
-          if (withoutAttempt != fromOutputDir) {
-            val newPath = new Path(withoutAttempt)
-            Files.moveTo(outputDir)(sc.configuration).apply(outputFilePath, newPath)
-          }
-        }
+        FileSystems.listPaths(outputDir) foreach OutputChannel.moveFileFromTo(srcDir = outputDir, destDir = outputDir)
       }
     }
     sinks.foreach(_.outputTeardown(sc))

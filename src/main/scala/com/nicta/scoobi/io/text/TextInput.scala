@@ -34,20 +34,65 @@ import impl.ScoobiConfiguration._
 import impl.io.Files
 import WireFormat._
 
-/** Smart functions for materialising distributed lists by loading text files. */
+/**
+ * Smart functions for materialising distributed lists by loading text files.
+ */
 trait TextInput {
-  /** Create a distributed list from one or more files or directories (in the case of a directory,
-    * the input forms all files in that directory). */
-  def fromTextFile(paths: String*): DList[String] = fromTextSource[String](textSource(paths))
 
-  def fromPartitionedTextFiles(paths: String*): DList[(String, String)] =
-    DListImpl(partitionedTextSource(paths))
+  /**
+   * Create a DList from one or more files or directories (in the case of a directory, the input forms all files in that directory).
+   */
+  def fromTextFile(paths: String*): DList[String] =
+    fromTextSource[String](textSource(paths))
 
-  def fromTextFile(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[String] =
+  def fromTextFiles(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[String] =
     fromTextSource[String](textSource(paths, check))
 
-  def fromTextSource[A : WireFormat](source: TextSource[A]) = DListImpl(source)
+  /**
+   * Create a DList[(String, String)] from one or more files or directories where
+   *   key   = the path name of the read file
+   *   value = a line in the file
+   */
+  def fromPartitionedTextFiles(paths: String*): DList[(String, String)] =
+  fromTextSource[(String, String)](partitionedTextSource(paths))
 
+  /** Create a distributed list from a list of one ore more files or directories (in the case of
+    * a directory, the input forms all files in that directory). The file(s) contain a number
+    * of fields delimited by a separator. Use an extractor function to pull out the required
+    * fields to create the distributed list. */
+  def fromDelimitedTextFiles[A : WireFormat](paths: Seq[String], sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
+                                            (extractFn: PartialFunction[Seq[String], A]): DList[A] = {
+    val lines = fromTextSource(textSource(paths, check))
+    lines.mapFlatten { line =>
+      val fields = line.split(sep).toList
+      if (extractFn.isDefinedAt(fields)) List(extractFn(fields)) else Nil
+    }
+  }
+
+  /** Create a distributed list from a text file that is a number of fields delimited
+    * by some separator. Use an extractor function to pull out the required fields to
+    * create the distributed list. */
+  def fromDelimitedTextFile[A : WireFormat]
+  (path: String, sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
+  (extractFn: PartialFunction[Seq[String], A]): DList[A] =
+    fromDelimitedTextFiles(Seq(path), sep, check)(extractFn)
+
+  /**
+   * TEXT SOURCES
+   */
+  def fromTextSource[A : WireFormat](source: DataSource[_, _, A]) = DListImpl(source)
+
+  /** create a text source */
+  def textSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
+    new TextSource[String](paths, inputConverter = defaultTextConverter, check = check)
+
+  /** create a text source for partitioned files */
+  def partitionedTextSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
+    new PartitionedTextSource[(String, String)](paths, inputConverter = defaultTextConverterWithPath, check = check)
+
+  /**
+   * INPUT CONVERTERS
+   */
   def defaultTextConverter = new InputConverter[LongWritable, Text, String] {
     def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
   }
@@ -56,64 +101,9 @@ trait TextInput {
     def fromKeyValue(context: InputContext, k: Text, v: Text) = (k.toString, v.toString)
   }
 
-  /** create a text source */
-  def textSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
-    new TextSource[String](paths, inputConverter = defaultTextConverter, check = check)
-
-  /** create a text source */
-  def partitionedTextSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
-    new PartitionedTextSource[(String, String)](paths, inputConverter = defaultTextConverterWithPath, check = check)
-
-  /** Create a distributed list from one or more files or directories (in the case of
-    * a directory, the input forms all files in that directory). The distributed list is a tuple
-    * where the first part is the path of the originating file and the second part is a line of
-    * text. */
-  def fromTextFileWithPath(path: String, check: Source.InputCheck = Source.defaultInputCheck): DList[(String, String)] =
-    fromTextFileWithPaths(Seq(path), check)
-
-
-  /** Create a distributed list from a list of one or more files or directories (in the case of
-    * a directory, the input forms all files in that directory). The distributed list is a tuple
-    * where the first part is the path of the originating file and the second part is a line of
-    * text. */
-  def fromTextFileWithPaths(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[(String, String)] = {
-    val converter = new InputConverter[LongWritable, Text, (String, String)] {
-      def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = {
-        val taggedSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
-        val fileSplit = taggedSplit.inputSplit.asInstanceOf[FileSplit]
-        val path = fileSplit.getPath.toUri.toASCIIString
-        (path, v.toString)
-      }
-    }
-    fromTextSource[(String, String)](new TextSource(paths, inputConverter = converter, check = check))
-  }
-
-  /** Create a distributed list from a list of one ore more files or directories (in the case of
-    * a directory, the input forms all files in that directory). The file(s) contain a number
-    * of fields delimited by a separator. Use an extractor function to pull out the required
-    * fields to create the distributed list. */
-  def fromDelimitedTextFiles[A : WireFormat]
-  (path: Seq[String], sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
-  (extractFn: PartialFunction[Seq[String], A]): DList[A] = {
-
-    val lines = fromTextSource(textSource(path, check))
-    lines.mapFlatten { line =>
-      val fields = line.split(sep).toList
-      if (extractFn.isDefinedAt(fields)) List(extractFn(fields)) else Nil
-    }
-  }
-
-
-  /** Create a distributed list from a text file that is a number of fields delimited
-    * by some separator. Use an extractor function to pull out the required fields to
-    * create the distributed list. */
-  def fromDelimitedTextFile[A : WireFormat]
-      (path: String, sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
-      (extractFn: PartialFunction[Seq[String], A]): DList[A] = {
-      fromDelimitedTextFiles(Seq(path), sep, check)(extractFn)
-  }
-
-
+  /**
+   * EXTRACTORS
+   */
   private type NFE = java.lang.NumberFormatException
 
   /** Extract an Int from a String. */
@@ -141,42 +131,6 @@ trait TextInput {
   }
 
 }
+
 object TextInput extends TextInput
 
-/** Class that abstracts all the common functionality of reading from text files. */
-case class TextSource[A : WireFormat](paths: Seq[String],
-                                      inputFormat: Class[_ <: FileInputFormat[LongWritable, Text]] = classOf[TextInputFormat],
-                                      inputConverter: InputConverter[LongWritable, Text, A] = TextInput.defaultTextConverter,
-                                      check: Source.InputCheck = Source.defaultInputCheck)
-  extends DataSource[LongWritable, Text, A] {
-
-  private val inputPaths = paths.map(p => new Path(p))
-  override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
-
-  def inputCheck(implicit sc: ScoobiConfiguration) { check(inputPaths, sc) }
-
-  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-    inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
-  }
-
-  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Files.pathSize(p)(sc)).sum
-}
-
-/** Class that abstracts all the common functionality of reading from text files. */
-case class PartitionedTextSource[A : WireFormat](paths: Seq[String],
-                                              inputFormat: Class[_ <: FileInputFormat[Text, Text]] = classOf[PathTextInputFormat],
-                                              inputConverter: InputConverter[Text, Text, A] = TextInput.defaultTextConverterWithPath,
-                                              check: Source.InputCheck = Source.defaultInputCheck)
-  extends DataSource[Text, Text, A] {
-
-  private val inputPaths = paths.map(p => new Path(p))
-  override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
-
-  def inputCheck(implicit sc: ScoobiConfiguration) { check(inputPaths, sc) }
-
-  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-    inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
-  }
-
-  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Files.pathSize(p)(sc)).sum
-}

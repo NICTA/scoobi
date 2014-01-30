@@ -99,6 +99,37 @@ And, a more interesting example is when the value of one field influences the se
       case event :: AnInt(year) :: "AD" :: _ => (event, thisYear - year)
     }
 
+##### Partitioned Text files
+
+Files accessed with Hive can typically be stored by date:
+```
+  + out
+  |
+  + year=2014
+    |
+    + month=01
+      |
+      + day=30
+        | part.txt
+      + day=31
+        | part.txt
+    + month=02
+      |
+      + day=01
+        | part.txt
+      + day=02
+        | part.txt
+```
+
+In this case, part of the file path is meaningful and we want associate each value read in the file with its corresponding path: ${snippet{
+  // read the values
+  val list: DList[(String, String)] = fromPartitionedTextFiles("out/*/*/*")
+
+  // parse the path component to extract a date
+  val toDate: String => java.util.Date = ??? // date parsing function
+  val dated: DList[(java.util.Date, String)] = list.mapKeys(toDate)
+}}
+
 ##### Sequence files
 
 Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input]($API_PAGE#com.nicta.scoobi.io.sequence.SeqInput$$) and [output]($API_PAGE#com.nicta.scoobi.io.sequence.SeqOutput$$).
@@ -502,6 +533,16 @@ stringsAndInts.toDelimitedTextFile("hdfs://path/to/output").persist
  */
 val peopleAndAges: DList[Person] = DList(Person("foo", 6), Person("bar", 23), Person("joe", 91))
 peopleAndAges.toDelimitedTextFile("hdfs://path/to/output", ",").persist
+}}
+
+##### Partitioned text file
+
+It is possible to output a `DList[(K, V)]` to text files in different directories where the name of the directory depends on the value of the key: ${snippet{
+  val list: DList[(java.util.Date, String)] = ???
+
+  // implement a function which will encode a date into a path name, for example as year=yy/month=dd/day=dd
+  val partitionFunction: java.util.Date => String = ???
+  list.toPartitionedTextFile("hdfs://path/to/output", partitionFunction)
 }}
 
 ##### Sequence file
