@@ -28,7 +28,7 @@ import ScoobiConfigurationImpl._
 import util.Compatibility
 import com.nicta.scoobi.impl.rtt.ScoobiMetadata
 import org.apache.hadoop.util.ReflectionUtils
-import com.nicta.scoobi.impl.io.Files
+import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import org.apache.hadoop.fs.Path
 
 trait ExecutionMode extends ShowNode with Optimiser {
@@ -121,17 +121,16 @@ trait ExecutionMode extends ShowNode with Optimiser {
       implicit val fs = sc.fileSystem
 
       sink.outputPath.foreach { outputDir =>
-        val outputs = fs.listFiles(outputDir, true)
+        val outputs = FileSystems.listPaths(outputDir)
 
-        while (outputs.hasNext) {
-          val outputFilePath = outputs.next.getPath.toUri.getPath
+        outputs foreach { outputFilePath =>
 
-          val fromOutputDir = outputFilePath.replace(Files.dirPath(outputDir.toUri.getPath), "")
+          val fromOutputDir = outputFilePath.toUri.getPath.replace(Files.dirPath(outputDir.toUri.getPath), "")
           val withoutAttempt = fromOutputDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
 
           if (withoutAttempt != fromOutputDir) {
             val newPath = new Path(withoutAttempt)
-            Files.moveTo(outputDir)(sc.configuration).apply(new Path(outputFilePath), newPath)
+            Files.moveTo(outputDir)(sc.configuration).apply(outputFilePath, newPath)
           }
         }
       }
