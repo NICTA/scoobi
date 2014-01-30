@@ -639,7 +639,7 @@ that directory.</p></div><dl class="attributes block"> <dt>Definition Classes</d
 the schema types allowed by Avro, as constrained by the 'AvroSchema' type class. In the case of a directory
 being specified, the input forms all the files in that directory.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/avro/AvroInput.html" class="extype" name="com.nicta.scoobi.io.avro.AvroInput">AvroInput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextInput#fromDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromDelimitedTextFile[A](path:String,sep:String,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(extractFn:PartialFunction[Seq[String],A])(implicitevidence$2:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="fromDelimitedTextFile[A](path:String,sep:String,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(extractFn:PartialFunction[Seq[String],A])(implicitevidence$3:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
       <a id="fromDelimitedTextFile[A](String,String,(Seq[Path],ScoobiConfiguration)⇒Unit)(PartialFunction[Seq[String],A])(WireFormat[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -654,6 +654,23 @@ being specified, the input forms all the files in that directory.</p></div><dl c
 by some separator.</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from a text file that is a number of fields delimited
 by some separator. Use an extractor function to pull out the required fields to
 create the distributed list.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#fromDelimitedTextFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromDelimitedTextFiles[A](path:Seq[String],sep:String,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(extractFn:PartialFunction[Seq[String],A])(implicitevidence$2:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="fromDelimitedTextFiles[A](Seq[String],String,(Seq[Path],ScoobiConfiguration)⇒Unit)(PartialFunction[Seq[String],A])(WireFormat[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromDelimitedTextFiles</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="path">path: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;\t&quot;</span></span>, <span name="check">check: (<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Source.defaultInputCheck</a></span></span></span>)</span><span class="params">(<span name="extractFn">extractFn: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>], <span class="extype" name="com.nicta.scoobi.io.text.TextInput.fromDelimitedTextFiles.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextInput.fromDelimitedTextFiles.A">A</span>]</span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextInput.fromDelimitedTextFiles.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distributed list from a list of one ore more files or directories (in the case of
+a directory, the input forms all files in that directory).</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from a list of one ore more files or directories (in the case of
+a directory, the input forms all files in that directory). The file(s) contain a number
+of fields delimited by a separator. Use an extractor function to pull out the required
+fields to create the distributed list.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InputsOutputs#fromLazySeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fromLazySeq[A](seq:=&gt;Seq[A],seqSize:Int)(implicitevidence$1:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
       <a id="fromLazySeq[A](⇒Seq[A],Int)(WireFormat[A]):DList[A]"></a>
