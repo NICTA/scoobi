@@ -267,6 +267,22 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel#moveFileFromTo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="moveFileFromTo(srcDir:org.apache.hadoop.fs.Path,destDir:org.apache.hadoop.fs.Path)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration,implicitfileSystems:com.nicta.scoobi.impl.io.FileSystems,implicitouterLogger:org.apache.commons.logging.Log):org.apache.hadoop.fs.Path=&gt;Unit"></a>
+      <a id="moveFileFromTo(Path,Path)(ScoobiConfiguration,FileSystems,Log):(Path)⇒Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">moveFileFromTo</span><span class="params">(<span name="srcDir">srcDir: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="destDir">destDir: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>, <span name="fileSystems">fileSystems: <span class="extype" name="com.nicta.scoobi.impl.io.FileSystems">FileSystems</span></span>, <span name="outerLogger">outerLogger: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">This function moves a file to the expected output directory</p><div class="fullcomment"><div class="comment cmt"><p>This function moves a file to the expected output directory</p><p>Some files (created with partitionedTextFileSink) might have a path portion like
+  year=2013/month=12/day=01/_temporary/_attempt_201301010000_0001_m_000001_0</p><p>The code below removes the _temporary and _attempt part from path before moving the file and makes sure that
+  year=2013/month=12/day=01 remains
+</p></div></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
