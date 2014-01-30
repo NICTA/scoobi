@@ -875,21 +875,6 @@ Files. In the case of a directory being specified, the input forms all the files
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/sequence/SequenceOutput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput">SequenceOutput</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#keyToSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="keyToSequenceFile[K](dl:com.nicta.scoobi.core.DList[K],path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K]):dl.T"></a>
-      <a id="keyToSequenceFile[K](DList[K],String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(io.sequence.SeqSchema[K]):T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">keyToSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="dl">dl: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.keyToSequenceFile.K">K</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Sink.defaultOutputCheck</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">io.sequence.SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.keyToSequenceFile.K">K</span>]</span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
-to disk as the &quot;key&quot; component in a Sequence File.</p><div class="fullcomment"><div class="comment cmt"><p>Specify a distributed list to be persistent by converting its elements to Writables and storing it
-to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/sequence/SequenceOutput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput">SequenceOutput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InputsOutputs#lazyObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="lazyObject[A](o:=&gt;A)(implicitevidence$2:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="lazyObject[A](⇒A)(WireFormat[A]):DObject[A]"></a>
@@ -904,7 +889,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       <p class="shortcomment cmt">create a DObject which will only be evaluated on the cluster</p>
     </li><li name="com.nicta.scoobi.io.text.TextOutput#listToDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="listToDelimitedTextFile[A&lt;:Product](dl:com.nicta.scoobi.core.DList[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$2:Manifest[A]):com.nicta.scoobi.core.DList[String]"></a>
+      <a id="listToDelimitedTextFile[A&lt;:Product](dl:com.nicta.scoobi.core.DList[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$1:Manifest[A]):com.nicta.scoobi.core.DList[String]"></a>
       <a id="listToDelimitedTextFile[A&lt;:Product](DList[A],String,String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):DList[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -956,7 +941,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectFromAvroFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectFromAvroFile[A](paths:Seq[String],checkSchemas:Boolean)(implicitevidence$27:com.nicta.scoobi.core.WireFormat[A],implicitevidence$28:InputsOutputs.this.AvroSchema[A]):com.nicta.scoobi.core.DObject[A]"></a>
+      <a id="objectFromAvroFile[A](paths:Seq[String],checkSchemas:Boolean)(implicitevidence$26:com.nicta.scoobi.core.WireFormat[A],implicitevidence$27:InputsOutputs.this.AvroSchema[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="objectFromAvroFile[A](Seq[String],Boolean)(WireFormat[A],AvroSchema[A]):DObject[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -969,7 +954,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectFromAvroFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectFromAvroFile[A](paths:String*)(implicitevidence$25:com.nicta.scoobi.core.WireFormat[A],implicitevidence$26:InputsOutputs.this.AvroSchema[A]):com.nicta.scoobi.core.DObject[A]"></a>
+      <a id="objectFromAvroFile[A](paths:String*)(implicitevidence$24:com.nicta.scoobi.core.WireFormat[A],implicitevidence$25:InputsOutputs.this.AvroSchema[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="objectFromAvroFile[A](String*)(WireFormat[A],AvroSchema[A]):DObject[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -995,7 +980,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectFromSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectFromSequenceFile[K,V](paths:Seq[String],checkKeyValueTypes:Boolean)(implicitevidence$21:com.nicta.scoobi.core.WireFormat[K],implicitevidence$22:InputsOutputs.this.SeqSchema[K],implicitevidence$23:com.nicta.scoobi.core.WireFormat[V],implicitevidence$24:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[(K,V)]"></a>
+      <a id="objectFromSequenceFile[K,V](paths:Seq[String],checkKeyValueTypes:Boolean)(implicitevidence$20:com.nicta.scoobi.core.WireFormat[K],implicitevidence$21:InputsOutputs.this.SeqSchema[K],implicitevidence$22:com.nicta.scoobi.core.WireFormat[V],implicitevidence$23:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[(K,V)]"></a>
       <a id="objectFromSequenceFile[K,V](Seq[String],Boolean)(WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):DObject[(K,V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1008,7 +993,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectFromSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectFromSequenceFile[K,V](paths:String*)(implicitevidence$17:com.nicta.scoobi.core.WireFormat[K],implicitevidence$18:InputsOutputs.this.SeqSchema[K],implicitevidence$19:com.nicta.scoobi.core.WireFormat[V],implicitevidence$20:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[(K,V)]"></a>
+      <a id="objectFromSequenceFile[K,V](paths:String*)(implicitevidence$16:com.nicta.scoobi.core.WireFormat[K],implicitevidence$17:InputsOutputs.this.SeqSchema[K],implicitevidence$18:com.nicta.scoobi.core.WireFormat[V],implicitevidence$19:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[(K,V)]"></a>
       <a id="objectFromSequenceFile[K,V](String*)(WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):DObject[(K,V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1034,7 +1019,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       <p class="shortcomment cmt">Text file I/O</p>
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectKeyFromSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectKeyFromSequenceFile[K](paths:Seq[String],checkKeyType:Boolean)(implicitevidence$11:com.nicta.scoobi.core.WireFormat[K],implicitevidence$12:InputsOutputs.this.SeqSchema[K]):com.nicta.scoobi.core.DObject[K]"></a>
+      <a id="objectKeyFromSequenceFile[K](paths:Seq[String],checkKeyType:Boolean)(implicitevidence$10:com.nicta.scoobi.core.WireFormat[K],implicitevidence$11:InputsOutputs.this.SeqSchema[K]):com.nicta.scoobi.core.DObject[K]"></a>
       <a id="objectKeyFromSequenceFile[K](Seq[String],Boolean)(WireFormat[K],SeqSchema[K]):DObject[K]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1047,7 +1032,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectKeyFromSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectKeyFromSequenceFile[K](paths:String*)(implicitevidence$9:com.nicta.scoobi.core.WireFormat[K],implicitevidence$10:InputsOutputs.this.SeqSchema[K]):com.nicta.scoobi.core.DObject[K]"></a>
+      <a id="objectKeyFromSequenceFile[K](paths:String*)(implicitevidence$8:com.nicta.scoobi.core.WireFormat[K],implicitevidence$9:InputsOutputs.this.SeqSchema[K]):com.nicta.scoobi.core.DObject[K]"></a>
       <a id="objectKeyFromSequenceFile[K](String*)(WireFormat[K],SeqSchema[K]):DObject[K]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1060,7 +1045,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       
     </li><li name="com.nicta.scoobi.io.text.TextOutput#objectToDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="objectToDelimitedTextFile[A&lt;:Product](o:com.nicta.scoobi.core.DObject[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$3:Manifest[A]):com.nicta.scoobi.core.DObject[String]"></a>
+      <a id="objectToDelimitedTextFile[A&lt;:Product](o:com.nicta.scoobi.core.DObject[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$2:Manifest[A]):com.nicta.scoobi.core.DObject[String]"></a>
       <a id="objectToDelimitedTextFile[A&lt;:Product](DObject[A],String,String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):DObject[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1073,7 +1058,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       <p class="shortcomment cmt">Persist a distributed object of 'Products' (e.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed object of 'Products' (e.g. Tuples) as a delimited text file.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectValueFromSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectValueFromSequenceFile[V](paths:Seq[String],checkValueType:Boolean)(implicitevidence$15:com.nicta.scoobi.core.WireFormat[V],implicitevidence$16:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[V]"></a>
+      <a id="objectValueFromSequenceFile[V](paths:Seq[String],checkValueType:Boolean)(implicitevidence$14:com.nicta.scoobi.core.WireFormat[V],implicitevidence$15:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[V]"></a>
       <a id="objectValueFromSequenceFile[V](Seq[String],Boolean)(WireFormat[V],SeqSchema[V]):DObject[V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1086,7 +1071,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       
     </li><li name="com.nicta.scoobi.application.InputsOutputs#objectValueFromSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="objectValueFromSequenceFile[V](paths:String*)(implicitevidence$13:com.nicta.scoobi.core.WireFormat[V],implicitevidence$14:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[V]"></a>
+      <a id="objectValueFromSequenceFile[V](paths:String*)(implicitevidence$12:com.nicta.scoobi.core.WireFormat[V],implicitevidence$13:InputsOutputs.this.SeqSchema[V]):com.nicta.scoobi.core.DObject[V]"></a>
       <a id="objectValueFromSequenceFile[V](String*)(WireFormat[V],SeqSchema[V]):DObject[V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1177,7 +1162,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextOutput#textFilePartitionedSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="textFilePartitionedSink[K,V](path:String,partition:K=&gt;String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$5:Manifest[K],implicitevidence$6:Manifest[V]):com.nicta.scoobi.io.text.TextFilePartitionedSink[K,V]"></a>
+      <a id="textFilePartitionedSink[K,V](path:String,partition:K=&gt;String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$4:Manifest[K],implicitevidence$5:Manifest[V]):com.nicta.scoobi.io.text.TextFilePartitionedSink[K,V]"></a>
       <a id="textFilePartitionedSink[K,V](String,(K)⇒String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[K],Manifest[V]):TextFilePartitionedSink[K,V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1190,7 +1175,7 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextOutput#textFileSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="textFileSink[A](path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$4:Manifest[A]):com.nicta.scoobi.io.text.TextFileSink[A]"></a>
+      <a id="textFileSink[A](path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$3:Manifest[A]):com.nicta.scoobi.io.text.TextFileSink[A]"></a>
       <a id="textFileSink[A](String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):TextFileSink[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1217,47 +1202,6 @@ to disk as the &quot;key&quot; component in a Sequence File.</p></div><dl class=
       </span>
       </h4>
       <p class="shortcomment cmt">create a text source</p><div class="fullcomment"><div class="comment cmt"><p>create a text source</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.avro.AvroOutput#toAvroFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toAvroFile[B](list:com.nicta.scoobi.core.DList[B],path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,checkpoint:Boolean,expiryPolicy:com.nicta.scoobi.core.ExpiryPolicy)(implicitschema:com.nicta.scoobi.io.avro.AvroSchema[B],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):list.T"></a>
-      <a id="toAvroFile[B](DList[B],String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit,Boolean,ExpiryPolicy)(io.avro.AvroSchema[B],ScoobiConfiguration):T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toAvroFile</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="list">list: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroOutput.toAvroFile.B">B</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Sink.defaultOutputCheck</a></span></span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="expiryPolicy">expiryPolicy: <a href="../core/ExpiryPolicy.html" class="extype" name="com.nicta.scoobi.core.ExpiryPolicy">ExpiryPolicy</a> = <span class="symbol"><span class="name"><a href="../core/package.html">ExpiryPolicy.default</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="schema">schema: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">io.avro.AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroOutput.toAvroFile.B">B</span>]</span>, <span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Specify a distributed list to be persistent by storing it to disk as an Avro File</p><div class="fullcomment"><div class="comment cmt"><p>Specify a distributed list to be persistent by storing it to disk as an Avro File</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/avro/AvroOutput.html" class="extype" name="com.nicta.scoobi.io.avro.AvroOutput">AvroOutput</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs#toDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toDelimitedTextFile[A&lt;:Product](dl:com.nicta.scoobi.core.DList[A],path:String,sep:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$8:Manifest[A]):com.nicta.scoobi.core.DList[String]"></a>
-      <a id="toDelimitedTextFile[A&lt;:Product](DList[A],String,String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):DList[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toDelimitedTextFile</span><span class="tparams">[<span name="A">A &lt;: <span class="extype" name="scala.Product">Product</span></span>]</span><span class="params">(<span name="dl">dl: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.toDelimitedTextFile.A">A</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;\t&quot;</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../../package.html">Sink.defaultOutputCheck</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.toDelimitedTextFile.A">A</span>]</span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="java.lang.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#toSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toSequenceFile[K,V](dl:com.nicta.scoobi.core.DList[(K,V)],path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,checkpoint:Boolean)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):dl.T"></a>
-      <a id="toSequenceFile[K,V](DList[(K,V)],String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit,Boolean)(io.sequence.SeqSchema[K],io.sequence.SeqSchema[V],ScoobiConfiguration):T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="dl">dl: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.V">V</span>)]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Sink.defaultOutputCheck</a></span></span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">io.sequence.SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.K">K</span>]</span>, <span name="convV">convV: <a href="../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">io.sequence.SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.V">V</span>]</span>, <span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
-to disk as &quot;key-values&quot; in a Sequence File</p><div class="fullcomment"><div class="comment cmt"><p>Specify a distributed list to be persistent by converting its elements to Writables and storing it
-to disk as &quot;key-values&quot; in a Sequence File</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/sequence/SequenceOutput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput">SequenceOutput</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -1271,19 +1215,6 @@ to disk as &quot;key-values&quot; in a Sequence File</p></div><dl class="attribu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextOutput#toTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toTextFile[A](dl:com.nicta.scoobi.core.DList[A],path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$1:Manifest[A]):dl.T"></a>
-      <a id="toTextFile[A](DList[A],String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit)(Manifest[A]):T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dl">dl: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.toTextFile.A">A</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Sink.defaultOutputCheck</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.toTextFile.A">A</span>]</span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Persist a distributed list as a text file.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed list as a text file.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#valueFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="valueFromSequenceFile[V](paths:Seq[String],checkValueType:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$7:com.nicta.scoobi.core.WireFormat[V],implicitevidence$8:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[V]"></a>
       <a id="valueFromSequenceFile[V](Seq[String],Boolean,(Seq[Path],ScoobiConfiguration)⇒Unit)(WireFormat[V],io.sequence.SeqSchema[V]):DList[V]"></a>
@@ -1340,21 +1271,6 @@ Files. In the case of a directory being specified, the input forms all the files
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/sequence/SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#valueToSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="valueToSequenceFile[V](dl:com.nicta.scoobi.core.DList[V],path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,checkpoint:Boolean)(implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):dl.T"></a>
-      <a id="valueToSequenceFile[V](DList[V],String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit,Boolean)(io.sequence.SeqSchema[V],ScoobiConfiguration):T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">valueToSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="dl">dl: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.valueToSequenceFile.V">V</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Sink.defaultOutputCheck</a></span></span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convV">convV: <a href="../io/sequence/SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">io.sequence.SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.valueToSequenceFile.V">V</span>]</span>, <span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
-to disk as the &quot;value&quot; component in a Sequence File.</p><div class="fullcomment"><div class="comment cmt"><p>Specify a distributed list to be persistent by converting its elements to Writables and storing it
-to disk as the &quot;value&quot; component in a Sequence File.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/sequence/SequenceOutput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput">SequenceOutput</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
