@@ -12,6 +12,7 @@ Scoobi version for Hadoop2!
  * extracted a `InputsOutputs.fromSource` method to create a `DList[A]` from any `DataSource[_,_,A]`
  * removed the dependency on the `ascii-graph` library
  * updated to Scala 2.10.3
+ * removed deprecated methods created in `0.7.0`
 
 ### Fixes
 
