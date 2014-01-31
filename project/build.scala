@@ -154,6 +154,7 @@ object build extends Build {
       publishSite,
       publishSignedArtifacts,
       publishForCDH3,
+      publishForHadoop2,
       notifyLs,
       notifyHerald,
       tagRelease,
@@ -245,11 +246,15 @@ object build extends Build {
    */
   lazy val publishSignedArtifacts = executeStepTask(publishSigned, "Publishing signed artifacts")
 
-  lazy val publishForCDH3 = ReleaseStep { st: State =>
+  lazy val publishForCDH3 = publishFor("cdh3")
+
+  lazy val publishForHadoop2 = publishFor("hadoop2")
+
+  def publishFor(name: String) = ReleaseStep { st: State =>
     val extracted = Project.extract(st)
     val ref: ProjectRef = extracted.get(thisProjectRef)
-    val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+"cdh3-SNAPSHOT" else v+"-cdh3" }), st)
-    executeTask(publishSigned, "Publishing CDH3 signed artifacts")(st2)
+    val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+s"$name-SNAPSHOT" else v+s"-$name" }), st)
+    executeTask(publishSigned, s"Publishing $name signed artifacts")(st2)
   }
 
   /**
