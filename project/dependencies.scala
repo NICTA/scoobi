@@ -70,7 +70,7 @@ object dependencies {
     "org.specs2"                        %% "specs2-analysis"           % specs2Version      ).map(_ % "test")
 
   def repl = Seq(
-    "org.scala-lang"                    %  "jline"                     % "2.10.2"
+    "org.scala-lang"                    %  "jline"                     % "2.10.3"
   )
 
   lazy val resolversSettings = resolvers ++= Seq(
