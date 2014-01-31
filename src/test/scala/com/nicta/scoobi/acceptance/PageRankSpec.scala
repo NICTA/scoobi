@@ -23,7 +23,6 @@ import mutable.NictaSimpleJobs
 import lib.Relational._
 import core.WireFormat
 import annotation.tailrec
-import com.github.mdr.ascii.Edge
 
 class PageRankSpec extends PageRank {
 

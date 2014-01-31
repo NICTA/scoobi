@@ -54,7 +54,6 @@ trait InMemoryHadoop extends ScoobiUserArgs {
 
   /** set command-line arguments on the configuration object */
   protected def configureArguments(implicit configuration: ScoobiConfiguration) {
-    configuration.setBoolean("scoobi.debug.showComputationGraph", showComputationGraph)
     configuration.setBoolean("scoobi.debug.showPlanOnly", showPlanOnly)
   }
 

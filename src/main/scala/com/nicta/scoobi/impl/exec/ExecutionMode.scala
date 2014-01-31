@@ -42,14 +42,10 @@ trait ExecutionMode extends ShowNode with Optimiser {
     */
   protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) = {
     reinit(node)
-    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph(showComputationGraph)))
-    checkSourceAndSinks(toExecute.debug("Active nodes", prettyGraph(showComputationGraph)))
+    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
+    checkSourceAndSinks(toExecute.debug("Active nodes", prettyGraph))
     toExecute
   }
-
-  /** @return false (default value) if the computation graph must not be displayed */
-  protected def showComputationGraph(implicit sc: ScoobiConfiguration) =
-    sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)
 
   /** @return false (default value) if the execution must only be shown but not executed */
   protected def showPlanOnly(implicit sc: ScoobiConfiguration) =

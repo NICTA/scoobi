@@ -20,10 +20,7 @@ package comp
 
 import org.kiama.output.PrettyPrinter
 import scalaz.Show
-import com.github.mdr.ascii.layout._
 import core._
-import text.Showx._
-import control.Exceptions._
 
 /**
  * This trait contains some display functions for computation graphs
@@ -75,15 +72,7 @@ trait ShowNode extends CompNodes {
   }
 
   /** @return a nested text representation of the nodes graph + graph if it's not too big */
-  def prettyGraph(showComputationGraph: Boolean = false) = (node : CompNode) => pretty(node) + (if (showComputationGraph) ("\nGraph\n" + showGraph(node)) else "")
-
-  /** @return an ASCII representation of the nodes graph */
-  def showGraph(node : CompNode) = tryOrElse {
-    if (descendents(node).size <= 50) {
-      val graph = Graph((node -> vertices).toList.map(v => showNode(v)), (node -> edges).toList.map { case (v1, v2) => showNode(v1) -> showNode(v2) })
-      Layouter.renderGraph(graph)
-    } else "cannot represent the node as a graph because it is too big\n"
-  }("cannot represent the node as a graph "+(if (isCyclic(node)) "(because there is a cycle)" else ""))
+  def prettyGraph = (node : CompNode) => pretty(node)
 
 }
 

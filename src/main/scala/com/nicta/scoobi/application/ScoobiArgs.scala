@@ -41,8 +41,6 @@ trait ScoobiArgs {
   def noLibJars = false
   /** @return false if temporary files and working directory must be cleaned-up after job execution */
   def keepFiles = false
-  /** @return true if the debug logs must show the computation graph */
-  def showComputationGraph = false
   /** @return true if the debug logs must show the computation graph and not evaluate it */
   def showPlanOnly = false
 
@@ -64,7 +62,6 @@ trait ScoobiUserArgs extends ScoobiArgs {
   override def deleteLibJars        = is("deletelibjars")
   override def noLibJars            = is("nolibjars")
   override def keepFiles            = is("keepfiles")
-  override def showComputationGraph = is("showgraph")
   override def showPlanOnly         = is("!execute")
 
   def isInMemory                = is("inmemory")
@@ -84,7 +81,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
 
   private[scoobi]
   lazy val argumentsNames = Seq("times", "local", "!local", "useconfdir", "deletelibjars", "nolibjars",
-                                "keepfiles", "quiet", "verbose", "cluster", "!cluster", "inmemory", "!inmemory", "!execute", "showgraph")
+                                "keepfiles", "quiet", "verbose", "cluster", "!cluster", "inmemory", "!inmemory", "!execute")
 
   private[scoobi]
   def isVerbose = argumentsValues.exists(_ == "verbose")
