@@ -855,15 +855,15 @@ if the parent node has not been set while recursing for children, then it is Non
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a nested text representation of the nodes graph</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#prettyGraph" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="prettyGraph(showComputationGraph:Boolean):com.nicta.scoobi.core.CompNode=&gt;String"></a>
-      <a id="prettyGraph(Boolean):(CompNode)⇒String"></a>
+      <a id="prettyGraph:com.nicta.scoobi.core.CompNode=&gt;ShowNode.this.prettyPrinter.Layout"></a>
+      <a id="prettyGraph:(CompNode)⇒(prettyPrinter)#Layout"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">prettyGraph</span><span class="params">(<span name="showComputationGraph">showComputationGraph: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: (<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">prettyGraph</span><span class="result">: (<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ (<a href="#prettyPrinter:org.kiama.output.PrettyPrinter" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.ShowNode#prettyPrinter">prettyPrinter</a>)#<span class="extype" name="org.kiama.output.PrettyPrinterBase.Layout">Layout</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a nested text representation of the nodes graph + graph if it's not too big</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
@@ -963,19 +963,6 @@ if the parent node has not been set while recursing for children, then it is Non
       <p class="shortcomment cmt">Show is not covariant so it is necessary to add this implicit to prove that we can show subclasses of CompNode
 </p><div class="fullcomment"><div class="comment cmt"><p>Show is not covariant so it is necessary to add this implicit to prove that we can show subclasses of CompNode
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#showGraph" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="showGraph(node:com.nicta.scoobi.core.CompNode):String"></a>
-      <a id="showGraph(CompNode):String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">showGraph</span><span class="params">(<span name="node">node: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>an ASCII representation of the nodes graph</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#showStructure" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="showStructure:com.nicta.scoobi.core.CompNode=&gt;String"></a>
       <a id="showStructure:(CompNode)⇒String"></a>
