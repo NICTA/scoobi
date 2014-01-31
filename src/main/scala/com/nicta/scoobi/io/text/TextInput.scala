@@ -33,6 +33,7 @@ import impl.mapreducer.TaggedInputSplit
 import impl.ScoobiConfiguration._
 import impl.io.Files
 import WireFormat._
+import com.nicta.scoobi.application.InputsOutputs
 
 /**
  * Smart functions for materialising distributed lists by loading text files.
@@ -80,7 +81,8 @@ trait TextInput {
   /**
    * TEXT SOURCES
    */
-  def fromTextSource[A : WireFormat](source: DataSource[_, _, A]) = DListImpl(source)
+  def fromTextSource[A : WireFormat](source: DataSource[_,_,A]) =
+    InputsOutputs.fromSource(source)
 
   /** create a text source */
   def textSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =

@@ -30,7 +30,7 @@ import io.sequence.SequenceOutput
 import impl.mapreducer.BridgeStore
 import java.util.UUID
 import scala.Some
-import com.nicta.scoobi.impl.plan.DObjectImpl
+import com.nicta.scoobi.impl.plan.{DListImpl, DObjectImpl}
 import com.nicta.scoobi.impl.plan.comp._
 import org.apache.hadoop.fs.Path
 import com.nicta.scoobi.impl.io.GlobIterator
@@ -170,6 +170,11 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
     def checkpoint(path: String, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit sc: ScoobiConfiguration) =
       list.addSink(new BridgeStore(UUID.randomUUID.toString, list.wf, Checkpoint.create(Some(path), expiryPolicy, doIt = true)))
   }
+
+  /**
+   * SOURCES
+   */
+  def fromSource[A : WireFormat](source: DataSource[_, _, A]) = DListImpl(source)
 
 }
 object InputsOutputs extends InputsOutputs
