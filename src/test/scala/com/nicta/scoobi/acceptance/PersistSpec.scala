@@ -253,7 +253,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles { sequential
       val o1 =  list.sum.toAvroFile(path(dir1.getPath))
       persist(o1)
 
-      objectFromAvroFile[Int](path(dir1.getPath)).run        === 3
+      objectFromAvroFile[Int](path(dir1.getPath)).run === 3
     }
 
     "it is possible to read a DObject[A] from an Avro file" >> { implicit sc: SC =>

@@ -267,7 +267,10 @@ object OutputChannel {
   def moveFileFromTo(srcDir: Path, destDir: Path)(implicit sc: ScoobiConfiguration, fileSystems: FileSystems, outerLogger: Log): Path => Unit = { path =>
     import fileSystems._; implicit val configuration = sc.configuration
 
-    val fromSourceDir  = path.toUri.getPath.replace(Files.dirPath(srcDir.toUri.getPath), "")
+    val filePath       = path.toUri.getPath
+    val sourceDirPath  = Files.dirPath(srcDir.toUri.getPath)
+    // take only the path part which starts after the source directory
+    val fromSourceDir  = filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
     val withoutAttempt = fromSourceDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
     val newPath        = new Path(withoutAttempt)
 
