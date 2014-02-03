@@ -22,10 +22,10 @@ class QuickStart extends ScoobiPage { def is = "Quick Start".title^
 
 Before starting, you will need:
 
-* [Cloudera's Hadoop 4.0.1 (CDH4)](http://www.cloudera.com/hadoop/)
-* [Sbt 0.12.3](http://www.scala-sbt.org/)
+* [Hadoop 2.2.0](http://bit.ly/1k20IIs) (see the [Deployment](${GUIDE_PAGE}com.nicta.scoobi.guide.Deployment.html) page for CDH3 and CDH4 configurations)
+* [Sbt 0.13.1](http://www.scala-sbt.org/)
 
-In addition to Hadoop, scoobi uses [sbt](http://www.scala-sbt.org) (version 0.12.3) to simplify building and packaging a project for running on Hadoop.
+In addition to Hadoop, scoobi uses [sbt](http://www.scala-sbt.org) (version 0.13.1) to simplify building and packaging a project for running on Hadoop.
   
 ### Directory Structure  
   
@@ -44,17 +44,17 @@ name := "MyApplication"
 
 version := "1.0"
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.10.3"
 
-libraryDependencies += "com.nicta" %% "scoobi" % "$VERSION"
+libraryDependencies += "com.nicta" %% "scoobi" % "$VERSION-hadoop2"
 
-resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-                  "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
+resolvers ++= Seq(Resolver.sonatypeRepo("releases"),
+                  Resolver.sonatypeRepo("snaspshots"))
 ```
 
 ### Write your code
 
-Now we can write some code. In `src/main/scala/myfile.scala`, for instance: ${snippet{
+Now we can write some code. In `src/main/scala/WordCount.scala`, for instance: ${snippet{
 import com.nicta.scoobi.Scoobi._
 import Reduction._
 

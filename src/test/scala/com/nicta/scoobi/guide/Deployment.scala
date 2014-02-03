@@ -32,7 +32,7 @@ First check [sbt-assembly](https://github.com/sbt/sbt-assembly/) for up to date 
 First add `sbt-assembly` plugin, at `project/plugins.sbt` with
 
 ```
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.8.3")
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.10.2")
 ```
 
 And now at the top of your `build.sbt` add the required incantation:
@@ -49,16 +49,15 @@ Ben Wing's suggestion provides a quick and easy solution by using a merge strate
 
 ```
 mergeStrategy in assembly <<= (mergeStrategy in assembly) { mergeStrategy => {
-    case entry => {
-      val strategy = mergeStrategy(entry)
-      if (strategy == MergeStrategy.deduplicate) MergeStrategy.first
-      else strategy
-    }
-  }
-}
+ case entry => {
+   val strategy = mergeStrategy(entry)
+   if (strategy == MergeStrategy.deduplicate) MergeStrategy.first
+   else strategy
+ }
+}}
 ```
 
-The downside is, that this brings in dependencies that are not strictly required (avro, hadoop, xmlpull etc.).
+The downside is, that this brings in dependencies that are not strictly required (avro, hadoop, etc...).
 
 The big advantage to this approach, is that `sbt run` still works
 
@@ -69,23 +68,32 @@ We can also fake the `libraryDependencies` to build a proper jar. Please note, t
 First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:
 
 ```
-"com.nicta" %% "scoobi" % "${VERSION}" intransitive()
+"com.nicta" %% "scoobi" % "$VERSION" intransitive()
 ```
 
-However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's [build.sbt](https://github.com/NICTA/scoobi/blob/$BRANCH/build.sbt) (and the correct branch/revision) for the canonical list, but for example it might be:
+However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's [build.sbt](https://github.com/NICTA/scoobi/blob/$BRANCH/project/dependencies.scala) (and the correct branch/revision) for the canonical list, but for example it might be:
 
 ```
-"javassist" % "javassist" % "3.12.1.GA"
-"org.apache.avro" % "avro-mapred" % "1.7.3-SNAPSHOT" // Note: you only need this if you use it
-"org.apache.avro" % "avro" % "1.7.3-SNAPSHOT"        // Note: you only need this if you use it
-"org.scalaz" %% "scalaz-core" % "7.0.0-M3"
-"com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
+"org.scala-lang"                    %  "scala-compiler"            % "2.10.3",
+"org.apache.avro"                   %  "avro"                      % "1.7.4",       // Note: you only need this if you use it
+"com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"        intransitive(),
+"javassist"                         %  "javassist"                 % "3.12.1.GA",
+"com.googlecode.kiama"              %% "kiama"                     % "1.5.2",
+"com.chuusai"                       %  "shapeless_2.10.2"          % "2.0.0-M1",
 ```
 
-And lastly, we probably want `sbt compile` to work -- so we add in we add in all the dependencies we excluded, but as a provided". e.g.
+And lastly, we probably want `sbt compile` to work -- so we add in all the dependencies we excluded, but as a provided". e.g.
 
-"org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" % "provided"
-"org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1" % "provided"
+```
+"org.apache.hadoop" % "hadoop-common"                     % "2.2.0" % "provided",
+"org.apache.hadoop" % "hadoop-hdfs"                       % "2.2.0" % "provided",
+"org.apache.hadoop" % "hadoop-mapreduce-client-app"       % "2.2.0" % "provided",
+"org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0" % "provided",
+"org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % "2.2.0" % "provided",
+"org.apache.hadoop" % "hadoop-mapreduce-client-core"      % "2.2.0" % "provided",
+"org.apache.hadoop" % "hadoop-annotations"                % "2.2.0" % "provided",
+"org.apache.avro"   % "avro-mapred"                       % "1.7.4"   classifier "hadoop2", // Note: add ' % "provided"'  if you don't need it
+```
 
 When you put this all together, here's is what an example `build.sbt` should look like:
 
@@ -98,21 +106,65 @@ name := "Scoobi Word Count"
 
 version := "1.0"
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.10.3"
 
 libraryDependencies ++= Seq(
-   "com.nicta" %% "scoobi" % "$VERSION" intransitive(),
-   "javassist" % "javassist" % "3.12.1.GA",
-   "org.apache.avro" % "avro-mapred" % "1.7.4" classifier "hadoop2", // Note: add ' % "provided"'  if you don't need it
-   "org.apache.avro" % "avro" % "1.7.4",                             // Note: add ' % "provided"'  if you don't need it
-   "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" % "provided",
-   "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1" % "provided",
-   "org.scalaz" %% "scalaz-core" % "7.0.0-RC2",
-   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
-   )
+    "com.nicta"                %% "scoobi"                           % "$VERSION-hadoop2" intransitive(),
+    "org.apache.hadoop"        % "hadoop-common"                     % "2.2.0" % "provided",
+    "org.apache.hadoop"        % "hadoop-hdfs"                       % "2.2.0" % "provided",
+    "org.apache.hadoop"        % "hadoop-mapreduce-client-app"       % "2.2.0" % "provided",
+    "org.apache.hadoop"        % "hadoop-mapreduce-client-core"      % "2.2.0" % "provided",
+    "org.apache.hadoop"        % "hadoop-mapreduce-client-jobclient" % "2.2.0" % "provided",
+    "org.apache.hadoop"        % "hadoop-mapreduce-client-core"      % "2.2.0" % "provided",
+    "org.apache.hadoop"        % "hadoop-annotations"                % "2.2.0" % "provided",
+    "org.apache.avro"          % "avro-mapred"                       % "1.7.4"    classifier "hadoop2", // Note: add ' % "provided"'  if you don't need it
 
-resolvers ++= Seq("sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-                  "cloudera" at "https://repository.cloudera.com/content/repositories/releases")
+    "org.scala-lang"           %  "scala-compiler"                   % "2.10.3",
+    "org.scalaz"               %% "scalaz-core"                      % "7.0.2",
+    "com.thoughtworks.xstream" %  "xstream"                          % "1.4.4"    intransitive(),
+    "javassist"                %  "javassist"                        % "3.12.1.GA",
+    "com.googlecode.kiama"     %% "kiama"                            % "1.5.2",
+    "com.chuusai"              %  "shapeless_2.10.2"                 % "2.0.0-M1",
+  )
+
+resolvers ++= Seq(Resolver.sonatypeRepo("releases"),
+                  Resolver.sonatypeRepo("snaspshots"))
+```
+
+### Other Hadoop versions
+
+Scoobi can also be used with [CDH3 and CDH4](http://bit.ly/1k25bes). In this case you need to use the following dependencies (note the name of the Scoobi jar):
+
+```
+// FOR CDH3
+libraryDependencies ++= Seq(
+    "com.nicta"                %% "scoobi"            % "$VERSION-cdh3" intransitive(),
+    "org.apache.hadoop"        %  "hadoop-core"       % "0.20.2-cdh3u1" % "provided",
+    "org.apache.avro"          %  "avro-mapred"       % "1.7.4",
+    "org.scala-lang"           %  "scala-compiler"    % "2.10.3",
+    "com.thoughtworks.xstream" %  "xstream"           % "1.4.4"        intransitive(),
+    "javassist"                %  "javassist"         % "3.12.1.GA",
+    "com.googlecode.kiama"     %% "kiama"             % "1.5.2",
+    "com.chuusai"              %  "shapeless_2.10.2"  % "2.0.0-M1",
+  )
+
+// FOR CDH4
+libraryDependencies ++= Seq(
+    "com.nicta"                %% "scoobi"            % "$VERSION" intransitive(),
+    "org.apache.hadoop"        %  "hadoop-client"     % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm") % "provided",
+    "org.apache.hadoop"        %  "hadoop-core"       % "2.0.0-mr1-cdh4.0.1",                      % "provided",
+    "org.apache.avro"          %  "avro-mapred"       % "1.7.4"              classifier "hadoop2",
+    "org.scala-lang"           %  "scala-compiler"    % "2.10.3",
+    "com.thoughtworks.xstream" %  "xstream"           % "1.4.4"              intransitive(),
+    "javassist"                %  "javassist"         % "3.12.1.GA",
+    "com.googlecode.kiama"     %% "kiama"             % "1.5.2",
+    "com.chuusai"              %  "shapeless_2.10.2"  % "2.0.0-M1"
+  )
+
+
+resolvers ++= Seq(Resolver.sonatypeRepo("releases"),
+                  Resolver.sonatypeRepo("snaspshots"),
+                  "cloudera"             at "https://repository.cloudera.com/content/repositories/releases")
 ```
 
 ### Maven assembly
