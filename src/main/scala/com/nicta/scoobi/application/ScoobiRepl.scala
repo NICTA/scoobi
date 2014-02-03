@@ -18,7 +18,7 @@ package application
 
 import org.apache.hadoop.fs._
 import scala.tools.nsc.Settings
-import tools.nsc.interpreter.{ReplReporter, AbstractFileClassLoader, ILoop}
+import scala.tools.nsc.interpreter.{ReplReporter, AbstractFileClassLoader, ILoop}
 import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter
@@ -136,32 +136,30 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
     else result
   }
 
-  addThunk {
-    // create a new interpreter which will strip the output with a special function
-    intp = new ILoopInterpreter {
-      def strippingWriter = new ReplStrippingWriter(outer) {
-        override def truncate(str: String): String = {
-          val truncated =
-            if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
-            else str
-          truncateResult(truncated)
-        }
-      }
-      override lazy val reporter = new ReplReporter(outer) {
-        val realReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
-        override def printMessage(message: String) { realReporter.printMessage(message) }
-        override def displayPrompt() { realReporter.displayPrompt() }
-        override def flush() { realReporter.flush() }
+  // create a new interpreter which will strip the output with a special function
+  intp = new ILoopInterpreter {
+    def strippingWriter = new ReplStrippingWriter(outer) {
+      override def truncate(str: String): String = {
+        val truncated =
+          if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
+          else str
+        truncateResult(truncated)
       }
     }
-    intp.beQuietDuring {
-      imports.foreach(i => intp.addImports(i))
-      configuration.addClassLoader(intp.classLoader)
-      if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
-      else                                      scoobiInterpreter.local
-      scoobiInterpreter.initialise
-      woof()
+    override lazy val reporter = new ReplReporter(outer) {
+      val realReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
+      override def printMessage(message: String) { realReporter.printMessage(message) }
+      override def displayPrompt() { realReporter.displayPrompt() }
+      override def flush() { realReporter.flush() }
     }
+  }
+  intp.initialize {
+    imports.foreach(i => intp.interpret(s"import $i"))
+    configuration.addClassLoader(intp.classLoader)
+    if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
+    else                                      scoobiInterpreter.local
+    scoobiInterpreter.initialise
+    woof()
   }
 
   /** announce that the Scoobi REPL is ready */

@@ -18,7 +18,10 @@ import Keys._
 
 object dependencies {
 
-  lazy val settings = dependencies ++ resolversSettings
+  lazy val settings = 
+    Seq(conflictWarning ~= { _.copy(failOnConflict = false) }) ++
+    dependencies ++ resolversSettings
+
   lazy val dependencies = libraryDependencies ++=
     scoobi(scalaVersion.value) ++
     hadoop(version.value)      ++
@@ -31,8 +34,8 @@ object dependencies {
     "org.apache.avro"                   %  "avro"                      % "1.7.4",
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
-    "com.googlecode.kiama"              %% "kiama"                     % "1.5.2",
-    "com.chuusai"                       %  "shapeless_2.10.2"          % "2.0.0-M1",
+    "com.googlecode.kiama"              %% "kiama"                     % "1.5.3-SNAPSHOT",
+    "com.chuusai"                       %%  "shapeless"                % "2.0.0-M1",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
@@ -53,14 +56,14 @@ object dependencies {
                                            "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
                                            "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
 
-  def scalaz(scalazVersion: String = "7.0.2") = Seq(
+  def scalaz(scalazVersion: String = "7.0.5") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
     "org.scalaz"                        %% "scalaz-concurrent"         % scalazVersion,
     "org.scalaz"                        %% "scalaz-scalacheck-binding" % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  def specs2(specs2Version: String = "2.3.2") = Seq(
+  def specs2(specs2Version: String = "2.3.7") = Seq(
     "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional") ++ Seq(
     "org.specs2"                        %% "specs2-mock"               % specs2Version      ,
     "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      ,
@@ -69,12 +72,12 @@ object dependencies {
     "org.specs2"                        %% "specs2-analysis"           % specs2Version      ).map(_ % "test")
 
   def repl = Seq(
-    "org.scala-lang"                    %  "jline"                     % "2.10.3"
+    "org.scala-lang"                    %  "jline"                     % "2.11.0-M7"
   )
 
   lazy val resolversSettings = resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snaspshots"),
+    Resolver.sonatypeRepo("snapshots"),
     "cloudera"             at "https://repository.cloudera.com/content/repositories/releases",
     "hortonworks-releases" at "http://repo.hortonworks.com/content/repositories/releases")
 }

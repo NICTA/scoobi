@@ -20,12 +20,8 @@ import java.net.URL
 import java.io.File
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{Path, FileSystem}
-import org.apache.hadoop.mapreduce.Job
-import impl.ScoobiConfigurationImpl
-import tools.nsc.util.ScalaClassLoader
-import tools.nsc.interpreter.AbstractFileClassLoader
 import org.apache.hadoop.mapreduce.{Counters => HadoopCounters}
-import core.Mode.InMemory
+import scala.reflect.internal.util.AbstractFileClassLoader
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
