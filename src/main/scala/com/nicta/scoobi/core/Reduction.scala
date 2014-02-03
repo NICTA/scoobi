@@ -760,12 +760,6 @@ trait Reductions {
       Reduction(_ ++ _)
 
     /**
-     * A reduction on stacks by appending.
-     */
-    def stack[A]: Reduction[collection.immutable.Stack[A]] =
-      Reduction(_ ++ _)
-
-    /**
      * A reduction on xml node sequences by appending.
      */
     def nodeseq: Reduction[scala.xml.NodeSeq] =
