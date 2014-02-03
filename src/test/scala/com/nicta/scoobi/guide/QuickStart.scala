@@ -46,7 +46,7 @@ version := "1.0"
 
 scalaVersion := "2.10.3"
 
-libraryDependencies += "com.nicta" %% "scoobi" % "$VERSION-hadoop2"
+libraryDependencies += "com.nicta" %% "scoobi" % "$VERSION"
 
 resolvers ++= Seq(Resolver.sonatypeRepo("releases"),
                   Resolver.sonatypeRepo("snaspshots"))

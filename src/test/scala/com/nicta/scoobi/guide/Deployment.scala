@@ -109,7 +109,7 @@ version := "1.0"
 scalaVersion := "2.10.3"
 
 libraryDependencies ++= Seq(
-    "com.nicta"                %% "scoobi"                           % "$VERSION-hadoop2" intransitive(),
+    "com.nicta"                %% "scoobi"                           % "$VERSION" intransitive(),
     "org.apache.hadoop"        % "hadoop-common"                     % "2.2.0" % "provided",
     "org.apache.hadoop"        % "hadoop-hdfs"                       % "2.2.0" % "provided",
     "org.apache.hadoop"        % "hadoop-mapreduce-client-app"       % "2.2.0" % "provided",
@@ -150,7 +150,7 @@ libraryDependencies ++= Seq(
 
 // FOR CDH4
 libraryDependencies ++= Seq(
-    "com.nicta"                %% "scoobi"            % "$VERSION" intransitive(),
+    "com.nicta"                %% "scoobi"            % "$VERSION-cdh4" intransitive(),
     "org.apache.hadoop"        %  "hadoop-client"     % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm") % "provided",
     "org.apache.hadoop"        %  "hadoop-core"       % "2.0.0-mr1-cdh4.0.1",                      % "provided",
     "org.apache.avro"          %  "avro-mapred"       % "1.7.4"              classifier "hadoop2",

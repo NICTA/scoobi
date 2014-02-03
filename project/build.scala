@@ -98,7 +98,7 @@ object build extends Build {
     publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
       if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
-      else                             Some("staging" at nexus + "service/local/staging/deploy/maven2")
+      else                             Some("staging"   at nexus + "service/local/staging/deploy/maven2")
     },
     publishMavenStyle := true,
     publishArtifact in Test := false,
@@ -132,6 +132,11 @@ object build extends Build {
           <name>Eric Torreborre</name>
           <url>http://etorreborre.blogspot.com/</url>
         </developer>
+        <developer>
+          <id>tmorris</id>
+          <name>Tony Morris</name>
+          <url>http://github.com/tmorris</url>
+        </developer>
       </developers>
     ),
     credentials := Seq(Credentials(Path.userHome / ".sbt" / "scoobi.credentials"))
@@ -154,7 +159,7 @@ object build extends Build {
       publishSite,
       publishSignedArtifacts,
       publishForCDH3,
-      publishForHadoop2,
+      publishForCDH4,
       notifyLs,
       notifyHerald,
       tagRelease,
@@ -166,7 +171,8 @@ object build extends Build {
       generateUserGuide,
       publishSite,
       publishSignedArtifacts,
-      publishForCDH3),
+      publishForCDH3,
+      publishForCDH4),
     commands += releaseSnapshotCommand
   ) ++
   Seq(publishUserGuideTask <<= pushSite.dependsOn(makeSite).dependsOn(generateUserGuideTask)) ++
@@ -248,7 +254,7 @@ object build extends Build {
 
   lazy val publishForCDH3 = publishFor("cdh3")
 
-  lazy val publishForHadoop2 = publishFor("hadoop2")
+  lazy val publishForCDH4 = publishFor("cdh4")
 
   def publishFor(name: String) = ReleaseStep { st: State =>
     val extracted = Project.extract(st)
