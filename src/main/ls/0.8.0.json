@@ -1,7 +1,7 @@
 {
   "organization" : "com.nicta",
   "name" : "scoobi",
-  "version" : "0.8.0-cdh3",
+  "version" : "0.8.0",
   "description" : "scoobi",
   "site" : "",
   "tags" : [ ],
@@ -22,19 +22,39 @@
   }, {
     "organization" : "com.googlecode.kiama",
     "name" : "kiama",
-    "version" : "1.5.1"
-  }, {
-    "organization" : "com.github.mdr",
-    "name" : "ascii-graphs",
-    "version" : "0.0.3"
+    "version" : "1.5.2"
   }, {
     "organization" : "com.chuusai",
-    "name" : "shapeless",
-    "version" : "1.2.4"
+    "name" : "shapeless_2.10.2",
+    "version" : "2.0.0-M1"
   }, {
     "organization" : "org.apache.hadoop",
-    "name" : "hadoop-core",
-    "version" : "0.20.2-cdh3u1"
+    "name" : "hadoop-common",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-hdfs",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-app",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-core",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-jobclient",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-core",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-annotations",
+    "version" : "2.2.0"
   }, {
     "organization" : "org.apache.avro",
     "name" : "avro-mapred",
@@ -61,18 +81,10 @@
     "version" : "7.0.2"
   }, {
     "organization" : "org.specs2",
-    "name" : "specs2",
-    "version" : "2.1.1"
-  }, {
-    "organization" : "org.scalacheck",
-    "name" : "scalacheck",
-    "version" : "1.10.0"
-  }, {
-    "organization" : "org.mockito",
-    "name" : "mockito-all",
-    "version" : "1.9.0"
+    "name" : "specs2-core",
+    "version" : "2.3.2"
   } ],
-  "scalas" : [ "2.10.2" ],
+  "scalas" : [ "2.10.3" ],
   "licenses" : [ ],
   "sbt" : false
 }
