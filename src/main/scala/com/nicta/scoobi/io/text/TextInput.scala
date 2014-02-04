@@ -49,14 +49,22 @@ trait TextInput {
   def fromTextFiles(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[String] =
     fromTextSource[String](textSource(paths, check))
 
-  /**
-   * Create a DList[(String, String)] from one or more files or directories where
-   *   key   = the path name of the read file
-   *   value = a line in the file
-   */
-  def fromPartitionedTextFiles(paths: String*): DList[(String, String)] =
-  fromTextSource[(String, String)](partitionedTextSource(paths))
+  /** Create a distributed list from one or more files or directories (in the case of
+    * a directory, the input forms all files in that directory). The distributed list is a tuple
+    * where the first part is the path of the originating file and the second part is a line of
+    * text. */
+  def fromTextFileWithPath(path: String, check: Source.InputCheck = Source.defaultInputCheck): DList[(String, String)] =
+    fromTextFileWithPaths(Seq(path), check)
 
+
+  /** Create a distributed list from a list of one or more files or directories (in the case of
+    * a directory, the input forms all files in that directory). The distributed list is a tuple
+    * where the first part is the path of the originating file and the second part is a line of
+    * text. */
+  def fromTextFileWithPaths(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[(String, String)] = {
+    fromTextSource[(String, String)](new TextSource(paths, inputConverter = defaultTextConverterWithPath, check = check))
+  }
+  
   /** Create a distributed list from a list of one ore more files or directories (in the case of
     * a directory, the input forms all files in that directory). The file(s) contain a number
     * of fields delimited by a separator. Use an extractor function to pull out the required
@@ -88,10 +96,6 @@ trait TextInput {
   def textSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
     new TextSource[String](paths, inputConverter = defaultTextConverter, check = check)
 
-  /** create a text source for partitioned files */
-  def partitionedTextSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) =
-    new PartitionedTextSource[(String, String)](paths, inputConverter = defaultTextConverterWithPath, check = check)
-
   /**
    * INPUT CONVERTERS
    */
@@ -99,9 +103,21 @@ trait TextInput {
     def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
   }
 
-  def defaultTextConverterWithPath = new InputConverter[Text, Text, (String, String)] {
+  def defaultTextConverterToString = new InputConverter[Text, Text, (String, String)] {
     def fromKeyValue(context: InputContext, k: Text, v: Text) = (k.toString, v.toString)
   }
+
+  def defaultTextConverterWithPath =
+    new InputConverter[LongWritable, Text, (String, String)] {
+      def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = {
+        val fileSplit: FileSplit = context.getInputSplit match {
+          case fis: FileSplit        => fis
+          case tis: TaggedInputSplit => tis.inputSplit.asInstanceOf[FileSplit]
+        }
+        val path = fileSplit.getPath.toUri.toASCIIString
+        (path, v.toString)
+      }
+    }
 
   /**
    * EXTRACTORS
