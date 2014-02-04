@@ -465,6 +465,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Avro I/O</p><div class="fullcomment"><div class="comment cmt"><p>Avro I/O</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextOutput#anyToString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="anyToString(any:Any,sep:String):String"></a>
+      <a id="anyToString(Any,String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">anyToString</span><span class="params">(<span name="any">any: <span class="extype" name="scala.Any">Any</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -551,16 +564,29 @@
       <p class="shortcomment cmt">INPUT CONVERTERS
 </p><div class="fullcomment"><div class="comment cmt"><p>INPUT CONVERTERS
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextInput#defaultTextConverterWithPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="defaultTextConverterWithPath:com.nicta.scoobi.core.InputConverter[org.apache.hadoop.io.Text,org.apache.hadoop.io.Text,(String,String)]"></a>
-      <a id="defaultTextConverterWithPath:InputConverter[Text,Text,(String,String)]"></a>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#defaultTextConverterToString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultTextConverterToString:com.nicta.scoobi.core.InputConverter[org.apache.hadoop.io.Text,org.apache.hadoop.io.Text,(String,String)]"></a>
+      <a id="defaultTextConverterToString:InputConverter[Text,Text,(String,String)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">defaultTextConverterWithPath</span><span class="result">: <a href="../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>, (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
+        <span class="name">defaultTextConverterToString</span><span class="result">: <a href="../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>, (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#defaultTextConverterWithPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultTextConverterWithPath:com.nicta.scoobi.core.InputConverter[org.apache.hadoop.io.LongWritable,org.apache.hadoop.io.Text,(String,String)]"></a>
+      <a id="defaultTextConverterWithPath:InputConverter[LongWritable,Text,(String,String)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultTextConverterWithPath</span><span class="result">: <a href="../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.hadoop.io.LongWritable">LongWritable</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>, (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
@@ -686,25 +712,6 @@ fields to create the distributed list.</p></div><dl class="attributes block"> <d
       </span>
       </h4>
       <p class="shortcomment cmt">create a DList from a stream of elements which will only be evaluated on the cluster</p><div class="fullcomment"><div class="comment cmt"><p>create a DList from a stream of elements which will only be evaluated on the cluster</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextInput#fromPartitionedTextFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromPartitionedTextFiles(paths:String*):com.nicta.scoobi.core.DList[(String,String)]"></a>
-      <a id="fromPartitionedTextFiles(String*):DList[(String,String)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromPartitionedTextFiles</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a DList[(String, String)] from one or more files or directories where
-  key   = the path name of the read file
-  value = a line in the file
-</p><div class="fullcomment"><div class="comment cmt"><p>Create a DList[(String, String)] from one or more files or directories where
-  key   = the path name of the read file
-  value = a line in the file
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#fromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fromSequenceFile[K,V](paths:Seq[String],checkKeyValueTypes:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$13:com.nicta.scoobi.core.WireFormat[K],implicitevidence$14:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitevidence$15:com.nicta.scoobi.core.WireFormat[V],implicitevidence$16:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
       <a id="fromSequenceFile[K,V](Seq[String],Boolean,(Seq[Path],ScoobiConfiguration)⇒Unit)(WireFormat[K],io.sequence.SeqSchema[K],WireFormat[V],io.sequence.SeqSchema[V]):DList[(K,V)]"></a>
@@ -775,6 +782,40 @@ Sequence Files. In the case of a directory being specified, the input forms all 
       </h4>
       <p class="shortcomment cmt">Create a DList from one or more files or directories (in the case of a directory, the input forms all files in that directory).</p><div class="fullcomment"><div class="comment cmt"><p>Create a DList from one or more files or directories (in the case of a directory, the input forms all files in that directory).
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#fromTextFileWithPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromTextFileWithPath(path:String,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.core.DList[(String,String)]"></a>
+      <a id="fromTextFileWithPath(String,(Seq[Path],ScoobiConfiguration)⇒Unit):DList[(String,String)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromTextFileWithPath</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="check">check: (<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Source.defaultInputCheck</a></span></span></span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distributed list from one or more files or directories (in the case of
+a directory, the input forms all files in that directory).</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from one or more files or directories (in the case of
+a directory, the input forms all files in that directory). The distributed list is a tuple
+where the first part is the path of the originating file and the second part is a line of
+text.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#fromTextFileWithPaths" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromTextFileWithPaths(paths:Seq[String],check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.core.DList[(String,String)]"></a>
+      <a id="fromTextFileWithPaths(Seq[String],(Seq[Path],ScoobiConfiguration)⇒Unit):DList[(String,String)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromTextFileWithPaths</span><span class="params">(<span name="paths">paths: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="check">check: (<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Source.defaultInputCheck</a></span></span></span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distributed list from a list of one or more files or directories (in the case of
+a directory, the input forms all files in that directory).</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from a list of one or more files or directories (in the case of
+a directory, the input forms all files in that directory). The distributed list is a tuple
+where the first part is the path of the originating file and the second part is a line of
+text.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextInput#fromTextFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fromTextFiles(paths:Seq[String],check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.core.DList[String]"></a>
       <a id="fromTextFiles(Seq[String],(Seq[Path],ScoobiConfiguration)⇒Unit):DList[String]"></a>
@@ -1093,19 +1134,6 @@ Files. In the case of a directory being specified, the input forms all the files
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextInput#partitionedTextSource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="partitionedTextSource(paths:Seq[String],check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.io.text.PartitionedTextSource[(String,String)]"></a>
-      <a id="partitionedTextSource(Seq[String],(Seq[Path],ScoobiConfiguration)⇒Unit):PartitionedTextSource[(String,String)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">partitionedTextSource</span><span class="params">(<span name="paths">paths: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="check">check: (<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../core/package.html">Source.defaultInputCheck</a></span></span></span>)</span><span class="result">: <a href="../io/text/PartitionedTextSource.html" class="extype" name="com.nicta.scoobi.io.text.PartitionedTextSource">PartitionedTextSource</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">create a text source for partitioned files</p><div class="fullcomment"><div class="comment cmt"><p>create a text source for partitioned files</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/text/TextInput.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#schemaSequenceSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="schemaSequenceSink[K,V](path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,checkpoint:Boolean,expiryPolicy:com.nicta.scoobi.core.ExpiryPolicy)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.io.sequence.SeqSink[convK.SeqType,convV.SeqType,(K,V)]"></a>
       <a id="schemaSequenceSink[K,V](String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit,Boolean,ExpiryPolicy)(io.sequence.SeqSchema[K],io.sequence.SeqSchema[V],ScoobiConfiguration):SeqSink[SeqType,SeqType,(K,V)]"></a>

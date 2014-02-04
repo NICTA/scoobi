@@ -71,45 +71,6 @@
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.io.text.PartitionedTextSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PartitionedTextSource[A]extendsDataSource[org.apache.hadoop.io.Text,org.apache.hadoop.io.Text,A]withProductwithSerializable"></a>
-      <a id="PartitionedTextSource[A]:PartitionedTextSource[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="PartitionedTextSource.html"><span class="name">PartitionedTextSource</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="inputFormat">inputFormat: <span class="extype" name="scala.Predef.Class">Class</span>[_ &lt;: <span class="extype" name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat">FileInputFormat</span>[<span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>]] = <span class="defval" name="classOf[com.nicta.scoobi.io.text.PathTextInputFormat]">...</span></span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextSource.A">A</span>] = <span class="defval" name="TextInput.defaultTextConverterWithPath">...</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Source.defaultInputCheck</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextSource.A">A</span>]</span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextSource.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Read files in different paths, specified as globs.</p>
-    </li><li name="com.nicta.scoobi.io.text.PathLineRecordReader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PathLineRecordReaderextendsRecordReader[org.apache.hadoop.io.Text,org.apache.hadoop.io.Text]"></a>
-      <a id="PathLineRecordReader:PathLineRecordReader"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="PathLineRecordReader.html"><span class="name">PathLineRecordReader</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>]</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Treats keys as the file name and value as line.</p>
-    </li><li name="com.nicta.scoobi.io.text.PathTextInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PathTextInputFormatextendsFileInputFormat[org.apache.hadoop.io.Text,org.apache.hadoop.io.Text]"></a>
-      <a id="PathTextInputFormat:PathTextInputFormat"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="PathTextInputFormat.html"><span class="name">PathTextInputFormat</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat">FileInputFormat</span>[<span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="com.nicta.scoobi.io.text.TextFilePartitionedSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TextFilePartitionedSink[K,V]extendsDataSink[K,V,(K,V)]withProductwithSerializable"></a>
       <a id="TextFilePartitionedSink[K,V]:TextFilePartitionedSink[K,V]"></a>
