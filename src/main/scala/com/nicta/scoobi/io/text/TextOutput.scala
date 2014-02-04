@@ -17,41 +17,25 @@ package com.nicta.scoobi
 package io
 package text
 
-import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapred.FileAlreadyExistsException
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
-import org.apache.hadoop.mapreduce.Job
-
 import core._
-import impl.io.Files
-import avro.AvroInput
-import org.apache.hadoop.conf.Configuration
-import impl.ScoobiConfigurationImpl
-import org.apache.hadoop.io.compress.CompressionCodec
-import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 trait TextOutput {
 
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a delimited text file. */
   def listToDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = {
-    def anyToString(any: Any, sep: String): String = any match {
-      case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
-      case _             => any.toString
-    }
     (dl map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite, check))
   }
 
   /** Persist a distributed object of 'Products' (e.g. Tuples) as a delimited text file. */
   def objectToDelimitedTextFile[A <: Product : Manifest](o: DObject[A], path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = {
-    def anyToString(any: Any, sep: String): String = any match {
-      case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
-      case _             => any.toString
-    }
     (o map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite, check))
+  }
+
+  def anyToString(any: Any, sep: String): String = any match {
+    case list: List[_] => list.map(anyToString(_, sep)).mkString(sep)
+    case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
+    case _             => any.toString
   }
 
   /**
