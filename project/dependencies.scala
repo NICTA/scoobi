@@ -45,13 +45,13 @@ object dependencies {
                                            "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
                                            "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
 
-    else                               Seq("org.apache.hadoop" % "hadoop-common"                     % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-hdfs"                       % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-annotations"                % hadoopVersion exclude("asm", "asm"),
+    else                               Seq("org.apache.hadoop" % "hadoop-common"                     % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-hdfs"                       % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion,
+                                           "org.apache.hadoop" % "hadoop-annotations"                % hadoopVersion,
                                            "org.apache.avro"   % "avro-mapred"                       % "1.7.4" classifier "hadoop2")
 
   def scalaz(scalazVersion: String = "7.0.2") = Seq(

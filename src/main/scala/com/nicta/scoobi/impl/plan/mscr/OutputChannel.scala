@@ -271,7 +271,12 @@ object OutputChannel {
     val sourceDirPath  = Files.dirPath(srcDir.toUri.getPath)
     // take only the path part which starts after the source directory
     val fromSourceDir  = filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
-    val withoutAttempt = fromSourceDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
+    // we need to strip out the attempt / temporary parts for partitioned outputs
+    val withoutAttempt = Seq("/attempt_[^/]+",
+                             "/_temporary/[^/]+/_temporary", // for hadoop2
+                             "/_temporary"                   // for cdh3/cdh4
+                            ).foldLeft(fromSourceDir) { (res, cur) => res.replaceAll(cur, "") }
+
     val newPath        = new Path(withoutAttempt)
 
     val moved = moveTo(destDir).apply(path, newPath)

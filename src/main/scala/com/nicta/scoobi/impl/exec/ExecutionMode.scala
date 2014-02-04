@@ -123,28 +123,6 @@ trait ExecutionMode extends ShowNode with Optimiser {
       sink.outputPath.foreach { outputDir =>
         FileSystems.listPaths(outputDir) foreach OutputChannel.moveFileFromTo(srcDir = outputDir, destDir = outputDir)
       }
-
-      /*
-              val outputs = fs.listFiles(outputDir, true)
-
-        while (outputs.hasNext) {
-          val outputFilePath = outputs.next.getPath.toUri.getPath
-
-          val fromOutputDir = outputFilePath.replace(Files.dirPath(outputDir.toUri.getPath), "")
-          val withoutAttempt = fromOutputDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
-
-          if (withoutAttempt != fromOutputDir) {
-            val newPath = new Path(withoutAttempt)
-            Files.moveTo(outputDir)(sc.configuration).apply(new Path(outputFilePath), newPath)
-          }
-        }
-
-
-
-
-       */
-
-
     }
     sinks.foreach(_.outputTeardown(sc))
   }

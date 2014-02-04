@@ -104,7 +104,7 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
 
     list.toPartitionedTextFile(directory, partition = (s: String) => s, overwrite = true).run
 
-    Seq("22", "23") must contain((date: String) => new File(directory+"/2014/01/"+date).listFiles.toSeq must contain(aFile).forall).forall
+    Seq("22", "23") must contain((date: String) => new File(directory+"/2014/01/"+date).listFiles.toSeq must contain(aFile).atLeastOnce).forall
   }
 
   "5. Round-trip of writing and reading partitioned text files" >> { implicit sc: SC =>
