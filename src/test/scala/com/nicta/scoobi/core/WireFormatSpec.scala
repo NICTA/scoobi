@@ -127,7 +127,7 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     import com.nicta.scoobi.testavroschema._
 
     "for avro SpecificRecord type" >> {
-      implicit val wireformat: WireFormat[SampleRecord] = GenericAvroFmt
+      implicit val wireformat: WireFormat[SampleRecord] = AvroFmt
       val fixed = new SampleRecord("foo", 42, new Sha1(Array.fill(20)(0xAA.toByte)))
       serialisationIsOkWith(fixed)(wireformat)
     }
