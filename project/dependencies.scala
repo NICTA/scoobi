@@ -45,6 +45,10 @@ object dependencies {
                                            "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
                                            "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
 
+    else if (version.contains("cdh5")) Seq("org.apache.hadoop" % "hadoop-client" % "2.2.0-cdh5.0.0-beta-2" exclude("asm", "asm"),
+                                           "org.apache.hadoop" % "hadoop-core"   % "2.2.0-cdh5.0.0-beta-2",
+                                           "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
+    
     else                               Seq("org.apache.hadoop" % "hadoop-common"                     % hadoopVersion exclude("asm", "asm"),
                                            "org.apache.hadoop" % "hadoop-hdfs"                       % hadoopVersion exclude("asm", "asm"),
                                            "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % hadoopVersion exclude("asm", "asm"),
