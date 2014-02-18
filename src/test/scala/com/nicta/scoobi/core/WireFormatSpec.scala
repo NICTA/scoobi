@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package core
 
 import java.io._
+import org.apache.avro.generic.GenericRecord
 import org.specs2.ScalaCheck
 import org.scalacheck.{Prop, Arbitrary}
 import Arbitrary._
@@ -126,8 +127,9 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     import com.nicta.scoobi.testavroschema._
 
     "for avro SpecificRecord type" >> {
+      implicit val wireformat: WireFormat[SampleRecord] = GenericAvroFmt
       val fixed = new SampleRecord("foo", 42, new Sha1(Array.fill(20)(0xAA.toByte)))
-      serialisationIsOkWith(fixed)
+      serialisationIsOkWith(fixed)(wireformat)
     }
 
     "for avro SpecificFixed type" >> {
