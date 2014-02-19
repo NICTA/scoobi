@@ -268,15 +268,15 @@
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.PartitionedTextOutputFormat#generatePathForKeyValue" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="generatePathForKeyValue(key:K,value:V,outputDir:org.apache.hadoop.fs.Path,functionTag:String)(configuration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path"></a>
-      <a id="generatePathForKeyValue(K,V,Path,String)(Configuration):Path"></a>
+      <a id="generatePathForKeyValue(key:K,value:V,outputDir:org.apache.hadoop.fs.Path,partitionFunction:Option[K=&gt;String])(configuration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path"></a>
+      <a id="generatePathForKeyValue(K,V,Path,Option[(K)⇒String])(Configuration):Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">generatePathForKeyValue</span><span class="params">(<span name="key">key: <span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextOutputFormat.K">K</span></span>, <span name="value">value: <span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextOutputFormat.V">V</span></span>, <span name="outputDir">outputDir: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="functionTag">functionTag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
+        <span class="name">generatePathForKeyValue</span><span class="params">(<span name="key">key: <span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextOutputFormat.K">K</span></span>, <span name="value">value: <span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextOutputFormat.V">V</span></span>, <span name="outputDir">outputDir: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="partitionFunction">partitionFunction: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="com.nicta.scoobi.io.text.PartitionedTextOutputFormat.K">K</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
