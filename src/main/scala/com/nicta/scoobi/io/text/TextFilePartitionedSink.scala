@@ -89,15 +89,16 @@ object TextFilePartitionedSink {
 class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
 
   def getRecordWriter(context: TaskAttemptContext): RecordWriter[K, V] = {
-    val partitionFunctionTag = TextFilePartitionedSink.functionTag(context.getConfiguration)
-    val outputDir = FileOutputFormat.getOutputPath(context)
+    lazy val partitionFunctionTag = TextFilePartitionedSink.functionTag(context.getConfiguration)
+    lazy val partitionFunction = DistCache.pullObject[K => String](context.getConfiguration, partitionFunctionTag)
+    lazy val outputDir = FileOutputFormat.getOutputPath(context)
 
     new RecordWriter[K, V] {
       private val recordWriters =
         new collection.mutable.HashMap[Path, RecordWriter[NullWritable, V]]
 
       def write(key: K, value: V) {
-        val finalPath = generatePathForKeyValue(key, value, outputDir, partitionFunctionTag)(context.getConfiguration)
+        val finalPath = generatePathForKeyValue(key, value, outputDir, partitionFunction)(context.getConfiguration)
         val rw = recordWriters.get(finalPath) match {
           case None    => val newWriter = getBaseRecordWriter(context, finalPath); recordWriters.put(finalPath, newWriter); newWriter
           case Some(x) => x
@@ -112,8 +113,7 @@ class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
     }
   }
 
-  protected def generatePathForKeyValue(key: K, value: V, outputDir: Path, functionTag: String)(configuration: Configuration): Path = {
-    val partitionFunction = DistCache.pullObject[K => String](configuration, functionTag)
+  protected def generatePathForKeyValue(key: K, value: V, outputDir: Path, partitionFunction: Option[K => String])(configuration: Configuration): Path = {
     new Path(outputDir, partitionFunction.map(_(key)).getOrElse(key.toString))
   }
 
