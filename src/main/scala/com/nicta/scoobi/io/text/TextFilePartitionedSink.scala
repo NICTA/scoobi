@@ -51,11 +51,8 @@ case class TextFilePartitionedSink[K : Manifest, V : Manifest](
   }
 
   def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
-  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
 
-  override def outputSetup(implicit sc: ScoobiConfiguration) {
-    super.outputSetup(sc)
-
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     if (Files.pathExists(output)(sc.configuration) && overwrite) {
       logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
       Files.deletePath(output)(sc.configuration)
