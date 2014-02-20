@@ -34,6 +34,9 @@ import ls.Plugin._
 import LsKeys._
 import Utilities._
 import Defaults._
+import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
+import com.typesafe.tools.mima.plugin.MimaKeys.binaryIssueFilters
 
 object build extends Build {
   type Settings = Def.Setting[_]
@@ -49,6 +52,7 @@ object build extends Build {
                testingSettings          ++
                siteSettings             ++
                publicationSettings      ++
+               mimaSettings             ++ 
                notificationSettings     ++
                releaseSettings          ++
                repl.settings
@@ -74,6 +78,42 @@ object build extends Build {
     javaOptions in Test ++= Seq("-Xmx3g")
   )
 
+  /** 
+   * Compatibility with MIMA
+   */
+  lazy val scoobiMimaBasis =
+    SettingKey[String]("scoobi-mima-basis", "Version of scoobi against which to run MIMA.")
+
+  lazy val setMimaVersion: ReleaseStep = { st: State =>
+    val extracted = Project.extract(st)
+
+    val (releaseV, _) = st.get(versions).getOrElse(sys.error("impossible"))
+    // TODO switch to `versionFile` key when updating sbt-release
+    IO.write(new File("version.sbt"), "\n\nscoobiMimaBasis in ThisBuild := \"%s\"" format releaseV, append = true)
+    reapply(Seq(scoobiMimaBasis in ThisBuild := releaseV), st)
+  }
+
+  lazy val mimaSettings = 
+   mimaDefaultSettings ++ Seq[Settings](
+    binaryIssueFilters ++= {
+      import com.typesafe.tools.mima.core._
+      import com.typesafe.tools.mima.core.ProblemFilters._
+      Seq( // add classes here
+        ) map exclude[MissingMethodProblem]
+    }
+  ) ++ Seq[Settings](
+    previousArtifact <<= (organization, name, scalaBinaryVersion, scoobiMimaBasis.?) { (o, n, sbv, basOpt) =>
+      basOpt match {
+        case Some(bas) if !(sbv startsWith "2.11") =>
+          Some(o % (n + "_" + sbv) % bas)
+        case _ =>
+          None
+      }
+    })
+
+  /** 
+   * Site settings
+   */
   lazy val siteSettings: Seq[Settings] = ghpages.settings ++ SbtSite.site.settings ++ Seq(
     siteSourceDirectory <<= target (_ / "specs2-reports"),
     // depending on the version, copy the api files to a different directory
@@ -165,6 +205,7 @@ object build extends Build {
       notifyHerald,
       tagRelease,
       setNextVersion,
+      setMimaVersion,
       commitNextVersion,
       pushChanges
     ),
