@@ -81,7 +81,7 @@ object TextFilePartitionedSink {
    */
   def functionTag(configuration: Configuration, defaultWorkDir: String = "-") = {
     val outputDir = configuration.get("mapred.work.output.dir", defaultWorkDir)
-    val withoutProtocol = new URI(outputDir).getPath
+    val withoutProtocol = new URI(outputDir).getPath.replace("/", "-")
     "pathPartitionFunction_"+withoutProtocol
   }
 
