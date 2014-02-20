@@ -279,10 +279,10 @@
         <span class="name">moveFileFromTo</span><span class="params">(<span name="srcDir">srcDir: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="destDir">destDir: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>, <span name="fileSystems">fileSystems: <span class="extype" name="com.nicta.scoobi.impl.io.FileSystems">FileSystems</span></span>, <span name="outerLogger">outerLogger: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">This function moves a file to the expected output directory</p><div class="fullcomment"><div class="comment cmt"><p>This function moves a file to the expected output directory</p><p>Some files (created with partitionedTextFileSink) might have a path portion like
-  year=2013/month=12/day=01/_temporary/_attempt_201301010000_0001_m_000001_0</p><p>The code below removes the _temporary and _attempt part from path before moving the file and makes sure that
-  year=2013/month=12/day=01 remains
-</p></div></div>
+      <p class="shortcomment cmt">This function moves a file to the expected output directory,
+keeping the subdirectories in which the file was created</p><div class="fullcomment"><div class="comment cmt"><p>This function moves a file to the expected output directory,
+keeping the subdirectories in which the file was created</p><p>For example some files created with partitionedTextFileSink might have a path portion like
+  year=2013/month=12/day=01/ch4out5-m-00000</p></div></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
