@@ -31,6 +31,7 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import com.nicta.scoobi.impl.ScoobiConfigurationImpl
 import com.nicta.scoobi.core.Compression
 import com.nicta.scoobi.impl.util.DistCache
+import java.net.URI
 
 case class TextFilePartitionedSink[K : Manifest, V : Manifest](
   path: String,
@@ -80,7 +81,7 @@ object TextFilePartitionedSink {
    */
   def functionTag(configuration: Configuration, defaultWorkDir: String = "-") = {
     val outputDir = configuration.get("mapred.work.output.dir", defaultWorkDir)
-    val withoutProtocol = new Path(outputDir).toString.split("/").drop(2).mkString("/")
+    val withoutProtocol = new URI(outputDir).getPath
     "pathPartitionFunction_"+withoutProtocol
   }
 
