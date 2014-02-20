@@ -90,9 +90,9 @@ object TextFilePartitionedSink {
 class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
 
   def getRecordWriter(context: TaskAttemptContext): RecordWriter[K, V] = {
-    lazy val partitionFunctionTag = TextFilePartitionedSink.functionTag(context.getConfiguration)
-    lazy val partitionFunction = DistCache.pullObject[K => String](context.getConfiguration, partitionFunctionTag)
-    lazy val outputDir = FileOutputFormat.getOutputPath(context)
+    val partitionFunctionTag = TextFilePartitionedSink.functionTag(context.getConfiguration)
+    val partitionFunction = DistCache.pullObject[K => String](context.getConfiguration, partitionFunctionTag)
+    val outputDir = FileOutputFormat.getOutputPath(context)
 
     new RecordWriter[K, V] {
       private val recordWriters =
