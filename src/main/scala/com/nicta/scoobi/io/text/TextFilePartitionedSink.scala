@@ -52,11 +52,25 @@ case class TextFilePartitionedSink[K : Manifest, V : Manifest](
 
   def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
 
-  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+  override def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+    // on a cluster the partition function needs to be distributed when configuring the job
+    // otherwise several mappers will try to write at the same time
+    if (sc.isRemote) distributePartitionFunction
+  }
+
+  override def outputSetup(implicit sc: ScoobiConfiguration) {
+    super.outputSetup(sc)
+
     if (Files.pathExists(output)(sc.configuration) && overwrite) {
       logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
       Files.deletePath(output)(sc.configuration)
     }
+    // locally the partition function needs to be distributed
+    // when setting up the output channels
+    if (!sc.isRemote) distributePartitionFunction
+  }
+
+  private def distributePartitionFunction(implicit sc: ScoobiConfiguration) = {
     DistCache.pushObject[K => String](sc.configuration, partition, TextFilePartitionedSink.functionTag(sc.configuration, outputPath.getOrElse(id).toString))
   }
 
