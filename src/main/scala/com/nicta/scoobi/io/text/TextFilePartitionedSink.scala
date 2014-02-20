@@ -120,6 +120,11 @@ class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
 
       def close(context: TaskAttemptContext) {
         recordWriters.values.foreach(_.close(context))
+
+        // when a task attempt is done we need to commit the task files
+        // and even the job files in order to copy temporary files to their respective output directory
+        recordWriters.keys.foreach(key => new FileOutputCommitter(key, context).commitTask(context))
+        recordWriters.keys.foreach(key => new FileOutputCommitter(key, context).commitJob(context))
         recordWriters.clear
       }
     }

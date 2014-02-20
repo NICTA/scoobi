@@ -256,13 +256,12 @@ object OutputChannel {
   }
 
   /**
-   * This function moves a file to the expected output directory
+   * This function moves a file to the expected output directory,
+   * keeping the subdirectories in which the file was created
    *
-   * Some files (created with partitionedTextFileSink) might have a path portion like
-   *   year=2013/month=12/day=01/_temporary/_attempt_201301010000_0001_m_000001_0
+   * For example some files created with partitionedTextFileSink might have a path portion like
+   *   year=2013/month=12/day=01/ch4out5-m-00000
    *
-   * The code below removes the _temporary and _attempt part from path before moving the file and makes sure that
-   *   year=2013/month=12/day=01 remains
    */
   def moveFileFromTo(srcDir: Path, destDir: Path)(implicit sc: ScoobiConfiguration, fileSystems: FileSystems, outerLogger: Log): Path => Unit = { path =>
     import fileSystems._; implicit val configuration = sc.configuration
@@ -271,13 +270,8 @@ object OutputChannel {
     val sourceDirPath  = Files.dirPath(srcDir.toUri.getPath)
     // take only the path part which starts after the source directory
     val fromSourceDir  = filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
-    // we need to strip out the attempt / temporary parts for partitioned outputs
-    val withoutAttempt = Seq("/attempt_[^/]+",
-                             "/_temporary/[^/]+/_temporary", // for hadoop2
-                             "/_temporary"                   // for cdh3/cdh4
-                            ).foldLeft(fromSourceDir) { (res, cur) => res.replaceAll(cur, "") }
 
-    val newPath        = new Path(withoutAttempt)
+    val newPath        = new Path(fromSourceDir)
 
     val moved = moveTo(destDir).apply(path, newPath)
     if (!moved) outerLogger.error(s"can not move \n $path to \n ${new Path(destDir, newPath)}")
