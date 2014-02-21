@@ -32,6 +32,7 @@ import com.nicta.scoobi.impl.ScoobiConfigurationImpl
 import com.nicta.scoobi.core.Compression
 import com.nicta.scoobi.impl.util.DistCache
 import java.net.URI
+import org.apache.hadoop.mapred.lib.MultipleTextOutputFormat
 
 case class TextFilePartitionedSink[K : Manifest, V : Manifest](
   path: String,
@@ -98,19 +99,25 @@ object TextFilePartitionedSink {
 
 }
 
-class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
+class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] { outer =>
+
+  private val recordWriters =
+    new collection.mutable.HashMap[Path, RecordWriter[NullWritable, V]]
+
 
   def getRecordWriter(context: TaskAttemptContext): RecordWriter[K, V] = {
     val partitionFunctionTag = TextFilePartitionedSink.functionTag(context.getConfiguration)
     val partitionFunction = DistCache.pullObject[K => String](context.getConfiguration, partitionFunctionTag)
+
+    // get the work dir by using the FileOutputCommitter in mapreduce.lib
     val outputDir = FileOutputFormat.getOutputPath(context)
+    val outputCommitter = new FileOutputCommitter(outputDir, context)
+    val workDir = outputCommitter.getWorkPath
 
     new RecordWriter[K, V] {
-      private val recordWriters =
-        new collection.mutable.HashMap[Path, RecordWriter[NullWritable, V]]
 
       def write(key: K, value: V) {
-        val finalPath = generatePathForKeyValue(key, value, outputDir, partitionFunction)(context.getConfiguration)
+        val finalPath = generatePathForKeyValue(key, value, workDir, partitionFunction)(context.getConfiguration)
         val rw = recordWriters.get(finalPath) match {
           case None    => val newWriter = getBaseRecordWriter(context, finalPath); recordWriters.put(finalPath, newWriter); newWriter
           case Some(x) => x
@@ -120,22 +127,21 @@ class PartitionedTextOutputFormat[K, V] extends FileOutputFormat[K, V] {
 
       def close(context: TaskAttemptContext) {
         recordWriters.values.foreach(_.close(context))
-
-        // when a task attempt is done we need to commit the task files
-        // and even the job files in order to copy temporary files to their respective output directory
-        recordWriters.keys.foreach(key => new FileOutputCommitter(key, context).commitTask(context))
-        recordWriters.keys.foreach(key => new FileOutputCommitter(key, context).commitJob(context))
         recordWriters.clear
       }
     }
   }
 
-  protected def generatePathForKeyValue(key: K, value: V, outputDir: Path, partitionFunction: Option[K => String])(configuration: Configuration): Path = {
-    new Path(outputDir, partitionFunction.map(_(key)).getOrElse(key.toString))
+  protected def generatePathForKeyValue(key: K, value: V, workDir: Path, partitionFunction: Option[K => String])(configuration: Configuration): Path = {
+    new Path(workDir, partitionFunction.map(_(key)).getOrElse(key.toString))
   }
 
   protected def getBaseRecordWriter(context: TaskAttemptContext, path: Path): RecordWriter[NullWritable, V] =
     new TextOutputFormat[NullWritable, V] {
-      override def getOutputCommitter(context: TaskAttemptContext) = new FileOutputCommitter(path, context)
+      override def getOutputCommitter(context: TaskAttemptContext) = new FileOutputCommitter(path, context) {
+        // we need to use path as the work path for the record writers because it
+        // already contains the work directories
+        override def getWorkPath = path
+      }
     }.getRecordWriter(context)
 }
