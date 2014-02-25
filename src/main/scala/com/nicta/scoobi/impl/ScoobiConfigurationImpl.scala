@@ -314,6 +314,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   private def setDefaultForInMemoryAndLocal = {
     set(Compatibility.defaultFSKeyName, "file:///")
     set("mapred.job.tracker", "local")
+    set("mapreduce.framework.name", "local")
     setDirectories
   }
 

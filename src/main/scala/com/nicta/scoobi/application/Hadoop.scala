@@ -89,6 +89,9 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
     logger.debug("the job tracker is "+jobTracker)
     configuration.set("mapred.job.tracker", jobTracker)
 
+    logger.debug("the framework name is "+frameworkName)
+    configuration.set("mapreduce.framework.name", frameworkName)
+
     logger.debug("jars have been uploaded "+outer.upload)
     configuration.setUploadedLibJars(uploaded = outer.upload)
 
