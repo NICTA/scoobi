@@ -67,7 +67,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html">Deployment</a></div><div class="colmask threecol">
             <div class="colmid">
               <div class="colleft">
-                <div class="col1"><div id="central"><html><title>Deployment</title><a name="Deployment"><h2 specId="1356307966">Deployment</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:</p>
+                <div class="col1"><div id="central"><html><title>Deployment</title><a name="Deployment"><h2 specId="1908246931">Deployment</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:</p>
 <ul>
   <li><a href="https://github.com/sbt/sbt-assembly">Sbt assembly</a></li>
   <li><a href="http://maven.apache.org/plugins/maven-assembly-plugin/usage.html">Maven assembly</a></li>
@@ -172,8 +172,8 @@ resolvers ++= Seq(Resolver.sonatypeRepo(&quot;releases&quot;),
 $ hadoop WordCount &lt;args&gt;
 </code></pre><a name="Troubleshooting"><h3>Troubleshooting</h3></a><p>You might get some <code class="prettyprint">ClassNotFoundException</code> on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi &quot;job jar&quot; that is distributed to the cluster node by turning off the dependency uploading mechanism (see the <a href="http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html">Application</a> page):</p><p><code class="prettyprint">$ hadoop WordCount &lt;args&gt; scoobi nolibjars</code></p></div></status></html></div></div>
                 <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="795485135"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="543077968"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="1574179608"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="1503249754"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -183,7 +183,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1503249754"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1434344637"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -207,7 +207,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="2120992170"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1526376484"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -225,7 +225,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1434344637"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="2117403173"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -239,7 +239,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1526376484"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="1243614174"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -293,7 +293,7 @@ $ hadoop WordCount &lt;args&gt;
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="2117403173"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="2112569814"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -305,7 +305,7 @@ $ hadoop WordCount &lt;args&gt;
             
           </li></ul>
           </li></ul>
-          </li><li id="1243614174"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="1613728047"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -313,7 +313,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="2112569814"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="1356307966"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -329,7 +329,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1613728047"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="2076555304"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -359,7 +359,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1356307966"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1908246931"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -377,7 +377,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="2076555304"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1385385019"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -385,7 +385,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1908246931"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1148313559"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -397,7 +397,7 @@ $ hadoop WordCount &lt;args&gt;
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['795485135','1356307966'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1574179608','1908246931'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                 <div class="col3"><div id="rightcolumn"></div></div>
               </div>
