@@ -101,29 +101,30 @@ object DistCache {
    *  - use a WireFormat to deserialise the object
    */
   def pullPath[T](configuration: Configuration, path: Path)(f: FSDataInputStream => T): Option[T] =
-    pullPath(localCacheFiles(configuration).toStream ++ cacheFiles(configuration), path)(f)
+    pullPath(localCacheFiles(configuration) ++ cacheFiles(configuration), path, configuration)(f)
 
   /** @return the list of local cache files */
   def localCacheFiles(configuration: Configuration) =
-    Option(cache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]())
+    Option(cache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(p => new Path("file://"+p.toString))
 
   /** @return the list of cache files */
   def cacheFiles(configuration: Configuration) =
     Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))
 
-  def pullPath[T](cacheFiles: Seq[Path], path: Path)(f: FSDataInputStream => T): Option[T] = {
+  def pullPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration)(f: FSDataInputStream => T): Option[T] = {
+    val allFiles = cacheFiles :+ path
 
     logger.info("trying to pull an object from the cache at path: "+path)
-    (cacheFiles :+ path).filter(p => p.toString.endsWith(path.getName)).map { case p =>
+    (allFiles :+ path).filter(p => p.toString.endsWith(path.getName)).map { case p =>
       logger.info("trying to open: "+p)
-      tryo(p.getFileSystem(new Configuration).open(p)).map { dis =>
+      tryo(p.getFileSystem(configuration).open(p)).map { dis =>
         logger.info("successfully opened: "+p)
         try f(dis)
         finally dis.close
       }
     }.dropWhile(!_.isDefined).flatten.headOption match {
       case Some(o) => Some(o)
-      case None    => logger.error(cacheFiles.mkString("No successfully opened path. The cache files which were used are\n", "\n", "\n")); None
+      case None    => logger.error(allFiles.mkString("No successfully opened path. The cache files which were used are\n", "\n", "\n")); None
     }
   }
 
