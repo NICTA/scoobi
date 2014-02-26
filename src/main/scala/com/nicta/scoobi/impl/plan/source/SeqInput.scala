@@ -136,20 +136,18 @@ class SeqInputFormat[A] extends InputFormat[NullWritable, A] {
     logger.debug("numSplitsHint=" + numSplitsHint)
     logger.debug("splitSize=" + splitSize)
 
-    split(seq, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss, wf, wireFormatProperty(id)))
+    split(seq, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(ss.drop(offset).take(length), wf, wireFormatProperty(id)))
   }
 }
 
 /** InputSplit for a range of values produced by a sequence. */
-class SeqInputSplit[A](var start: Int, var length: Int, var seq: Seq[A], var wf: WireFormat[A], var wfTag: String) extends InputSplit with Writable with Configured {
-  def this() = this(0, 0, Seq(), null, "")
-  def getLength: Long = length.toLong
+class SeqInputSplit[A](var seq: Seq[A], var wf: WireFormat[A], var wfTag: String) extends InputSplit with Writable with Configured {
+  def this() = this(Seq(), null, "")
+  def getLength: Long = seq.size.toLong
 
   def getLocations: Array[String] = new Array[String](0)
 
   def readFields(in: DataInput) {
-    start = in.readInt()
-    length = in.readInt()
     wfTag = in.readUTF()
     implicit val wfa = DistCache.pullObject[WireFormat[A]](configuration, wfTag).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wfTag); null})
     implicit val wfs = implicitly[WireFormat[Seq[A]]]
@@ -157,8 +155,6 @@ class SeqInputSplit[A](var start: Int, var length: Int, var seq: Seq[A], var wf:
   }
 
   def write(out: DataOutput) {
-    out.writeInt(start)
-    out.writeInt(length)
     out.writeUTF(wfTag)
     implicit val wfa: WireFormat[A] = wf
     implicit val wfs = implicitly[WireFormat[Seq[A]]]
@@ -170,23 +166,21 @@ class SeqInputSplit[A](var start: Int, var length: Int, var seq: Seq[A], var wf:
 /** RecordReader for producing sequences */
 class SeqRecordReader[A](split: SeqInputSplit[A]) extends RecordReader[NullWritable, A] {
 
-  private val end = split.start + split.length
-  private var ix = split.start
+  private val size = split.seq.size
+  private var ix = 0
   private var x: A = _
 
   def initialize(split: InputSplit, context: TaskAttemptContext) = {}
   def getCurrentKey(): NullWritable = NullWritable.get
   def getCurrentValue(): A = x
-  def getProgress(): Float = (ix - (end - split.length)) / split.length
+  def getProgress(): Float = (size - ix) / size
 
   def nextKeyValue(): Boolean = {
-    if (ix < end) {
+    if (ix < size) {
       x = split.seq(ix)
       ix += 1
       true
-    } else {
-      false
-    }
+    } else false
   }
 
   def close() {}
@@ -253,6 +247,6 @@ class LazySeqInputFormat[A] extends InputFormat[NullWritable, A] {
     logger.debug("numSplitsHint=" + numSplitsHint)
     logger.debug("splitSize=" + splitSize)
 
-    split(seq().toStream, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss, wf, wireFormatProperty(id)))
+    split(seq().toStream, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(ss.drop(offset).take(length), wf, wireFormatProperty(id)))
   }
 }

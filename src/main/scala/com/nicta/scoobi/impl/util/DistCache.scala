@@ -80,6 +80,12 @@ object DistCache {
       Serialiser.deserialise(dis).asInstanceOf[T]
     }
 
+  /** pull an object from the cache by passing the cache paths directly */
+  def pullObject[T](cacheFiles: Array[Path], path: Path): Option[T] =
+    pullPath(cacheFiles, path) { dis =>
+      Serialiser.deserialise(dis).asInstanceOf[T]
+    }
+
   /**
    * Pulling an object from a given path.
    *
@@ -94,14 +100,23 @@ object DistCache {
    *  - use the Serialiser to deserialise the object
    *  - use a WireFormat to deserialise the object
    */
-  def pullPath[T](configuration: Configuration, path: Path)(f: FSDataInputStream => T): Option[T] = {
-    lazy val cacheFiles = (Option(cache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(p => new Path("file://"+p.toString)) ++
-                           Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))).toStream :+ path
+  def pullPath[T](configuration: Configuration, path: Path)(f: FSDataInputStream => T): Option[T] =
+    pullPath(localCacheFiles(configuration).toStream ++ cacheFiles(configuration), path)(f)
+
+  /** @return the list of local cache files */
+  def localCacheFiles(configuration: Configuration) =
+    Option(cache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]())
+
+  /** @return the list of cache files */
+  def cacheFiles(configuration: Configuration) =
+    Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))
+
+  def pullPath[T](cacheFiles: Seq[Path], path: Path)(f: FSDataInputStream => T): Option[T] = {
 
     logger.info("trying to pull an object from the cache at path: "+path)
-    cacheFiles.filter(p => p.toString.endsWith(path.getName)).map { case p =>
+    (cacheFiles :+ path).filter(p => p.toString.endsWith(path.getName)).map { case p =>
       logger.info("trying to open: "+p)
-      tryo(p.getFileSystem(configuration).open(p)).map { dis =>
+      tryo(p.getFileSystem(new Configuration).open(p)).map { dis =>
         logger.info("successfully opened: "+p)
         try f(dis)
         finally dis.close

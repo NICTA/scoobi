@@ -30,7 +30,7 @@ trait Cluster {
   /** @return the jobtracker address  */
   def jobTracker: String
 
-  /** @return the framework name YARN or local. This is only relevant for CDH5 */
+  /** @return the framework name: yarn, classic or local. This is only relevant for CDH5 */
   def frameworkName: String
 }
 

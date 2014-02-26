@@ -43,6 +43,7 @@ import impl.collection.FunctionBoundedLinearSeq
 import plan.DListImpl
 import com.nicta.scoobi.impl.util.{Compatibility, DistCache}
 import FunctionInput._
+import org.apache.hadoop.fs.Path
 
 /** Smart function for creating a distributed lists from a Scala function. */
 trait FunctionInput {
@@ -110,15 +111,23 @@ class FunctionInputFormat[A] extends InputFormat[NullWritable, A] {
     logger.debug("numSplitsHint=" + numSplitsHint)
     logger.debug("splitSize=" + splitSize)
 
-    split(f, splitSize, (offset: Int, length: Int, fs: Int => A) => new FunctionInputSplit(offset, length, fs))(FunctionBoundedLinearSeq(_, n))
+    val cacheFiles = DistCache.localCacheFiles(conf) ++ DistCache.cacheFiles(conf)
+    val path = DistCache.tagToPath(conf, functionProperty(id))
+
+    split(f, splitSize, (offset: Int, length: Int, fs: Int => A) =>
+      new FunctionInputSplit(offset, length, cacheFiles, path))(FunctionBoundedLinearSeq(_, n))
   }
 }
 
 
 /** InputSplit for a range of values produced by a function. */
-class FunctionInputSplit[A](var start: Int, var length: Int, var f: Int => A) extends InputSplit with Writable {
+class FunctionInputSplit[A](var start: Int, var length: Int, var cacheFiles: Array[Path], var path: Path) extends InputSplit with Writable {
 
-  def this() = this(0, 0, null.asInstanceOf[Int => A])
+  lazy val function =
+    DistCache.pullObject[Int => A](cacheFiles, path).
+      getOrElse((i:Int) => sys.error("no function found in the distributed cache: "+cacheFiles.mkString(",")))
+
+  def this() = this(0, 0, Array(), null)
 
   def getLength: Long = length.toLong
 
@@ -128,24 +137,21 @@ class FunctionInputSplit[A](var start: Int, var length: Int, var f: Int => A) ex
     start = in.readInt()
     length = in.readInt()
 
-    val size = in.readInt()
-    val barr = new Array[Byte](size)
-    in.readFully(barr)
-    val bIn = new ObjectInputStream(new ByteArrayInputStream(barr))
-    f = bIn.readObject.asInstanceOf[Int => A]
+    val cacheSize = in.readInt()
+    cacheFiles = new Array[Path](cacheSize)
+    (0 until cacheSize).foreach(i => cacheFiles(i) = new Path(in.readUTF))
+
+    path = new Path(in.readUTF())
   }
 
   def write(out: DataOutput) = {
     out.writeInt(start)
     out.writeInt(length)
 
-    val bytesOut = new ByteArrayOutputStream
-    val bOut =  new ObjectOutputStream(bytesOut)
-    bOut.writeObject(f)
-    bOut.close()
-    val arr = bytesOut.toByteArray
-    out.writeInt(arr.size)
-    out.write(arr)
+    out.writeInt(cacheFiles.size)
+    cacheFiles.foreach(f => out.writeUTF(f.toString))
+
+    out.writeUTF(path.toString)
   }
 }
 
@@ -167,7 +173,7 @@ class FunctionRecordReader[A](split: FunctionInputSplit[A]) extends RecordReader
 
   def nextKeyValue(): Boolean = {
     if (ix < end) {
-      x = split.f(ix)
+      x = split.function(ix)
       ix += 1
       true
     } else {
