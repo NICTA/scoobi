@@ -1,0 +1,11 @@
+Maintenance version
+
+### Fixes
+
+ * found a different way to create avro record writers for both cdh4 and cdh5
+ * added the yarn-site.xml file to the list of configuration files for cdh5/hadoop2 
+ * set the framework.name property for yarn when executing on a cluster
+ * various fixes to `TextFilePartitionedSink` 
+ * optimised the reading of input splits when using a `DList.tabulate` function
+ 
+------ 
