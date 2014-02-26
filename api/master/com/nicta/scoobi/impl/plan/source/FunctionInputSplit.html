@@ -93,7 +93,7 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(start:Int,length:Int,f:Int=&gt;A):com.nicta.scoobi.impl.plan.source.FunctionInputSplit[A]"></a>
+      <a id="&lt;init&gt;(elements:Seq[A]):com.nicta.scoobi.impl.plan.source.FunctionInputSplit[A]"></a>
       <a id="&lt;init&gt;:FunctionInputSplit[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -101,7 +101,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">FunctionInputSplit</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Int">Int</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="f">f: (<span class="extype" name="scala.Int">Int</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit.A">A</span></span>)</span>
+        <span class="name">FunctionInputSplit</span><span class="params">(<span name="elements">elements: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit.A">A</span>]</span>)</span>
       </span>
       </h4>
       
@@ -211,6 +211,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit#elements" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="elements:Seq[A]"></a>
+      <a id="elements:Seq[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">elements</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit.A">A</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -237,19 +250,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit#f" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="f:Int=&gt;A"></a>
-      <a id="f:(Int)⇒A"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">f</span><span class="result">: (<span class="extype" name="scala.Int">Int</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit.A">A</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -334,19 +334,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit#length" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="length:Int"></a>
-      <a id="length:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">length</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -399,19 +386,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit">FunctionInputSplit</a> → Writable</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit#start" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="start:Int"></a>
-      <a id="start:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
