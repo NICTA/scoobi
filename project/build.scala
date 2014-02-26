@@ -199,8 +199,8 @@ object build extends Build {
       generateReadMe,
       publishSite,
       publishSignedArtifacts,
-      publishForCDH3,
-      publishForCDH4,
+      publishSignedForCDH3,
+      publishSignedForCDH4,
       notifyLs,
       notifyHerald,
       tagRelease,
@@ -212,7 +212,7 @@ object build extends Build {
     releaseSnapshotProcess := Seq[ReleaseStep](
       generateUserGuide,
       publishSite,
-      publishSignedArtifacts,
+      publishArtifacts,
       publishForCDH3,
       publishForCDH4),
     commands += releaseSnapshotCommand
@@ -293,6 +293,19 @@ object build extends Build {
    * PUBLICATION
    */
   lazy val publishSignedArtifacts = executeStepTask(publishSigned, "Publishing signed artifacts")
+
+  lazy val publishSignedForCDH3 = publishSignedFor("cdh3")
+
+  lazy val publishSignedForCDH4 = publishSignedFor("cdh4")
+
+  def publishSignedFor(name: String) = ReleaseStep { st: State =>
+    val extracted = Project.extract(st)
+    val ref: ProjectRef = extracted.get(thisProjectRef)
+    val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+s"$name-SNAPSHOT" else v+s"-$name" }), st)
+    executeTask(publishSigned, s"Publishing $name signed artifacts")(st2)
+  }
+
+  lazy val publishArtifacts = executeStepTask(publish, "Publishing artifacts")
 
   lazy val publishForCDH3 = publishFor("cdh3")
 
