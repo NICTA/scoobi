@@ -166,6 +166,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#cacheFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="cacheFiles(configuration:org.apache.hadoop.conf.Configuration):Array[org.apache.hadoop.fs.Path]"></a>
+      <a id="cacheFiles(Configuration):Array[Path]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cacheFiles</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of cache files</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -269,6 +282,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#localCacheFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="localCacheFiles(configuration:org.apache.hadoop.conf.Configuration):Array[org.apache.hadoop.fs.Path]"></a>
+      <a id="localCacheFiles(Configuration):Array[Path]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">localCacheFiles</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of local cache files</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -309,6 +335,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.util.DistCache#pullObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pullObject[T](cacheFiles:Array[org.apache.hadoop.fs.Path],path:org.apache.hadoop.fs.Path):Option[T]"></a>
+      <a id="pullObject[T](Array[Path],Path):Option[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pullObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="cacheFiles">cacheFiles: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullObject.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">pull an object from the cache by passing the cache paths directly</p>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#pullObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="pullObject[T](configuration:org.apache.hadoop.conf.Configuration,tag:String):Option[T]"></a>
       <a id="pullObject[T](Configuration,String):Option[T]"></a>
       <h4 class="signature">
@@ -322,6 +361,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.
       </h4>
       <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
 the current job.</p>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#pullPath" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pullPath[T](cacheFiles:Seq[org.apache.hadoop.fs.Path],path:org.apache.hadoop.fs.Path)(f:org.apache.hadoop.fs.FSDataInputStream=&gt;T):Option[T]"></a>
+      <a id="pullPath[T](Seq[Path],Path)((FSDataInputStream)⇒T):Option[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pullPath</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="cacheFiles">cacheFiles: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.apache.hadoop.fs.FSDataInputStream">FSDataInputStream</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.impl.util.DistCache#pullPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="pullPath[T](configuration:org.apache.hadoop.conf.Configuration,path:org.apache.hadoop.fs.Path)(f:org.apache.hadoop.fs.FSDataInputStream=&gt;T):Option[T]"></a>
       <a id="pullPath[T](Configuration,Path)((FSDataInputStream)⇒T):Option[T]"></a>
