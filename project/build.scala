@@ -315,7 +315,7 @@ object build extends Build {
     val extracted = Project.extract(st)
     val ref: ProjectRef = extracted.get(thisProjectRef)
     val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+s"$name-SNAPSHOT" else v+s"-$name" }), st)
-    executeTask(publishSigned, s"Publishing $name signed artifacts")(st2)
+    executeTask(publish, s"Publishing $name artifacts")(st2)
   }
 
   /**
