@@ -31,6 +31,7 @@ import monitor.Loggable._
 import CollectFunctions._
 import control.Functions._
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
+import com.nicta.scoobi.io.text.TextFilePartitionedSink
 
 /**
  * An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping
@@ -104,18 +105,36 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   def collectOutputs(outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) {
     import fileSystems._; implicit val configuration = sc.configuration
 
-    outer.logger.debug("outputs files are "+outputFiles.mkString("\n") )
-    // copy the each result file to its sink
-    sinks.foreach { sink =>
+    outer.logger.debug("outputs files are "+outputFiles.mkString("\n"))
+    sinks.foreach { case sink =>
       sink.outputPath foreach { outDir =>
-        mkdir(outDir)
-        outer.logger.debug("created directory "+outDir)
-        moveOutputFiles(sink, outDir, outputFiles)
+          mkdir(outDir)
+          outer.logger.debug("created directory "+outDir)
       }
     }
     // copy the success file to every output directory
     outputFiles.find(_.getName ==  "_SUCCESS").foreach { successFile =>
       sinks.flatMap(_.outputPath).foreach { outDir => copyTo(outDir).apply(successFile) }
+    }
+
+    // copy the each result file to its sink
+    sinks.foreach {
+      case sink: TextFilePartitionedSink[_,_] =>
+        sink.outputPath foreach { outDir =>
+          mkdir(outDir)
+          outer.logger.debug("created directory "+outDir)
+
+          // all directories are created under a <sink id> directory for easier collection in just a "rename"
+          val baseDir = new Path(sc.temporaryOutputDirectory, new Path(sink.id.toString))
+          listDirectPaths(baseDir).foreach(p => moveTo(outDir)(sc.configuration)(p, new Path(".")))
+        }
+
+      case sink =>
+        sink.outputPath foreach { outDir =>
+          mkdir(outDir)
+          outer.logger.debug("created directory "+outDir)
+          moveOutputFiles(sink, outDir, outputFiles)
+        }
     }
   }
 
