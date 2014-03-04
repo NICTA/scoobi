@@ -26,6 +26,8 @@ import impl.plan.comp.CompNodeData._
 import org.scalacheck._
 import org.scalacheck.Arbitrary._
 import org.specs2.execute.Skipped
+import com.nicta.scoobi.testing.TestFiles._
+import com.nicta.scoobi.testing.TempFiles
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
 
@@ -94,6 +96,25 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   tag("issue 194")
   "Length of an empty list should be zero" >> { implicit sc: SC =>
      DList[Int]().length.run === 0
+  }
+
+  tag("issue 319")
+  "Sum and maps" >> { implicit sc: ScoobiConfiguration =>
+    implicit val wf = WireFormat.EitherFmt[String, Int]
+
+    val dlist = DList[Either[String, Int]](Left("test"), Right(1))
+
+    val lefts = dlist.collect { case Left(l) => l+"2" }
+    val rights = dlist.collect { case Right(r) => r+1 }
+
+    val other = rights.map[Either[String, Int]](r => Left[String, Int](r.toString+"3"))
+    val otherLefts = other.collect { case Left(l) => l+"last" }
+
+    val all = (lefts ++ otherLefts)
+
+    val size = all.length
+    persist(size, all.toTextFile(path(TempFiles.createTempDir("bug").getPath), overwrite = true))
+    size.run must_== 2
   }
 
   "DLists can be concatenated via reduce" >> {

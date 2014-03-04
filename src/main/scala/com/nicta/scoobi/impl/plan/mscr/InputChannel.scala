@@ -263,7 +263,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
 
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
-    else                   mappers.filter(m => uses(m).exists(outputNodes.contains) || outputNodes.contains(m))
+    else                   mappers.filter(m => uses(m).filterNot(mappers.contains).exists(outputNodes.contains) || outputNodes.contains(m))
 
   protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextScoobiJobContext {
     val (key, value) = (tks(tag), tvs(tag))
