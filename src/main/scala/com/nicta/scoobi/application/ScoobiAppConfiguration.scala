@@ -76,6 +76,7 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
     configurationFilesDiagnostic
 
     hadoopConfDirs.foreach { dir =>
+      logger.info("SCOOBI: when using Hadoop2 you can safely ignore the deprecation warnings for old properties")
       configurationFiles.foreach { r =>
         val path = dir+r
         if (new File(path).exists) {
