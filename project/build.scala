@@ -19,7 +19,9 @@ import Keys._
 import com.typesafe.sbt._
 import pgp.PgpKeys._
 import sbt.Configuration
+import sbt.Configuration
 import SbtSite._
+import scala.Some
 import scala.Some
 import SiteKeys._
 import SbtGit._
@@ -37,6 +39,8 @@ import Defaults._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
 import com.typesafe.tools.mima.plugin.MimaKeys.binaryIssueFilters
+import xerial.sbt.Sonatype._
+import SonatypeKeys._
 
 object build extends Build {
   type Settings = Def.Setting[_]
@@ -181,7 +185,8 @@ object build extends Build {
       </developers>
     ),
     credentials := Seq(Credentials(Path.userHome / ".sbt" / "scoobi.credentials"))
-  )
+  ) ++
+  sonatypeSettings
 
   /**
    * RELEASE PROCESS
@@ -199,6 +204,7 @@ object build extends Build {
       generateReadMe,
       publishSite,
       publishSignedArtifacts,
+      releaseToSonatype,
       publishSignedForCDH3,
       publishSignedForCDH4,
       notifyLs,
@@ -304,6 +310,8 @@ object build extends Build {
     val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+s"$name-SNAPSHOT" else v+s"-$name" }), st)
     executeTask(publishSigned, s"Publishing $name signed artifacts")(st2)
   }
+
+  lazy val releaseToSonatype = executeStepTask(sonatypeReleaseAll, "Closing and promoting the Sonatype repo")
 
   lazy val publishArtifacts = executeStepTask(publish, "Publishing artifacts")
 

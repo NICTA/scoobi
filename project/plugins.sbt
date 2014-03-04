@@ -13,3 +13,5 @@ addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.7.1")
 addSbtPlugin("me.lessis" % "ls-sbt" % "0.1.3")
 
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.1.6")
+
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "0.2.1")
