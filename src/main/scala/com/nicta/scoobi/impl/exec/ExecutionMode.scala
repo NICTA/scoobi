@@ -31,6 +31,7 @@ import org.apache.hadoop.util.ReflectionUtils
 import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import org.apache.hadoop.fs.Path
 import com.nicta.scoobi.impl.plan.mscr.OutputChannel
+import com.nicta.scoobi.io.text.TextFilePartitionedSink
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -120,8 +121,16 @@ trait ExecutionMode extends ShowNode with Optimiser {
       implicit val fs = sc.fileSystem
       implicit val fileSystems = FileSystems
 
-      sink.outputPath.foreach { outputDir =>
-        FileSystems.listPaths(outputDir) foreach OutputChannel.moveFileFromTo(srcDir = outputDir, destDir = outputDir)
+      sink match {
+        case partitioned: TextFilePartitionedSink[_,_] =>
+          partitioned.outputPath.foreach { outputDir =>
+            FileSystems.listPaths(outputDir) foreach OutputChannel.moveFileFromTo(srcDir = new Path(outputDir, new Path(partitioned.id.toString)), destDir = outputDir)
+          }
+
+        case normal =>
+          normal.outputPath.foreach { outputDir =>
+            FileSystems.listPaths(outputDir) foreach OutputChannel.moveFileFromTo(srcDir = outputDir, destDir = outputDir)
+          }
       }
     }
     sinks.foreach(_.outputTeardown(sc))

@@ -288,7 +288,9 @@ object OutputChannel {
     val filePath       = path.toUri.getPath
     val sourceDirPath  = Files.dirPath(srcDir.toUri.getPath)
     // take only the path part which starts after the source directory
-    val fromSourceDir  = filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
+    val fromSourceDir  =
+      if (filePath.indexOf(sourceDirPath) >=0) filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
+      else filePath
 
     val newPath        = new Path(fromSourceDir)
 
