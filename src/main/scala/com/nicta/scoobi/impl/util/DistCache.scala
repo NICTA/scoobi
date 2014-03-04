@@ -112,7 +112,7 @@ object DistCache {
     Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))
 
   def pullPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration)(f: FSDataInputStream => T): Option[T] = {
-    val allFiles = cacheFiles :+ path
+    val allFiles = (cacheFiles :+ path).distinct.toStream
 
     logger.info("trying to pull an object from the cache at path: "+path)
     (allFiles :+ path).filter(p => p.toString.endsWith(path.getName)).map { case p =>
