@@ -7,5 +7,6 @@ Maintenance version
  * set the framework.name property for yarn when executing on a cluster
  * various fixes to `TextFilePartitionedSink` 
  * optimised the reading of input splits when using a `DList.tabulate` function
+ * fixed the caching of metadata
  
 ------ 
