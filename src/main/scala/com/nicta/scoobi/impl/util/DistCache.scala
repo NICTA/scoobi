@@ -75,14 +75,14 @@ object DistCache {
 
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
-  def pullObject[T](configuration: Configuration, tag: String): Option[T] =
-    pullPath(configuration, tagToPath(configuration, tag)) { dis =>
+  def pullObject[T](configuration: Configuration, tag: String, memoise: Boolean = false): Option[T] =
+    pullPath(configuration, tagToPath(configuration, tag), memoise) { dis =>
       Serialiser.deserialise(dis).asInstanceOf[T]
     }
 
   /** pull an object from the cache by passing the cache paths directly */
   def pullObject[T](cacheFiles: Array[Path], path: Path): Option[T] =
-    pullPath(cacheFiles, path) { dis =>
+    pullPath(cacheFiles.toSeq, path, new Configuration) { dis =>
       Serialiser.deserialise(dis).asInstanceOf[T]
     }
 
@@ -100,8 +100,8 @@ object DistCache {
    *  - use the Serialiser to deserialise the object
    *  - use a WireFormat to deserialise the object
    */
-  def pullPath[T](configuration: Configuration, path: Path)(f: FSDataInputStream => T): Option[T] =
-    pullPath(localCacheFiles(configuration) ++ cacheFiles(configuration), path, configuration)(f)
+  def pullPath[T](configuration: Configuration, path: Path, memoise: Boolean = false)(f: FSDataInputStream => T): Option[T] =
+    pullPath(localCacheFiles(configuration) ++ cacheFiles(configuration), path, configuration, memoise)(f)
 
   /** @return the list of local cache files */
   def localCacheFiles(configuration: Configuration) =
@@ -111,22 +111,29 @@ object DistCache {
   def cacheFiles(configuration: Configuration) =
     Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))
 
-  def pullPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration)(f: FSDataInputStream => T): Option[T] = {
-    val allFiles = (cacheFiles :+ path).distinct.toStream
+  def pullPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration, memoise: Boolean = false)(f: FSDataInputStream => T): Option[T] = {
 
-    logger.info("trying to pull an object from the cache at path: "+path)
-    (allFiles :+ path).filter(p => p.toString.endsWith(path.getName)).map { case p =>
-      logger.info("trying to open: "+p)
-      tryo(p.getFileSystem(configuration).open(p)).map { dis =>
-        logger.info("successfully opened: "+p)
-        try f(dis)
-        finally dis.close
+    lazy val deserialiseObject = {
+      val allFiles = (cacheFiles :+ path).distinct.toStream
+      logger.info("trying to pull an object from the cache at path: "+path)
+      (allFiles :+ path).filter(p => p.toString.endsWith(path.getName)).map { case p =>
+        logger.info("trying to open: "+p)
+        tryo(p.getFileSystem(configuration).open(p)).map { dis =>
+          logger.info("successfully opened: "+p)
+          try f(dis)
+          finally dis.close
+        }
+      }.dropWhile(!_.isDefined).flatten.headOption match {
+        case Some(o) => Some(o)
+        case None    => logger.error(allFiles.mkString("No successfully opened path. The cache files which were used are\n", "\n", "\n")); None
       }
-    }.dropWhile(!_.isDefined).flatten.headOption match {
-      case Some(o) => Some(o)
-      case None    => logger.error(allFiles.mkString("No successfully opened path. The cache files which were used are\n", "\n", "\n")); None
     }
+
+    if (memoise) deserialisedObjects.getOrElseUpdate(path, deserialiseObject).asInstanceOf[Option[T]]
+    else         deserialiseObject
   }
+
+  private var deserialisedObjects = new scala.collection.mutable.WeakHashMap[Path, Option[Any]]
 
 }
 

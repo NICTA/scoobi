@@ -39,7 +39,7 @@ class Env(path: Path)(wf: WireReaderWriter) extends Environment {
 
   /** Get an environment value from the distributed cache. */
   def pull(implicit configuration: Configuration): Any = {
-    DistCache.pullPath(configuration, path)(wf.read).
+    DistCache.pullPath(configuration, path, memoise = false)(wf.read).
       getOrElse(throw new Exception("\nno cache files contain the path: "+path))
   }
 
