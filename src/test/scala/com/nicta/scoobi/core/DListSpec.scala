@@ -31,6 +31,10 @@ import com.nicta.scoobi.testing.TempFiles
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
 
+  "length" >> { implicit sc: SC =>
+    DList(1, 2, 3).length.run must_== 3
+  }
+
   "we can create a DList by calling a function repeatedly with 'tabulate' " >> { implicit sc: SC =>
     DList.tabulate(3)(_.toString).run.toList must_== List("0", "1", "2")
   }
