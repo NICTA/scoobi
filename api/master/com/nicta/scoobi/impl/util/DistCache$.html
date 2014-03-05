@@ -348,42 +348,42 @@ distributed cache. Two APIs are provided for pushing and pulling objects.
       </h4>
       <p class="shortcomment cmt">pull an object from the cache by passing the cache paths directly</p>
     </li><li name="com.nicta.scoobi.impl.util.DistCache#pullObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pullObject[T](configuration:org.apache.hadoop.conf.Configuration,tag:String):Option[T]"></a>
-      <a id="pullObject[T](Configuration,String):Option[T]"></a>
+      <a id="pullObject[T](configuration:org.apache.hadoop.conf.Configuration,tag:String,memoise:Boolean):Option[T]"></a>
+      <a id="pullObject[T](Configuration,String,Boolean):Option[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pullObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullObject.T">T</span>]</span>
+        <span class="name">pullObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="memoise">memoise: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullObject.T">T</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
 the current job.</p>
     </li><li name="com.nicta.scoobi.impl.util.DistCache#pullPath" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pullPath[T](cacheFiles:Seq[org.apache.hadoop.fs.Path],path:org.apache.hadoop.fs.Path,configuration:org.apache.hadoop.conf.Configuration)(f:org.apache.hadoop.fs.FSDataInputStream=&gt;T):Option[T]"></a>
-      <a id="pullPath[T](Seq[Path],Path,Configuration)((FSDataInputStream)⇒T):Option[T]"></a>
+      <a id="pullPath[T](cacheFiles:Seq[org.apache.hadoop.fs.Path],path:org.apache.hadoop.fs.Path,configuration:org.apache.hadoop.conf.Configuration,memoise:Boolean)(f:org.apache.hadoop.fs.FSDataInputStream=&gt;T):Option[T]"></a>
+      <a id="pullPath[T](Seq[Path],Path,Configuration,Boolean)((FSDataInputStream)⇒T):Option[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pullPath</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="cacheFiles">cacheFiles: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="symbol">new Configuration</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.apache.hadoop.fs.FSDataInputStream">FSDataInputStream</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span>]</span>
+        <span class="name">pullPath</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="cacheFiles">cacheFiles: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="symbol">new Configuration</span></span>, <span name="memoise">memoise: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.apache.hadoop.fs.FSDataInputStream">FSDataInputStream</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span>]</span>
       </span>
       </h4>
       
     </li><li name="com.nicta.scoobi.impl.util.DistCache#pullPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pullPath[T](configuration:org.apache.hadoop.conf.Configuration,path:org.apache.hadoop.fs.Path)(f:org.apache.hadoop.fs.FSDataInputStream=&gt;T):Option[T]"></a>
-      <a id="pullPath[T](Configuration,Path)((FSDataInputStream)⇒T):Option[T]"></a>
+      <a id="pullPath[T](configuration:org.apache.hadoop.conf.Configuration,path:org.apache.hadoop.fs.Path,memoise:Boolean)(f:org.apache.hadoop.fs.FSDataInputStream=&gt;T):Option[T]"></a>
+      <a id="pullPath[T](Configuration,Path,Boolean)((FSDataInputStream)⇒T):Option[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pullPath</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.apache.hadoop.fs.FSDataInputStream">FSDataInputStream</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span>]</span>
+        <span class="name">pullPath</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="memoise">memoise: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.apache.hadoop.fs.FSDataInputStream">FSDataInputStream</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullPath.T">T</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Pulling an object from a given path.</p><div class="fullcomment"><div class="comment cmt"><p>Pulling an object from a given path.</p><p>We first try paths from:</p><ul><li>the local cache then</li><li>the distributed cache then</li><li>the passed path itself (this is useful if we are on the client)</li></ul><p>Once a FSDataInputStream is successfully opened, the function f can do its job to recreate the object:</p><ul><li>use the Serialiser to deserialise the object</li><li>use a WireFormat to deserialise the object
