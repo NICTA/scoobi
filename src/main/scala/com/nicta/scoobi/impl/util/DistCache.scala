@@ -113,9 +113,9 @@ object DistCache {
 
   def pullPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration, memoise: Boolean = false)(f: FSDataInputStream => T): Option[T] = {
 
-    lazy val deserialiseObject = {
+    lazy val deserialiseObject: Option[T] = {
       val allFiles = (cacheFiles :+ path).distinct.toStream
-      logger.info("trying to pull an object from the cache at path: "+path)
+      logger.info("trying to pull an object from the cache at path: "+path+s" (memoise=$memoise)")
       (allFiles :+ path).filter(p => p.toString.endsWith(path.getName)).map { case p =>
         logger.info("trying to open: "+p)
         tryo(p.getFileSystem(configuration).open(p)).map { dis =>
@@ -129,11 +129,11 @@ object DistCache {
       }
     }
 
-    if (memoise) deserialisedObjects.getOrElseUpdate(path, deserialiseObject).asInstanceOf[Option[T]]
+    if (memoise) deserialisedObjects.getOrElseUpdate(path.getName, deserialiseObject).asInstanceOf[Option[T]]
     else         deserialiseObject
   }
 
-  private var deserialisedObjects = new scala.collection.mutable.WeakHashMap[Path, Option[Any]]
+  private val deserialisedObjects = new scala.collection.mutable.WeakHashMap[String, Option[Any]]
 
 }
 
