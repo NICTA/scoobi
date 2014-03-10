@@ -117,6 +117,18 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     read.run.normalise === written.normalise
   }
 
+  tag("issue 320")
+  "6. Output files must be copied at the right place" >> { implicit sc: SC =>
+
+    val base = path(TempFiles.createTempDir("tmp").getPath).pp
+    val partitions = base + "/partitions"
+    val dlist = DList(("a/b/c", 1), ("a/b/c", 2), ("a/b/c", 3))
+
+    dlist.toPartitionedTextFile(partitions, identity).persist
+
+    new File(partitions).list.toSet must_== Set("_SUCCESS", "._SUCCESS.crc", "a")
+  }
+
   implicit val wf: WireFormat[Date] = mkCaseWireFormat(Date.apply _, Date.unapply _)
 }
 

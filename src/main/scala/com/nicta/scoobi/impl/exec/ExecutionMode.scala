@@ -124,7 +124,11 @@ trait ExecutionMode extends ShowNode with Optimiser {
       sink match {
         case partitioned: TextFilePartitionedSink[_,_] =>
           partitioned.outputPath.foreach { outputDir =>
-            FileSystems.listPaths(outputDir) foreach OutputChannel.moveFileFromTo(srcDir = new Path(outputDir, new Path(partitioned.id.toString)), destDir = outputDir)
+            val partitionDir = new Path(outputDir, new Path(partitioned.id.toString))
+            // leave the SUCCESS file where it is
+            FileSystems.listPaths(outputDir).filterNot(_.getName.startsWith("_SUCCESS")) foreach
+              OutputChannel.moveFileFromTo(srcDir = partitionDir, destDir = outputDir)
+            FileSystems.deletePath(partitionDir)(job.getConfiguration)
           }
 
         case normal =>
