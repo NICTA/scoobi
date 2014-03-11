@@ -32,7 +32,7 @@ object dependencies {
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
     "com.googlecode.kiama"              %% "kiama"                     % "1.5.2",
-    "com.chuusai"                       %  "shapeless_2.10.2"          % "2.0.0-M1",
+    "com.chuusai"                       %  "shapeless_2.10.3"          % "2.0.0-M1",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
