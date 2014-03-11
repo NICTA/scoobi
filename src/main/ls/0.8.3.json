@@ -1,0 +1,94 @@
+{
+  "organization" : "com.nicta",
+  "name" : "scoobi",
+  "version" : "0.8.3",
+  "description" : "scoobi",
+  "site" : "",
+  "tags" : [ ],
+  "docs" : "",
+  "resolvers" : [ "https://oss.sonatype.org/content/repositories/releases" ],
+  "dependencies" : [ {
+    "organization" : "org.apache.avro",
+    "name" : "avro",
+    "version" : "1.7.4"
+  }, {
+    "organization" : "com.thoughtworks.xstream",
+    "name" : "xstream",
+    "version" : "1.4.4"
+  }, {
+    "organization" : "javassist",
+    "name" : "javassist",
+    "version" : "3.12.1.GA"
+  }, {
+    "organization" : "com.googlecode.kiama",
+    "name" : "kiama",
+    "version" : "1.5.2"
+  }, {
+    "organization" : "com.chuusai",
+    "name" : "shapeless_2.10.3",
+    "version" : "2.0.0-M1"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-common",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-hdfs",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-app",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-core",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-jobclient",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-mapreduce-client-core",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-annotations",
+    "version" : "2.2.0"
+  }, {
+    "organization" : "org.apache.avro",
+    "name" : "avro-mapred",
+    "version" : "1.7.4"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-core",
+    "version" : "7.0.6"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-iteratee",
+    "version" : "7.0.6"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-concurrent",
+    "version" : "7.0.6"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-scalacheck-binding",
+    "version" : "7.0.6"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-typelevel",
+    "version" : "7.0.6"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-xml",
+    "version" : "7.0.6"
+  }, {
+    "organization" : "org.specs2",
+    "name" : "specs2-core",
+    "version" : "2.3.10"
+  } ],
+  "scalas" : [ "2.10.3" ],
+  "licenses" : [ ],
+  "sbt" : false
+}
