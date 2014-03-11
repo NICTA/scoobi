@@ -57,14 +57,14 @@ object dependencies {
                                            "org.apache.hadoop" % "hadoop-annotations"                % hadoopVersion exclude("asm", "asm"),
                                            "org.apache.avro"   % "avro-mapred"                       % "1.7.4" classifier "hadoop2")
 
-  def scalaz(scalazVersion: String = "7.0.2") = Seq(
+  def scalaz(scalazVersion: String = "7.0.6") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
     "org.scalaz"                        %% "scalaz-concurrent"         % scalazVersion,
     "org.scalaz"                        %% "scalaz-scalacheck-binding" % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  def specs2(specs2Version: String = "2.3.2") = Seq(
+  def specs2(specs2Version: String = "2.3.10") = Seq(
     "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional") ++ Seq(
     "org.specs2"                        %% "specs2-mock"               % specs2Version      ,
     "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      ,
