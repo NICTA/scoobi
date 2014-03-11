@@ -59,6 +59,7 @@ object dependencies {
 
   def scalaz(scalazVersion: String = "7.0.6") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
+    "org.scalaz"                        %% "scalaz-iteratee"           % scalazVersion,
     "org.scalaz"                        %% "scalaz-concurrent"         % scalazVersion,
     "org.scalaz"                        %% "scalaz-scalacheck-binding" % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
