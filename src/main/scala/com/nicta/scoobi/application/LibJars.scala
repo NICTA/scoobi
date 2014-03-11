@@ -61,9 +61,16 @@ trait LibJars {
    */
   private[scoobi]
   def classLoaderJars(implicit configuration: ScoobiConfiguration): Seq[URL] = tryOrElse {
-    configuration.scoobiClassLoader.asInstanceOf[URLClassLoader].getURLs.filter(url => !url.getFile.contains("hadoop-core")).toSeq
-  }(Seq()).debugNot(_.isEmpty, jars => "jars found with the classloader\n"+jars.mkString("\n"))
+    val urls = getURLClassLoader(configuration.scoobiClassLoader).map(_.getURLs).toSeq.flatten
+    urls.filterNot(_.getFile.contains("hadoop-core"))
+  }(Seq()).debug(jars => "jars found with the classloader\n"+jars.mkString("\n"))
 
+  private[scoobi] def getURLClassLoader(classLoader: ClassLoader): Option[URLClassLoader] =
+    classLoader.getClass.getName match {
+      case "java.net.URLClassLoader"       => Some(classLoader.asInstanceOf[URLClassLoader])
+      case "sbt.classpath.ClasspathFilter" => getURLClassLoader(classLoader.getParent)
+      case _                               => None
+    }
 
   /**
    * @return the list of library jars to upload, provided by the jars found from the HADOOP_CLASSPATH variable
