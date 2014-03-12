@@ -24,7 +24,7 @@ import org.apache.hadoop.mapreduce.{Mapper => HMapper, Counter, TaskInputOutputC
 import core._
 import rtt._
 import util.DistCache
-import com.nicta.scoobi.impl.plan.mscr.{OutputChannels, InputChannels, InputChannel}
+import com.nicta.scoobi.impl.plan.mscr.{OutputChannel, OutputChannels, InputChannels, InputChannel}
 import reflect.ClasspathDiagnostics
 import org.apache.hadoop.io.{WritableComparable, WritableComparator, NullWritable}
 import scala.collection.mutable
@@ -45,11 +45,11 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
   private var allInputChannels: InputChannels = _
   private var allOutputChannels: OutputChannels = _
   private var channelOutputFormat: ChannelOutputFormat = _
-  private var inMemoryContext: InMemoryInputOutputContext = _
+  private var compositeContext: CompositeInputOutputContext = _
   private var taggedInputChannels: Seq[InputChannel] = _
   private var tk: TaggedKey = _
   private var tv: TaggedValue = _
-  private var hasReduceTasks = true
+  private var hasBypassOutput = false
 
   private var countValuesPerMapper = false
   private var counter: Counter = _
@@ -68,14 +68,16 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     logger.info("Input is " + inputSplit)
     taggedInputChannels = allInputChannels.channelsForSource(inputSplit.channel)
 
-    // if there are no reducers for this job use an in-memory context to hold the mapped values and pass them directly to output channels
-    if (context.getNumReduceTasks == 0) {
-      hasReduceTasks = false
-      inMemoryContext = new InMemoryInputOutputContext(mapContext)
-      taggedInputChannels.foreach(_.setup(inMemoryContext))
-
-      channelOutputFormat = new ChannelOutputFormat(context)
+    // if there are bypass nodes in the channels, use a composite context
+    if (taggedInputChannels.exists(_.bypassOutputNodes.nonEmpty)) {
+      hasBypassOutput = true
       allOutputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, s"scoobi.reducers-$jobStep").getOrElse(OutputChannels(Seq()))
+      channelOutputFormat = new ChannelOutputFormat(context)
+
+      val bypassTags = taggedInputChannels.flatMap(_.bypassTags)
+      compositeContext = new CompositeInputOutputContext(mapContext, OutputChannels(bypassTags.flatMap(allOutputChannels.channel)), channelOutputFormat)
+      taggedInputChannels.foreach(_.setup(compositeContext))
+
       allOutputChannels.setup(channelOutputFormat)(context.getConfiguration)
     } else taggedInputChannels.foreach(_.setup(new InputOutputContext(mapContext)))
 
@@ -91,23 +93,14 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     val taskContext = context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]]
 
     if (countValuesPerMapper) counter.increment(1)
-    taggedInputChannels.foreach(channel => channel.map(key, value, new InputOutputContext(taskContext)))
-
-    // if there are no reducers pass the mapped value of a given tag to the corresponding output channel
-    if (!hasReduceTasks) {
-      taggedInputChannels.foreach { channel =>
-        channel.tags.foreach { tag =>
-          allOutputChannels.channel(tag).foreach { outputChannel =>
-            inMemoryContext.getValues(tag).foreach(values => outputChannel.reduce(NullWritable.get, values, channelOutputFormat)(context.getConfiguration))
-          }
-        }
-      }
-      inMemoryContext.clear
-    }
+    if (hasBypassOutput)
+      taggedInputChannels.foreach(channel => channel.map(key, value, compositeContext))
+    else
+      taggedInputChannels.foreach(channel => channel.map(key, value, new InputOutputContext(taskContext)))
   }
 
   override def cleanup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
-    if (context.getNumReduceTasks == 0) {
+    if (hasBypassOutput) {
       allOutputChannels.cleanup(channelOutputFormat)(context.getConfiguration)
       channelOutputFormat.close
     }
@@ -115,21 +108,18 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
   }
 }
 
-import scalaz.Scalaz._
-import scalaz.std.vector.vectorSyntax._
-
 /**
- * This context holds values in memory, by tag, in order to pass them later on to output channels for writing
+ * This context either writes to the hadoop context or to an output channel depending on the value tag
+ * 
+ * If the result of the map operation must go to the reducer, use the normal hadoop context
+ * if it must go to an output file directly (i.e. to a "bypass" output tag), use the corresponding output channel
+ * as a reducer
+ * 
  */
-class InMemoryInputOutputContext(context: TaskInputOutputContext[Any,Any,Any,Any]) extends InputOutputContext(context: TaskInputOutputContext[Any,Any,Any,Any]) {
-  var values: Map[Int, Vector[Any]] = Map[Int, Vector[Any]]()
-
-  def getValues(tag: Int): Option[Vector[Any]] = values.get(tag)
-
-  def clear = { values = Map[Int, Vector[Any]]() }
-
+class CompositeInputOutputContext(context: TaskInputOutputContext[Any,Any,Any,Any], outputChannels: OutputChannels, channelOutputFormat: ChannelOutputFormat) extends InputOutputContext(context: TaskInputOutputContext[Any,Any,Any,Any]) {
   override def write(k: Any, v: Any) {
     val taggedValue = v.asInstanceOf[TaggedValue]
-    values = values |+| Map(taggedValue.tag -> Vector(taggedValue.get(taggedValue.tag)))
+    outputChannels.channel(taggedValue.tag).map(_.reduce(k, Seq(taggedValue.get(taggedValue.tag)), channelOutputFormat)(context.getConfiguration)).
+      getOrElse(context.write(k, v))
   }
 }

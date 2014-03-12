@@ -80,9 +80,10 @@ trait InputChannel extends Channel {
   def outputNodes: Seq[CompNode]
   /** output nodes (parallelDos) which are not going in a reducer */
   def bypassOutputNodes: Seq[ParallelDo]
-
   /** set of tags, which are node ids consuming the values produced by this input channel */
   def tags: Seq[Int]
+  /** tags for bypass nodes */
+  def bypassTags = bypassOutputNodes.map(_.id)
   /** types of the keys which are emitted by this InputChannel, by tag */
   def keyTypes: KeyTypes
   /** types of the values which are emitted by this InputChannel, by tag */
@@ -132,19 +133,7 @@ trait MscrInputChannel extends InputChannel {
   def lastMappers: Seq[ParallelDo]
 
   /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
-  lazy val mappers =
-    terminalNodes.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal))
-      // drop the source node from the path
-      .map(path => path.filterNot(_ == sourceNode))
-      // retain only the paths which contain parallelDos or a terminal node
-      .filter(_.forall(isParallelDo || terminalNodes.contains))
-      .flatten
-      .collect(isAParallelDo)
-      .distinct
-
-
-  /** nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel */
-  def terminalNodes: Seq[CompNode]
+  def mappers: Seq[ParallelDo]
 
   private val indent = "\n          "
   override def toString =
@@ -245,11 +234,22 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
 
-  lazy val terminalNodes = groupByKeys
+  override lazy val mappers = gbkMappers ++ bypassOutputNodes
 
-  lazy val outputNodes = groupByKeys ++ mappers.filter(m => uses(m).exists(u => !mappers.contains(u) && !groupByKeys.contains(u)))
+  /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
+  lazy val gbkMappers =
+    groupByKeys.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal))
+      // drop the source node from the path
+      .map(path => path.filterNot(_ == sourceNode))
+      // retain only the paths which contain parallelDos or a terminal node
+      .filter(_.forall(isParallelDo || groupByKeys.contains))
+      .flatten
+      .collect(isAParallelDo)
+      .distinct
 
-  lazy val bypassOutputNodes = outputNodes.collect(isAParallelDo)
+  lazy val bypassOutputNodes = gbkMappers.flatMap(uses).filter(u => !gbkMappers.contains(u) && !groupByKeys.contains(u)).collect(isAParallelDo)
+
+  lazy val outputNodes = groupByKeys ++ bypassOutputNodes
 
   lazy val keyTypes   = outputNodes.foldLeft(KeyTypes()) {
     case (res, cur: GroupByKey) => res.add(cur.id, cur.wfk, cur.gpk)
@@ -291,7 +291,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
   protected def outputTags(mapper: ParallelDo) = outputTagsMemo(mapper)
 
   private lazy val outputTagsMemo = scalaz.Memo.weakHashMapMemo((mapper: ParallelDo) =>
-    (outputNodes.filter(_ == mapper) ++ nodes.uses(mapper).filter(outputNodes.contains)).map(_.id).toSeq)
+    (bypassOutputNodes.filter(_ == mapper) ++ nodes.uses(mapper).filter(groupByKeys.contains)).map(_.id).toSeq)
 
   def processNodes: Seq[ProcessNode] = mappers
 }
@@ -311,6 +311,16 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
   lazy val valueTypes = outputNodes.foldLeft(ValueTypes()) {
     case (res, cur)             => res.add(cur.id, cur.wf)
   }
+
+  lazy val mappers =
+    terminalNodes.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal))
+      // drop the source node from the path
+      .map(path => path.filterNot(_ == sourceNode))
+      // retain only the paths which contain parallelDos or a terminal node
+      .filter(_.forall(isParallelDo || terminalNodes.contains))
+      .flatten
+      .collect(isAParallelDo)
+      .distinct
 
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
