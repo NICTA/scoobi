@@ -127,6 +127,19 @@ in TaggedInputSplit.</p>
       </h4>
       <p class="comment cmt">An input format that delegates to multiple input formats, one for each
 input channel.</p>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CompositeInputOutputContextextendsInputOutputContext"></a>
+      <a id="CompositeInputOutputContext:CompositeInputOutputContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CompositeInputOutputContext.html"><span class="name">CompositeInputOutputContext</span></a><span class="result"> extends <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">This context either writes to the hadoop context or to an output channel depending on the value tag</p>
     </li><li name="com.nicta.scoobi.impl.mapreducer.Env" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="EnvextendsEnvironment"></a>
       <a id="Env:Env"></a>
@@ -141,20 +154,6 @@ input channel.</p>
       </h4>
       <p class="comment cmt">A reference to the storage location of a value that represents the &quot;environment&quot;
 in which a computation is performed within.</p>
-    </li><li name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InMemoryInputOutputContextextendsInputOutputContext"></a>
-      <a id="InMemoryInputOutputContext:InMemoryInputOutputContext"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="InMemoryInputOutputContext.html"><span class="name">InMemoryInputOutputContext</span></a><span class="result"> extends <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>
-      </span>
-      </h4>
-      <p class="comment cmt">This context holds values in memory, by tag, in order to pass them later on to output channels for writing
-</p>
     </li><li name="com.nicta.scoobi.impl.mapreducer.MscrCombiner" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="MscrCombinerextendsReducer[com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue,com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]"></a>
       <a id="MscrCombiner:MscrCombiner"></a>

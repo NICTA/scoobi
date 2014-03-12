@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>InputOutputContext - com.nicta.scoobi.core.InputOutputContext</title>
-          <meta name="description" content="InputOutputContext - com.nicta.scoobi.core.InputOutputContext" />
-          <meta name="keywords" content="InputOutputContext com.nicta.scoobi.core.InputOutputContext" />
+          <title>CompositeInputOutputContext - com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext</title>
+          <meta name="description" content="CompositeInputOutputContext - com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext" />
+          <meta name="keywords" content="CompositeInputOutputContext com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../index.html';
-            var hash = 'com.nicta.scoobi.core.InputOutputContext';
+            var url = '../../../../../index.html';
+            var hash = 'com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
-        <h1>InputOutputContext</h1>
+        <img src="../../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.mapreducer">mapreducer</a></p>
+        <h1>CompositeInputOutputContext</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,16 +35,15 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">InputOutputContext</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">CompositeInputOutputContext</span><span class="result"> extends <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This context either writes to the hadoop context or to an output channel depending on the value tag</p><p>If the result of the map operation must go to the reducer, use the normal hadoop context
+if it must go to an output file directly (i.e. to a &quot;bypass&quot; output tag), use the corresponding output channel
+as a reducer</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="../impl/mapreducer/CompositeInputOutputContext.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext">CompositeInputOutputContext</a></div>
+          <div class="superTypes hiddenContent"><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -62,7 +61,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.core.InputOutputContext"><span>InputOutputContext</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext"><span>CompositeInputOutputContext</span></li><li class="in" name="com.nicta.scoobi.core.InputOutputContext"><span>InputOutputContext</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,16 +81,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.core.InputOutputContext#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(context:org.apache.hadoop.mapreduce.TaskInputOutputContext[Any,Any,Any,Any]):com.nicta.scoobi.core.InputOutputContext"></a>
-      <a id="&lt;init&gt;:InputOutputContext"></a>
+              <ol><li name="com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(context:org.apache.hadoop.mapreduce.TaskInputOutputContext[Any,Any,Any,Any],outputChannels:com.nicta.scoobi.impl.plan.mscr.OutputChannels,channelOutputFormat:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat):com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext"></a>
+      <a id="&lt;init&gt;:CompositeInputOutputContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InputOutputContext</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span>
+        <span class="name">CompositeInputOutputContext</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>, <span name="outputChannels">outputChannels: <a href="../plan/mscr/OutputChannels.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannels">OutputChannels</a></span>, <span name="channelOutputFormat">channelOutputFormat: <a href="ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span>
       </span>
       </h4>
       
@@ -113,7 +112,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -152,7 +151,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -191,17 +190,17 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.InputOutputContext#configuration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#configuration" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configuration:org.apache.hadoop.conf.Configuration"></a>
       <a id="configuration:Configuration"></a>
       <h4 class="signature">
@@ -213,20 +212,7 @@
         <span class="name">configuration</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
       </h4>
-      
-    </li><li name="com.nicta.scoobi.core.InputOutputContext#context" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="context:org.apache.hadoop.mapreduce.TaskInputOutputContext[Any,Any,Any,Any]"></a>
-      <a id="context:TaskInputOutputContext[Any,Any,Any,Any]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">context</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>
-      </span>
-      </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -236,7 +222,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -265,7 +251,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -285,7 +271,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.InputOutputContext#getCounter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#getCounter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCounter(groupName:String,name:String):Long"></a>
       <a id="getCounter(String,String):Long"></a>
       <h4 class="signature">
@@ -297,7 +283,7 @@
         <span class="name">getCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -311,7 +297,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.InputOutputContext#incrementCounter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#incrementCounter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="incrementCounter(groupName:String,name:String,increment:Long):Unit"></a>
       <a id="incrementCounter(String,String,Long):Unit"></a>
       <h4 class="signature">
@@ -323,7 +309,7 @@
         <span class="name">incrementCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="increment">increment: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">1L</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -346,7 +332,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -389,7 +375,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.InputOutputContext#tick" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#tick" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="tick:Unit"></a>
       <a id="tick:Unit"></a>
       <h4 class="signature">
@@ -401,7 +387,7 @@
         <span class="name">tick</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -472,8 +458,8 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.InputOutputContext#write" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="write(key:Any,value:Any):Unit"></a>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext#write" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="write(k:Any,v:Any):Unit"></a>
       <a id="write(Any,Any):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -481,10 +467,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">write</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Any">Any</span></span>, <span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">write</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Any">Any</span></span>, <span name="v">v: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.CompositeInputOutputContext">CompositeInputOutputContext</a> → <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -494,8 +480,10 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+        <div class="parent" name="com.nicta.scoobi.core.InputOutputContext">
+              <h3>Inherited from <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>
@@ -514,6 +502,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

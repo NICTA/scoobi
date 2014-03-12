@@ -193,6 +193,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel">FloatingInputChannel</a> → <a href="InputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.InputChannel">InputChannel</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#bypassTags" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="bypassTags:Seq[Int]"></a>
+      <a id="bypassTags:Seq[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bypassTags</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">tags for bypass nodes</p><div class="fullcomment"><div class="comment cmt"><p>tags for bypass nodes</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.InputChannel">InputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#cleanup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="cleanup(context:com.nicta.scoobi.core.InputOutputContext):Unit"></a>
       <a id="cleanup(InputOutputContext):Unit"></a>
@@ -469,7 +482,7 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <p class="shortcomment cmt">map a given key/value and emit it</p><div class="fullcomment"><div class="comment cmt"><p>map a given key/value and emit it</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a> → <a href="InputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.InputChannel">InputChannel</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#mappers" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel#mappers" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="mappers:Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]"></a>
       <a id="mappers:Seq[ParallelDo]"></a>
       <h4 class="signature">
@@ -481,7 +494,7 @@ or key/values for a GbkInputChannel
         <span class="name">mappers</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="../comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel</p><div class="fullcomment"><div class="comment cmt"><p>collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel">FloatingInputChannel</a> → <a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#mappersToString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="mappersToString(name:String,mps:Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]):String"></a>
       <a id="mappersToString(String,Seq[ParallelDo]):String"></a>
@@ -681,7 +694,7 @@ if the
       </span>
       </h4>
       <p class="shortcomment cmt">collect all the tags accessible from this source node</p><div class="fullcomment"><div class="comment cmt"><p>collect all the tags accessible from this source node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel">FloatingInputChannel</a> → <a href="InputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.InputChannel">InputChannel</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel#terminalNodes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel#terminalNodes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="terminalNodes:Seq[com.nicta.scoobi.core.CompNode]"></a>
       <a id="terminalNodes:Seq[CompNode]"></a>
       <h4 class="signature">
@@ -693,7 +706,7 @@ if the
         <span class="name">terminalNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel</p><div class="fullcomment"><div class="comment cmt"><p>nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel">FloatingInputChannel</a> → <a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
+      
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#tks" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="tks:Map[Int,com.nicta.scoobi.impl.rtt.TaggedKey]"></a>
       <a id="tks:Map[Int,TaggedKey]"></a>
