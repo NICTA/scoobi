@@ -234,7 +234,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
 
-  override lazy val mappers = gbkMappers ++ bypassOutputNodes
+  override lazy val mappers = (gbkMappers ++ bypassOutputNodes.collect(isAParallelDo)).distinct
 
   /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
   lazy val gbkMappers =
@@ -247,7 +247,12 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
       .collect(isAParallelDo)
       .distinct
 
-  lazy val bypassOutputNodes = gbkMappers.flatMap(uses).filter(u => !gbkMappers.contains(u) && !groupByKeys.contains(u)).collect(isAParallelDo)
+  lazy val bypassOutputNodes = {
+    val us = gbkMappers.flatMap(uses)
+    val outsideMappers = us.filter(u => !gbkMappers.contains(u) && !groupByKeys.contains(u))
+    val insideMappers  = gbkMappers.filter(m => uses(m).exists(u => !gbkMappers.contains(u) && !groupByKeys.contains(u) && !isParallelDo(u)))
+    (outsideMappers ++ insideMappers ).collect(isAParallelDo)
+  }
 
   lazy val outputNodes = groupByKeys ++ bypassOutputNodes
 

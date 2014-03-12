@@ -193,10 +193,11 @@ Robustness
     }
     eg := "there is a FloatingInput channel for the materialised mapper" ==> {
       val l1 = load
-      val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load)); val pd4 = pd(pd1)
+      val pd0 = pd(l1)
+      val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load)); val pd4 = pd(pd0)
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
       aRoot(mt(pd4), gbk1, gbk2, gbk3)
-      inputChannels(Seq(pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3)) must haveSize(3)
+      inputChannels(Seq(pd0, pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3)) must haveSize(3)
     }
   }
 
