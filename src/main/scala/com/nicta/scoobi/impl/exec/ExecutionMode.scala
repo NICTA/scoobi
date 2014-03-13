@@ -31,7 +31,7 @@ import org.apache.hadoop.util.ReflectionUtils
 import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import org.apache.hadoop.fs.Path
 import com.nicta.scoobi.impl.plan.mscr.OutputChannel
-import com.nicta.scoobi.io.text.TextFilePartitionedSink
+import com.nicta.scoobi.io.partition.PartitionedSink
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -98,7 +98,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
       job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}out${sink.id}")
       // it is necessary to set the work output dir to the configuration so that the partition function, if any,
-      // can be retrieved by the TextFilePartitionedSink (see `functionTag` in that class)
+      // can be retrieved by the PartitionedSink (see `functionTag` in that class)
       job.getConfiguration.set("mapred.work.output.dir", sink.outputPath.getOrElse(sink.id).toString)
       job.getConfiguration.set("avro.mo.config.namedOutput", s"ch${node.id}out${sink.id}")
 
@@ -122,7 +122,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
       implicit val fileSystems = FileSystems
 
       sink match {
-        case partitioned: TextFilePartitionedSink[_,_] =>
+        case partitioned: PartitionedSink[_,_,_,_] =>
           partitioned.outputPath.foreach { outputDir =>
             val partitionDir = new Path(outputDir, new Path(partitioned.id.toString))
             // leave the SUCCESS file where it is
