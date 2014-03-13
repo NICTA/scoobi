@@ -66,6 +66,7 @@ trait LibJars {
   }(Seq()).debug(jars => "jars found with the classloader\n"+jars.mkString("\n"))
 
   private[scoobi] def getURLClassLoader(classLoader:  ClassLoader): Option[URLClassLoader] = {
+    "trying to find a ".debug(s"trying to find a URLClassLoader, the inspected class loader is ${classLoader.getClass}")
     if (classOf[java.net.URLClassLoader].isAssignableFrom(classLoader.getClass))
       Some(classLoader.asInstanceOf[URLClassLoader])
     else if (classLoader.getClass.getName.endsWith("sbt.classpath.ClasspathFilter"))
