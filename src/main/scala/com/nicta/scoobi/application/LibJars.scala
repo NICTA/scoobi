@@ -65,12 +65,13 @@ trait LibJars {
     urls.filterNot(_.getFile.contains("hadoop-core"))
   }(Seq()).debug(jars => "jars found with the classloader\n"+jars.mkString("\n"))
 
-  private[scoobi] def getURLClassLoader(classLoader: ClassLoader): Option[URLClassLoader] =
-    if (classLoader.getClass.getName.endsWith("URLClassLoader"))
+  private[scoobi] def getURLClassLoader(classLoader:  ClassLoader): Option[URLClassLoader] = {
+    if (classOf[java.net.URLClassLoader].isAssignableFrom(classLoader.getClass))
       Some(classLoader.asInstanceOf[URLClassLoader])
     else if (classLoader.getClass.getName.endsWith("sbt.classpath.ClasspathFilter"))
       getURLClassLoader(classLoader.getParent)
     else None
+}
 
   /**
    * @return the list of library jars to upload, provided by the jars found from the HADOOP_CLASSPATH variable
