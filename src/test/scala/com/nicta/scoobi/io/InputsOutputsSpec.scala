@@ -118,7 +118,7 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
   }
 
   tag("issue 320")
-  "6. Output files must be copied at the right place" >> { implicit sc: SC =>
+  "6. Output files must be copied to the right place" >> { implicit sc: SC =>
 
     val base = path(TempFiles.createTempDir("tmp").getPath).pp
     val partitions = base + "/partitions"

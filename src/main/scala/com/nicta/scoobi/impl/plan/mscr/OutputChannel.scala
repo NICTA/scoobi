@@ -125,7 +125,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 
           // all directories are created under a <sink id> directory for easier collection in just a "rename"
           val baseDir = new Path(sc.temporaryOutputDirectory, new Path(sink.id.toString))
-          listDirectPaths(baseDir).foreach(p => moveTo(outDir)(sc.configuration)(p, new Path(".")))
+          moveTo(outDir)(sc.configuration)(baseDir, new Path("."))
         }
 
       case sink =>
