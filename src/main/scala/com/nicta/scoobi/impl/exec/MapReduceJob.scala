@@ -224,7 +224,9 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
 
   private[scoobi] def collectOutputs = {
     /* Move named file-based sinks to their correct output paths. */
-    mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory)))
+    val (successFiles, outputFiles) = fileSystems.listPaths(configuration.temporaryOutputDirectory).partition(_.getName == "_SUCCESS")
+    mscr.outputChannels.foreach(_.collectOutputs(outputFiles))
+    mscr.outputChannels.foreach(_.collectSuccessFile(successFiles.headOption))
     configuration.deleteTemporaryOutputDirectory
     configuration.updateCounters(job.getCounters)
     this

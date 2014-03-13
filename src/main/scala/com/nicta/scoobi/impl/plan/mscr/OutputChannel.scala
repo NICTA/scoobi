@@ -62,6 +62,9 @@ trait OutputChannel extends Channel {
 
   /** copy all outputs files to the destinations specified by sink files */
   def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems)
+
+  /** copy the success file to the destinations specified by sink files */
+  def collectSuccessFile(successFile: Option[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems)
 }
 
 /**
@@ -112,10 +115,6 @@ trait MscrOutputChannel extends OutputChannel { outer =>
           outer.logger.debug("created directory "+outDir)
       }
     }
-    // copy the success file to every output directory
-    outputFiles.find(_.getName ==  "_SUCCESS").foreach { successFile =>
-      sinks.flatMap(_.outputPath).foreach { outDir => copyTo(outDir).apply(successFile) }
-    }
 
     // copy the each result file to its sink
     sinks.foreach {
@@ -135,6 +134,19 @@ trait MscrOutputChannel extends OutputChannel { outer =>
           outer.logger.debug("created directory "+outDir)
           moveOutputFiles(sink, outDir, outputFiles)
         }
+    }
+  }
+
+  def collectSuccessFile(successFile: Option[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) = {
+    import fileSystems._; implicit val configuration = sc.configuration
+
+    // if the job is successful, create a success file to every output directory
+    // however create it as a _SUCCESS_JOB file
+    // this will be switched to a _SUCCESS job if all the jobs of the Scoobi job succeed
+    successFile.foreach { successFile =>
+      sinks.flatMap(_.outputPath).foreach { outDir =>
+        FileSystems.fileSystem(outDir).create(new Path(outDir, "_SUCCESS_JOB"))
+      }
     }
   }
 
