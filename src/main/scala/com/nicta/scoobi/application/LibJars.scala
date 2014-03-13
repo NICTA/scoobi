@@ -66,11 +66,11 @@ trait LibJars {
   }(Seq()).debug(jars => "jars found with the classloader\n"+jars.mkString("\n"))
 
   private[scoobi] def getURLClassLoader(classLoader: ClassLoader): Option[URLClassLoader] =
-    classLoader.getClass.getName match {
-      case "java.net.URLClassLoader"       => Some(classLoader.asInstanceOf[URLClassLoader])
-      case "sbt.classpath.ClasspathFilter" => getURLClassLoader(classLoader.getParent)
-      case _                               => None
-    }
+    if (classLoader.getClass.getName.endsWith("URLClassLoader"))
+      Some(classLoader.asInstanceOf[URLClassLoader])
+    else if (classLoader.getClass.getName.endsWith("sbt.classpath.ClasspathFilter"))
+      getURLClassLoader(classLoader.getParent)
+    else None
 
   /**
    * @return the list of library jars to upload, provided by the jars found from the HADOOP_CLASSPATH variable
