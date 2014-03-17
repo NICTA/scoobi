@@ -129,6 +129,16 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     new File(partitions).list.toSet must_== Set("_SUCCESS", "._SUCCESS.crc", "a")
   }
 
+  "7. Round-trip of writing and reading partitioned sequence files" >> { implicit sc: SC =>
+    val directory = path(TempFiles.createTempDir("output").getPath)
+    val list = DList((Date(2014, 1, 22), (1, "a")), (Date(2014, 1, 22), (2, "b")), (Date(2014, 1, 23), (3, "c")), (Date(2014, 1, 23), (4, "d")))
+
+    val written = list.toPartitionedSequenceFile(directory, partition = (_:Date).toPath, overwrite = true).run
+    val read    = fromSequenceFileWithPath[Int, String](directory+"/*/*/*/*").mapKeys(Date.fromPath)
+
+    read.run.normalise === written.normalise
+  }
+
   implicit val wf: WireFormat[Date] = mkCaseWireFormat(Date.apply _, Date.unapply _)
 }
 
