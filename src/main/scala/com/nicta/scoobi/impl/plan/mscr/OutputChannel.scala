@@ -31,7 +31,7 @@ import monitor.Loggable._
 import CollectFunctions._
 import control.Functions._
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
-import com.nicta.scoobi.io.text.TextFilePartitionedSink
+import com.nicta.scoobi.io.partition.PartitionedSink
 
 /**
  * An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping
@@ -118,7 +118,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 
     // copy the each result file to its sink
     sinks.foreach {
-      case sink: TextFilePartitionedSink[_,_] =>
+      case sink: PartitionedSink[_,_,_,_] =>
         sink.outputPath foreach { outDir =>
           mkdir(outDir)
           outer.logger.debug("created directory "+outDir)

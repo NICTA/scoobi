@@ -18,6 +18,9 @@ package io
 package text
 
 import core._
+import partition.PartitionedSink
+
+import org.apache.hadoop.io.NullWritable
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 trait TextOutput {
@@ -44,10 +47,10 @@ trait TextOutput {
   def textFileSink[A : Manifest](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
     new TextFileSink(path, overwrite, check)
 
-  def textFilePartitionedSink[K : Manifest, V : Manifest](path: String,
-                                                          partition: K => String,
+  def textFilePartitionedSink[P : Manifest, V : Manifest](path: String,
+                                                          partition: P => String,
                                                           overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
-    new TextFilePartitionedSink(path, partition, overwrite, check)(implicitly[Manifest[K]], implicitly[Manifest[V]])
+    new PartitionedSink(new TextFileSink[V](path, overwrite, check), classOf[PartitionedTextOutputFormat[P, NullWritable, V]], path, partition, overwrite, check)
 }
 
 object TextOutput extends TextOutput

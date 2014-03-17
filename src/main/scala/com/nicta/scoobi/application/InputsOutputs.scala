@@ -147,6 +147,19 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
                                    (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V], sc: ScoobiConfiguration)
     = o.addSink(SequenceOutput.schemaSequenceSink(path, overwrite, check, checkpoint, expiryPolicy)(ks, vs, sc))
   }
+  implicit class ListToPartitionedSequenceFile[T](val list: core.DList[T]) {
+    def toPartitionedSequenceFile[P, K, V](path: String, partition: P => String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)
+                                          (implicit ev: T <:< (P, (K, V)), ks: SeqSchema[K], vs: SeqSchema[V], sc: ScoobiConfiguration) =
+      list.addSink(SequenceOutput.schemaPartitionedSequenceSink(path, partition, overwrite, check)(ks, vs, sc))
+
+    def keyToPartitionedSequenceFile[P, K](path: String, partition: P => String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)
+                                          (implicit ev: T <:< (P, K), ks: SeqSchema[K], sc: ScoobiConfiguration) =
+      list.addSink(SequenceOutput.keySchemaPartitionedSequenceSink(path, partition, overwrite, check)(ks, sc))
+
+    def valueToPartitionedSequenceFile[P, V](path: String, partition: P => String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)
+                                            (implicit ev: T <:< (P, V), vs: SeqSchema[V], sc: ScoobiConfiguration) =
+      list.addSink(SequenceOutput.valueSchemaPartitionedSequenceSink(path, partition, overwrite, check)(vs, sc))
+  }
 
   /** Avro I/O */
   val AvroSchema = com.nicta.scoobi.io.avro.AvroSchema
