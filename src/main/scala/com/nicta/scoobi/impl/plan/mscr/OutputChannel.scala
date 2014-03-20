@@ -125,7 +125,13 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 
           // all directories are created under a <sink id> directory for easier collection in just a "rename"
           val baseDir = new Path(sc.temporaryOutputDirectory, new Path(sink.id.toString))
-          moveTo(outDir)(sc.configuration)(baseDir, new Path("."))
+
+          // if we are executing on the cluster all the directories under /tmp/sink-id/
+          // ex (/tmp/5/a where sink-id = 5 and a is a generated path)
+          // must be moved one by one to the out dir
+          // otherwise locally we move the whole content of /tmp/sink-id to outDir
+          if (sc.isRemote) listDirectPaths(baseDir).foreach(p => moveTo(outDir)(sc.configuration)(p, new Path(".")))
+          else             moveTo(outDir)(sc.configuration)(baseDir, new Path("."))
         }
 
       case sink =>
