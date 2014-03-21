@@ -473,6 +473,20 @@ constructor for based on the hadoop version.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.Compatibility#rename" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rename(srcPath:org.apache.hadoop.fs.Path,destPath:org.apache.hadoop.fs.Path)(implicitconfiguration:org.apache.hadoop.conf.Configuration):Boolean"></a>
+      <a id="rename(Path,Path)(Configuration):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rename</span><span class="params">(<span name="srcPath">srcPath: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="destPath">destPath: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Rename method using the FileSystem for cdh3 and FileContext (i.</p><div class="fullcomment"><div class="comment cmt"><p>Rename method using the FileSystem for cdh3 and FileContext (i.e. not broken when moving directories) for cdh4 and cdh5
+</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
