@@ -28,6 +28,7 @@ import core.ScoobiConfiguration
 import org.apache.commons.logging.LogFactory
 import com.nicta.scoobi.impl.io.Files
 import java.net.URI
+import scala.reflect.ClassTag
 
 
 /**
@@ -137,6 +138,13 @@ object Compatibility {
     newInstance(cdh4.mapContextConstructor, conf, id, reader, writer, outputCommitter, reporter, split).asInstanceOf[MapContext[Any,Any,Any,Any]]
 
   /**
+   * Rename method using the FileSystem for cdh3 and FileContext (i.e. not broken when moving directories) for cdh4 and cdh5
+   */
+  def rename(srcPath: Path, destPath: Path)(implicit configuration: Configuration) =
+    if (cdh4.useCdh4 || useHadoop2) hadoop2.rename(srcPath, destPath)
+    else                            FileSystem.get(configuration).rename(srcPath, destPath)
+
+  /**
    * Invokes Configuration() on JobContext. Works with both
    * hadoop 1 and 2.
    */
@@ -150,15 +158,25 @@ object Compatibility {
   case class Hadoop2(cache: HadoopDistributedCache) {
     lazy val jobGetInstanceMethod1 = getMethod("org.apache.hadoop.mapreduce.Job", "getInstance", types = Seq("org.apache.hadoop.conf.Configuration"))
     lazy val jobGetInstanceMethod2 = getMethod("org.apache.hadoop.mapreduce.Job", "getInstance", types = Seq("org.apache.hadoop.conf.Configuration", "java.lang.String"))
+    lazy val getFileContextMethod  = getMethod("org.apache.hadoop.fs.FileContext", "getFileContext", types = Seq("org.apache.hadoop.conf.Configuration"))
+    lazy val renameMethod          = getMethod("org.apache.hadoop.fs.FileContext", "rename", types = Seq("org.apache.hadoop.fs.Path", "org.apache.hadoop.fs.Path", "[Lorg.apache.hadoop.fs.Options$Rename;"))
+    lazy val renameOptions = Class.forName("org.apache.hadoop.fs.Options$Rename")
+    // get all values, as long as OVERWRITE is in the Array, this will work
+    // all other attempts to just get access to the OVERWRITE field and use it to invoke rename have failed
+    lazy val overwrite = renameOptions.getDeclaredMethod("values").invoke(null)
 
     def newJob(conf: Configuration): Job = invokeStatic(jobGetInstanceMethod1, conf).asInstanceOf[Job]
     def newJob(conf: Configuration, name: String): Job = invokeStatic(jobGetInstanceMethod2, conf, name).asInstanceOf[Job]
-
+    def rename(srcPath: Path, destPath: Path)(implicit configuration: Configuration) = {
+      val fileContext = invokeStatic(getFileContextMethod, configuration)
+      invoke(renameMethod, fileContext, srcPath, destPath,overwrite)
+      true
+    }
+    
     private def getMethod(hadoop2Class: String, methodName: String, types: Seq[String] = Seq()) =
       Class.forName(hadoop2Class).getMethods.
         find(m => (m.getName == methodName) && (m.getParameterTypes.map(_.getName).toSeq == types)).
-        getOrElse(throw new Exception(s"method $methodName not found in class $hadoop2Class"))
-
+          getOrElse(throw new Exception(s"method $methodName not found in class $hadoop2Class"))
   }
 
   case class HadoopDistributedCache(useHadoop2: Boolean) {

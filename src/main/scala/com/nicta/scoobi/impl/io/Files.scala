@@ -27,6 +27,7 @@ import java.net.URI
 import com.nicta.scoobi.impl.util.Compatibility
 import org.apache.hadoop.security.UserGroupInformation
 import java.io.IOException
+import org.apache.hadoop.fs.Options.Rename
 
 /**
  * A set of helper functions for implementing DataSources and DataSinks
@@ -51,7 +52,7 @@ trait Files {
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
       if (sameFileSystem(from, to))
-        (path == destPath) || from.rename(path, destPath)
+        (path == destPath) || Compatibility.rename(path, destPath)
       else
         FileUtil.copy(from, path, to, destPath,
                       true /* deleteSource */, false /* overwrite */, configuration)
