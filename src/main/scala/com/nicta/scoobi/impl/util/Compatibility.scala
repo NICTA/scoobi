@@ -168,9 +168,13 @@ object Compatibility {
     def newJob(conf: Configuration): Job = invokeStatic(jobGetInstanceMethod1, conf).asInstanceOf[Job]
     def newJob(conf: Configuration, name: String): Job = invokeStatic(jobGetInstanceMethod2, conf, name).asInstanceOf[Job]
     def rename(srcPath: Path, destPath: Path)(implicit configuration: Configuration) = {
-      val fileContext = invokeStatic(getFileContextMethod, configuration)
-      invoke(renameMethod, fileContext, srcPath, destPath,overwrite)
-      true
+      if (isDirectory(FileSystem.get(configuration).getFileStatus(srcPath))) {
+        try {
+          val fileContext = invokeStatic(getFileContextMethod, configuration)
+          invoke(renameMethod, fileContext, srcPath, destPath,overwrite)
+          true
+        } catch { case e: Throwable => true }
+      } else FileSystem.get(configuration).rename(srcPath, destPath)
     }
     
     private def getMethod(hadoop2Class: String, methodName: String, types: Seq[String] = Seq()) =
