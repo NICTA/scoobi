@@ -18,9 +18,8 @@ package io
 package sequence
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.Writable
-import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.io.{SequenceFile, Writable, NullWritable}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.{Job, RecordWriter, TaskAttemptContext}
@@ -33,8 +32,9 @@ import impl.io.Files
 import org.apache.hadoop.conf.Configuration
 import impl.ScoobiConfigurationImpl
 import core.ScoobiConfiguration
-import org.apache.hadoop.io.compress.CompressionCodec
-import org.apache.hadoop.io.SequenceFile.CompressionType
+import org.apache.hadoop.io.compress.{DefaultCodec, CompressionCodec}
+import org.apache.hadoop.io.SequenceFile.{Writer, CompressionType}
+import org.apache.hadoop.util.ReflectionUtils
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
 trait SequenceOutput {
@@ -210,6 +210,7 @@ case class SeqSink[K, V, B](path: String,
  * more rapidly with just a rename of directories (see OutputChannel)
  */
 class PartitionedSequenceOutputFormat[P, K, V] extends PartitionedOutputFormat[P, K, V] {
+  private var codecInstance: Option[CompressionCodec] = None
 
   protected def getBaseRecordWriter(context: TaskAttemptContext, path: Path): RecordWriter[K, V] =
     new SequenceFileOutputFormat[K, V] {
@@ -217,6 +218,28 @@ class PartitionedSequenceOutputFormat[P, K, V] extends PartitionedOutputFormat[P
         // we need to use path as the work path for the record writers because it
         // already contains the work directories
         override def getWorkPath = path
+      }
+
+      override protected def getSequenceWriter(context: TaskAttemptContext, keyClass: Class[_], valueClass: Class[_]): SequenceFile.Writer = {
+        val conf: Configuration = context.getConfiguration
+        var codec: CompressionCodec = null
+        var compressionType: SequenceFile.CompressionType = CompressionType.NONE
+        if (FileOutputFormat.getCompressOutput(context)) {
+          codecInstance match {
+            case Some(c) => codec = c
+            case None =>
+              compressionType = SequenceFileOutputFormat.getOutputCompressionType(context)
+              val codecClass: Class[_] = FileOutputFormat.getOutputCompressorClass(context, classOf[DefaultCodec])
+              codec = ReflectionUtils.newInstance(codecClass, conf).asInstanceOf[CompressionCodec]
+              codecInstance = Some(codec)
+          }
+        }
+        val file: Path = getDefaultWorkFile(context, "")
+
+        SequenceFile.createWriter(conf, Writer.file(file),
+          Writer.keyClass(keyClass),
+          Writer.valueClass(valueClass),
+          Writer.compression(compressionType, codec))
       }
     }.getRecordWriter(context)
 }
