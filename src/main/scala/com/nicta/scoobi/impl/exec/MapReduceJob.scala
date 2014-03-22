@@ -214,6 +214,12 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
         // Log task details
         taskDetailsLogger.logTaskCompletionDetails()
       }
+    } catch {
+      case (e: Throwable) => {
+        // ask to kill the job
+        job.killJob
+        throw e
+      }
     } finally {
       configuration.temporaryJarFile.delete
     }
