@@ -108,33 +108,22 @@ object WireFormat extends WireFormatImplicits {
   def isTraversable(wf: WireReaderWriter) = wf.isInstanceOf[WireFormat.TraversableWireFormat[_,_]]
 }
 
-/** Implicit definitions of WireFormat instances for common types. */
-trait WireFormatImplicits extends codegen.GeneratedWireFormats {
+// Deprioritize expensive implicits to improve compile times.
+// See comments in `LowPriorityAvroSchemaImplicits`.
+trait LowPriorityWireFormatImplicits {
+  self: WireFormatImplicits =>
 
-  class ObjectWireFormat[T : Manifest](val x: T) extends WireFormat[T] {
-    override def toWire(obj: T, out: DataOutput) {}
-    override def fromWire(in: DataInput): T = x
-    override def toString = implicitly[Manifest[T]].runtimeClass.getSimpleName
-  }
-  def mkObjectWireFormat[T : Manifest](x: T): WireFormat[T] = new ObjectWireFormat(x)
+  /**
+   * Traversable structures
+   */
+  implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]): WireFormat[CC[T]] =
+    new TraversableWireFormat(bf())
 
-  class Case0WireFormat[T : Manifest](val apply: () => T, val unapply: T => Boolean) extends WireFormat[T] {
-    override def toWire(obj: T, out: DataOutput) {}
-    override def fromWire(in: DataInput): T = apply()
-    override def toString = implicitly[Manifest[T]].runtimeClass.getSimpleName
-  }
-
-  def mkCaseWireFormat[T : Manifest](apply: () => T, unapply: T => Boolean): WireFormat[T] = new Case0WireFormat(apply, unapply)
-
-  class Case1WireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]) extends WireFormat[T] {
-    override def toWire(obj: T, out: DataOutput) {
-      implicitly[WireFormat[A1]].toWire(unapply(obj).get, out)
-    }
-    override def fromWire(in: DataInput): T = apply(implicitly[WireFormat[A1]].fromWire(in))
-    override def toString = implicitly[WireFormat[A1]].toString
-  }
-
-  def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new Case1WireFormat(apply, unapply)
+  /**
+   * Map structures
+   */
+  implicit def MapFmt[CC[X, Y] <: Map[X, Y], K, V](implicit wtK: WireFormat[K], wtV: WireFormat[V], bf: CanBuildFrom[_, (K, V), CC[K, V]]): WireFormat[CC[K, V]] =
+    new TraversableWireFormat(bf())
 
   /**
    * Catch-all implementation of a WireFormat for a type T, using Java serialization.
@@ -268,6 +257,35 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     }
     override def toString = "SpecificFixedAvro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
   }
+}
+
+/** Implicit definitions of WireFormat instances for common types. */
+trait WireFormatImplicits extends LowPriorityWireFormatImplicits with codegen.GeneratedWireFormats {
+
+  class ObjectWireFormat[T : Manifest](val x: T) extends WireFormat[T] {
+    override def toWire(obj: T, out: DataOutput) {}
+    override def fromWire(in: DataInput): T = x
+    override def toString = implicitly[Manifest[T]].runtimeClass.getSimpleName
+  }
+  def mkObjectWireFormat[T : Manifest](x: T): WireFormat[T] = new ObjectWireFormat(x)
+
+  class Case0WireFormat[T : Manifest](val apply: () => T, val unapply: T => Boolean) extends WireFormat[T] {
+    override def toWire(obj: T, out: DataOutput) {}
+    override def fromWire(in: DataInput): T = apply()
+    override def toString = implicitly[Manifest[T]].runtimeClass.getSimpleName
+  }
+
+  def mkCaseWireFormat[T : Manifest](apply: () => T, unapply: T => Boolean): WireFormat[T] = new Case0WireFormat(apply, unapply)
+
+  class Case1WireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]) extends WireFormat[T] {
+    override def toWire(obj: T, out: DataOutput) {
+      implicitly[WireFormat[A1]].toWire(unapply(obj).get, out)
+    }
+    override def fromWire(in: DataInput): T = apply(implicitly[WireFormat[A1]].fromWire(in))
+    override def toString = implicitly[WireFormat[A1]].toString
+  }
+
+  def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new Case1WireFormat(apply, unapply)
 
 
   /**
@@ -363,18 +381,6 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /*
    * Useful Scala types.
    */
-
-  /**
-   * Traversable structures
-   */
-  implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]): WireFormat[CC[T]] =
-    new TraversableWireFormat(bf())
-
-  /**
-   * Map structures
-   */
-  implicit def MapFmt[CC[X, Y] <: Map[X, Y], K, V](implicit wtK: WireFormat[K], wtV: WireFormat[V], bf: CanBuildFrom[_, (K, V), CC[K, V]]): WireFormat[CC[K, V]] =
-    new TraversableWireFormat(bf())
 
   /* Arrays */
   implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]): WireFormat[Array[T]] =
