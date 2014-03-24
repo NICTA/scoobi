@@ -17,9 +17,7 @@ package com.nicta.scoobi
 package testing
 package mutable
 
-import org.specs2.mutable.Tags
 import org.specs2.mutable.Specification
-import org.specs2.specification.Fragments
 import application.HadoopLogFactory
 
 abstract class UnitSpecification extends Specification {

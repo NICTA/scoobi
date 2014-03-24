@@ -17,7 +17,6 @@ package com.nicta.scoobi
 package core
 
 import java.io._
-import org.apache.avro.generic.GenericRecord
 import org.specs2.ScalaCheck
 import org.scalacheck.{Prop, Arbitrary}
 import Arbitrary._
@@ -47,6 +46,9 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     serialisationIsOkFor[java.util.Date]
     serialisationIsOkFor[(Int, String)]
     serialisationIsOkFor[(Int, String, Long, Boolean, Double, Float, String, Byte)]
+    serialisationIsOkFor[List[Int]]
+    serialisationIsOkFor[Map[Int, String]]
+    serialisationIsOkFor[Map[List[Int], Option[String]]]
     serialisationIsOkFor[Seq[Int]]
     "but a null traversable cannot be serialised" >> {
       implicitly[WireFormat[Seq[Int]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
