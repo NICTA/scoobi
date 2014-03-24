@@ -385,7 +385,9 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
    */
 
   // redundant, but a specific implicit for this improves implicit search times.
-  implicit def SeqFmt[T](implicit wt: WireFormat[T]): WireFormat[Seq[T]] = TraversableFmt[Seq, T]
+  implicit def SeqFmt[T: WireFormat]: WireFormat[Seq[T]] = TraversableFmt[Seq, T]
+  implicit def SetFmt[T: WireFormat]: WireFormat[Set[T]] = TraversableFmt[Set, T]
+  implicit def ImmutableMapFmt[K: WireFormat, V: WireFormat]: WireFormat[Map[K, V]] = MapFmt[Map, K, V]
 
   /* Arrays */
   implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]): WireFormat[Array[T]] =
