@@ -67,8 +67,8 @@ trait AvroFixed[T] {
 // even if one of these was found to be eligible, it would be deemed lower priority
 // by the subclass rule of static overload resolution.
 //
-// These changes, together with corresponding changes in `WireFormat`, leads to a 3.5x
-// speedup (2600ms ~> 740ms) in compiling a benchmark: 
+// These changes, together with corresponding changes in `WireFormat`, leads to a 4.3x
+// speedup (2600ms ~> 600ms) in compiling a benchmark: 
 // https://gist.github.com/retronym/fdef5a41c8e1e31124a4
 //
 // The goal is the reduce the number of lines like the following under `-Xlog-implicits`

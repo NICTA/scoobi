@@ -384,6 +384,9 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
    * Useful Scala types.
    */
 
+  // redundant, but a specific implicit for this improves implicit search times.
+  implicit def SeqFmt[T](implicit wt: WireFormat[T]): WireFormat[Seq[T]] = TraversableFmt[Seq, T]
+
   /* Arrays */
   implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]): WireFormat[Array[T]] =
     new TraversableWireFormat(new ListBuffer[T]) xmap ((s: List[T]) => s.toArray, (a: Array[T]) => a.toList)
