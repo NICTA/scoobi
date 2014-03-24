@@ -110,8 +110,10 @@ object WireFormat extends WireFormatImplicits {
 
 // Deprioritize expensive implicits to improve compile times.
 // See comments in `LowPriorityAvroSchemaImplicits`.
+//
+// Extended by `GeneratedWireFormats`
 trait LowPriorityWireFormatImplicits {
-  self: WireFormatImplicits =>
+  import WireFormat._
 
   /**
    * Traversable structures
@@ -260,7 +262,7 @@ trait LowPriorityWireFormatImplicits {
 }
 
 /** Implicit definitions of WireFormat instances for common types. */
-trait WireFormatImplicits extends LowPriorityWireFormatImplicits with codegen.GeneratedWireFormats {
+trait WireFormatImplicits extends codegen.GeneratedWireFormats {
 
   class ObjectWireFormat[T : Manifest](val x: T) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {}

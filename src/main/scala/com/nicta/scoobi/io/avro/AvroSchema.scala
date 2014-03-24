@@ -67,8 +67,8 @@ trait AvroFixed[T] {
 // even if one of these was found to be eligible, it would be deemed lower priority
 // by the subclass rule of static overload resolution.
 //
-// These changes, together with corresponding changes in `WireFormat`, leads to a 2x
-// speedup (2600ms ~> 1300ms) in compiling a benchmark: 
+// These changes, together with corresponding changes in `WireFormat`, leads to a 3.5x
+// speedup (2600ms ~> 740ms) in compiling a benchmark: 
 // https://gist.github.com/retronym/fdef5a41c8e1e31124a4
 //
 // The goal is the reduce the number of lines like the following under `-Xlog-implicits`
@@ -192,6 +192,10 @@ object AvroSchema extends LowPriorityAvroSchemaImplicits {
     def fromAvro(x: String): String = x
     def toAvro(x: String): String = x
   }
+
+  // redundant, but better for performance to have this here rather than forcing
+  // this common implicit serach to go through TraversableSchema.
+  implicit def SeqSchema[T](implicit sch: AvroSchema[T]): AvroSchema[Seq[T]] = TraversableSchema[Seq, T]
 
   /* AvroSchema type class instance for Arrays. */
   implicit def ArraySchema[T](implicit mf: Manifest[T], sch: AvroSchema[T]) = new AvroSchema[Array[T]] {
