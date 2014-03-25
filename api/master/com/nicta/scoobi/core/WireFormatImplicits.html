@@ -41,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Implicit definitions of WireFormat instances for common types.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a>, <a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="../Scoobi$.html" class="extype" name="com.nicta.scoobi.Scoobi">Scoobi</a>, <a href="WireFormat$.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a></div>
@@ -62,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.core.WireFormatImplicits"><span>WireFormatImplicits</span></li><li class="in" name="com.nicta.scoobi.codegen.GeneratedWireFormats"><span>GeneratedWireFormats</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.WireFormatImplicits"><span>WireFormatImplicits</span></li><li class="in" name="com.nicta.scoobi.codegen.GeneratedWireFormats"><span>GeneratedWireFormats</span></li><li class="in" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits"><span>LowPriorityWireFormatImplicits</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -357,7 +357,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits.AnythingWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AnythingWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="AnythingWireFormat[T&lt;:java.io.Serializable]extendsWireFormat[T]"></a>
       <a id="AnythingWireFormat[T&lt;:Serializable]:AnythingWireFormat[T]"></a>
       <h4 class="signature">
@@ -366,11 +366,11 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="WireFormatImplicits$AnythingWireFormat.html"><span class="name">AnythingWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="java.io.Serializable">Serializable</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AnythingWireFormat.T">T</span>]</span>
+        <a href="LowPriorityWireFormatImplicits$AnythingWireFormat.html"><span class="name">AnythingWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="java.io.Serializable">Serializable</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AnythingWireFormat.T">T</span>]</span>
       </span>
       </h4>
-      
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AvroWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="AvroWireFormat[T&lt;:org.apache.avro.specific.SpecificRecordBase]extendsWireFormat[T]"></a>
       <a id="AvroWireFormat[T&lt;:SpecificRecordBase]:AvroWireFormat[T]"></a>
       <h4 class="signature">
@@ -379,10 +379,10 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="WireFormatImplicits$AvroWireFormat.html"><span class="name">AvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat.T">T</span>]</span>
+        <a href="LowPriorityWireFormatImplicits$AvroWireFormat.html"><span class="name">AvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AvroWireFormat.T">T</span>]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits.BooleanWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="BooleanWireFormatextendsWireFormat[Boolean]"></a>
       <a id="BooleanWireFormat:BooleanWireFormat"></a>
@@ -760,7 +760,7 @@
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.GenericAvroWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="GenericAvroWireFormat[T&lt;:org.apache.avro.generic.GenericRecord]extendsWireFormat[T]"></a>
       <a id="GenericAvroWireFormat[T&lt;:GenericRecord]:GenericAvroWireFormat[T]"></a>
       <h4 class="signature">
@@ -769,10 +769,10 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="WireFormatImplicits$GenericAvroWireFormat.html"><span class="name">GenericAvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroWireFormat.T">T</span>]</span>
+        <a href="LowPriorityWireFormatImplicits$GenericAvroWireFormat.html"><span class="name">GenericAvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.GenericAvroWireFormat.T">T</span>]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits.IntWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="IntWireFormatextendsWireFormat[Int]"></a>
       <a id="IntWireFormat:IntWireFormat"></a>
@@ -825,7 +825,7 @@
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.SpecificFixedAvroWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="SpecificFixedAvroWireFormat[T&lt;:org.apache.avro.specific.SpecificFixed]extendsWireFormat[T]"></a>
       <a id="SpecificFixedAvroWireFormat[T&lt;:SpecificFixed]:SpecificFixedAvroWireFormat[T]"></a>
       <h4 class="signature">
@@ -834,10 +834,10 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="WireFormatImplicits$SpecificFixedAvroWireFormat.html"><span class="name">SpecificFixedAvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificFixed">SpecificFixed</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroWireFormat.T">T</span>]</span>
+        <a href="LowPriorityWireFormatImplicits$SpecificFixedAvroWireFormat.html"><span class="name">SpecificFixedAvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificFixed">SpecificFixed</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.SpecificFixedAvroWireFormat.T">T</span>]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits.StringWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="StringWireFormatextendsWireFormat[String]"></a>
       <a id="StringWireFormat:StringWireFormat"></a>
@@ -1209,7 +1209,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#AnythingFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits#AnythingFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="AnythingFmt[T&lt;:java.io.Serializable]:com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="AnythingFmt[T&lt;:Serializable]:WireFormat[T]"></a>
       <h4 class="signature">
@@ -1218,13 +1218,13 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">AnythingFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="java.io.Serializable">Serializable</span></span>]</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AnythingFmt.T">T</span>]</span>
+        <span class="name">AnythingFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="java.io.Serializable">Serializable</span></span>]</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AnythingFmt.T">T</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Catch-all implementation of a WireFormat for a type T, using Java serialization.</p><div class="fullcomment"><div class="comment cmt"><p>Catch-all implementation of a WireFormat for a type T, using Java serialization.
 It is however very inefficient, so for production use, consider creating your own WireFormat instance.</p><p>Note that this WireFormat instance definition is *not* implicit, meaning that you will need to explicitely
 import it when you need it.
-</p></div></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#ArrayFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ArrayFmt[T](implicitm:Manifest[T],implicitwt:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[Array[T]]"></a>
       <a id="ArrayFmt[T](Manifest[T],WireFormat[T]):WireFormat[Array[T]]"></a>
@@ -1238,8 +1238,8 @@ import it when you need it.
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#AvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="AvroFmt[T&lt;:org.apache.avro.specific.SpecificRecordBase](implicitevidence$10:Manifest[T],implicitevidence$11:com.nicta.scoobi.io.avro.AvroSchema[T]):WireFormatImplicits.this.AvroWireFormat[T]"></a>
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits#AvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="AvroFmt[T&lt;:org.apache.avro.specific.SpecificRecordBase](implicitevidence$4:Manifest[T],implicitevidence$5:com.nicta.scoobi.io.avro.AvroSchema[T]):LowPriorityWireFormatImplicits.this.AvroWireFormat[T]"></a>
       <a id="AvroFmt[T&lt;:SpecificRecordBase](Manifest[T],AvroSchema[T]):AvroWireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1247,11 +1247,11 @@ import it when you need it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">AvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>, <span name="arg1">arg1: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>)</span><span class="result">: <a href="WireFormatImplicits$AvroWireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat">AvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>
+        <span class="name">AvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AvroFmt.T">T</span>]</span>, <span name="arg1">arg1: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AvroFmt.T">T</span>]</span>)</span><span class="result">: <a href="#AvroWireFormat[T&lt;:org.apache.avro.specific.SpecificRecordBase]extendsWireFormat[T]" class="extmbr" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AvroWireFormat">AvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.AvroFmt.T">T</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">WireFormat instance for Avro Specific Records</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro Specific Records</p><p>This requires an implicit AvroSchema instance
-</p></div></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#BooleanFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="BooleanFmt:WireFormatImplicits.this.BooleanWireFormat"></a>
       <a id="BooleanFmt:BooleanWireFormat"></a>
@@ -1344,8 +1344,8 @@ import it when you need it.
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#GenericAvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="GenericAvroFmt[T&lt;:org.apache.avro.generic.GenericRecord]:WireFormatImplicits.this.GenericAvroWireFormat[T]"></a>
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits#GenericAvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GenericAvroFmt[T&lt;:org.apache.avro.generic.GenericRecord]:LowPriorityWireFormatImplicits.this.GenericAvroWireFormat[T]"></a>
       <a id="GenericAvroFmt[T&lt;:GenericRecord]:GenericAvroWireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1353,13 +1353,26 @@ import it when you need it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">GenericAvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span></span>]</span><span class="result">: <a href="WireFormatImplicits$GenericAvroWireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroWireFormat">GenericAvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroFmt.T">T</span>]</span>
+        <span class="name">GenericAvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span></span>]</span><span class="result">: <a href="#GenericAvroWireFormat[T&lt;:org.apache.avro.generic.GenericRecord]extendsWireFormat[T]" class="extmbr" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.GenericAvroWireFormat">GenericAvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.GenericAvroFmt.T">T</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">WireFormat instance for Avro Generic Records</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro Generic Records</p><p>No implicit AvroSchema instance is required. A dummy schema is used to start the reading of the file
 and then the GenericAvroKeyRecordWriter/GenericAvroKeyRecordReader will inspect the schema that is defined by the
 first generic record that is written / read to instance an appropriate AvroKeyRecordWriter/AvroKeyRecordReader
-</p></div></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#ImmutableMapFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ImmutableMapFmt[K,V](implicitevidence$20:com.nicta.scoobi.core.WireFormat[K],implicitevidence$21:com.nicta.scoobi.core.WireFormat[V]):com.nicta.scoobi.core.WireFormat[Map[K,V]]"></a>
+      <a id="ImmutableMapFmt[K,V](WireFormat[K],WireFormat[V]):WireFormat[Map[K,V]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ImmutableMapFmt</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.ImmutableMapFmt.K">K</span>]</span>, <span name="arg1">arg1: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.ImmutableMapFmt.V">V</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.ImmutableMapFmt.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.ImmutableMapFmt.V">V</span>]]</span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#IntFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="IntFmt:WireFormatImplicits.this.IntWireFormat"></a>
       <a id="IntFmt:IntWireFormat"></a>
@@ -1399,7 +1412,7 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#MapFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits#MapFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="MapFmt[CC[X,Y]&lt;:Map[X,Y],K,V](implicitwtK:com.nicta.scoobi.core.WireFormat[K],implicitwtV:com.nicta.scoobi.core.WireFormat[V],implicitbf:scala.collection.generic.CanBuildFrom[_,(K,V),CC[K,V]]):com.nicta.scoobi.core.WireFormat[CC[K,V]]"></a>
       <a id="MapFmt[CC[X,Y]&lt;:Map[X,Y],K,V](WireFormat[K],WireFormat[V],CanBuildFrom[_,(K,V),CC[K,V]]):WireFormat[CC[K,V]]"></a>
       <h4 class="signature">
@@ -1408,11 +1421,12 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">MapFmt</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="X">X</span>, <span name="Y">Y</span>]</span> &lt;: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.CC.X">X</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.CC.Y">Y</span>]</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="wtK">wtK: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.K">K</span>]</span>, <span name="wtV">wtV: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.V">V</span>]</span>, <span name="bf">bf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[_, (<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.V">V</span>), <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.V">V</span>]]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.MapFmt.V">V</span>]]</span>
+        <span class="name">MapFmt</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="X">X</span>, <span name="Y">Y</span>]</span> &lt;: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.CC.X">X</span>, <span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.CC.Y">Y</span>]</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="wtK">wtK: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.K">K</span>]</span>, <span name="wtV">wtV: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.V">V</span>]</span>, <span name="bf">bf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[_, (<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.V">V</span>), <span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.V">V</span>]]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.MapFmt.V">V</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Map structures
-</p>
+</p><div class="fullcomment"><div class="comment cmt"><p>Map structures
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#OptionFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="OptionFmt[T](implicitwt:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[Option[T]]"></a>
       <a id="OptionFmt[T](WireFormat[T]):WireFormat[Option[T]]"></a>
@@ -1426,8 +1440,34 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </span>
       </h4>
       <p class="shortcomment cmt">Option type.</p>
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#SpecificFixedAvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="SpecificFixedAvroFmt[T&lt;:org.apache.avro.specific.SpecificFixed](implicitevidence$14:Manifest[T],implicitevidence$15:com.nicta.scoobi.io.avro.AvroSchema[T]):WireFormatImplicits.this.SpecificFixedAvroWireFormat[T]"></a>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#SeqFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqFmt[T](implicitevidence$18:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[Seq[T]]"></a>
+      <a id="SeqFmt[T](WireFormat[T]):WireFormat[Seq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SeqFmt</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SeqFmt.T">T</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SeqFmt.T">T</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#SetFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SetFmt[T](implicitevidence$19:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[Set[T]]"></a>
+      <a id="SetFmt[T](WireFormat[T]):WireFormat[Set[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SetFmt</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SetFmt.T">T</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SetFmt.T">T</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits#SpecificFixedAvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SpecificFixedAvroFmt[T&lt;:org.apache.avro.specific.SpecificFixed](implicitevidence$8:Manifest[T],implicitevidence$9:com.nicta.scoobi.io.avro.AvroSchema[T]):LowPriorityWireFormatImplicits.this.SpecificFixedAvroWireFormat[T]"></a>
       <a id="SpecificFixedAvroFmt[T&lt;:SpecificFixed](Manifest[T],AvroSchema[T]):SpecificFixedAvroWireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1435,11 +1475,11 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">SpecificFixedAvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificFixed">SpecificFixed</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>, <span name="arg1">arg1: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>)</span><span class="result">: <a href="WireFormatImplicits$SpecificFixedAvroWireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroWireFormat">SpecificFixedAvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>
+        <span class="name">SpecificFixedAvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificFixed">SpecificFixed</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>, <span name="arg1">arg1: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>)</span><span class="result">: <a href="#SpecificFixedAvroWireFormat[T&lt;:org.apache.avro.specific.SpecificFixed]extendsWireFormat[T]" class="extmbr" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.SpecificFixedAvroWireFormat">SpecificFixedAvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.SpecificFixedAvroFmt.T">T</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">WireFormat instance for Avro SpecificFixed</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro SpecificFixed</p><p>This requires an implicit AvroSchema instance
-</p></div></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#StringFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="StringFmt:com.nicta.scoobi.core.WireFormat[String]"></a>
       <a id="StringFmt:WireFormat[String]"></a>
@@ -1453,7 +1493,7 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#TraversableFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits#TraversableFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="TraversableFmt[CC[X]&lt;:Traversable[X],T](implicitwt:com.nicta.scoobi.core.WireFormat[T],implicitbf:scala.collection.generic.CanBuildFrom[_,T,CC[T]]):com.nicta.scoobi.core.WireFormat[CC[T]]"></a>
       <a id="TraversableFmt[CC[X]&lt;:Traversable[X],T](WireFormat[T],CanBuildFrom[_,T,CC[T]]):WireFormat[CC[T]]"></a>
       <h4 class="signature">
@@ -1462,11 +1502,12 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">TraversableFmt</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="X">X</span>]</span> &lt;: <a href="../../../../scala/package.html#Traversable[+A]=Traversable[A]" class="extmbr" name="scala.Traversable">Traversable</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.TraversableFmt.CC.X">X</span>]</span>, <span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="wt">wt: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.TraversableFmt.T">T</span>]</span>, <span name="bf">bf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[_, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.TraversableFmt.T">T</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.TraversableFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.TraversableFmt.T">T</span>]]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.TraversableFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.TraversableFmt.T">T</span>]]</span>
+        <span class="name">TraversableFmt</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="X">X</span>]</span> &lt;: <a href="../../../../scala/package.html#Traversable[+A]=Traversable[A]" class="extmbr" name="scala.Traversable">Traversable</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.TraversableFmt.CC.X">X</span>]</span>, <span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="wt">wt: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.TraversableFmt.T">T</span>]</span>, <span name="bf">bf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[_, <span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.TraversableFmt.T">T</span>, <span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.TraversableFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.TraversableFmt.T">T</span>]]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.TraversableFmt.CC">CC</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.TraversableFmt.T">T</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Traversable structures
-</p>
+</p><div class="fullcomment"><div class="comment cmt"><p>Traversable structures
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.codegen.GeneratedWireFormats#Tuple10Fmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="Tuple10Fmt[T1,T2,T3,T4,T5,T6,T7,T8,T9,T10](implicitwt1:com.nicta.scoobi.core.WireFormat[T1],implicitwt2:com.nicta.scoobi.core.WireFormat[T2],implicitwt3:com.nicta.scoobi.core.WireFormat[T3],implicitwt4:com.nicta.scoobi.core.WireFormat[T4],implicitwt5:com.nicta.scoobi.core.WireFormat[T5],implicitwt6:com.nicta.scoobi.core.WireFormat[T6],implicitwt7:com.nicta.scoobi.core.WireFormat[T7],implicitwt8:com.nicta.scoobi.core.WireFormat[T8],implicitwt9:com.nicta.scoobi.core.WireFormat[T9],implicitwt10:com.nicta.scoobi.core.WireFormat[T10]):com.nicta.scoobi.core.WireFormat[(T1,T2,T3,T4,T5,T6,T7,T8,T9,T10)]"></a>
       <a id="Tuple10Fmt[T1,T2,T3,T4,T5,T6,T7,T8,T9,T10](WireFormat[T1],WireFormat[T2],WireFormat[T3],WireFormat[T4],WireFormat[T5],WireFormat[T6],WireFormat[T7],WireFormat[T8],WireFormat[T9],WireFormat[T10]):WireFormat[(T1,T2,T3,T4,T5,T6,T7,T8,T9,T10)]"></a>
@@ -1753,8 +1794,8 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </span>
       </h4>
       <p class="shortcomment cmt">&quot;Primitive&quot; types.</p>
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#WritableFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WritableFmt[T&lt;:org.apache.hadoop.io.Writable](implicitevidence$9:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
+    </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits#WritableFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="WritableFmt[T&lt;:org.apache.hadoop.io.Writable](implicitevidence$3:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="WritableFmt[T&lt;:Writable](Manifest[T]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1762,10 +1803,11 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">WritableFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.WritableFmt.T">T</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.WritableFmt.T">T</span>]</span>
+        <span class="name">WritableFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.WritableFmt.T">T</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.WritableFmt.T">T</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Hadoop Writable types.</p>
+      <p class="shortcomment cmt">Hadoop Writable types.</p><div class="fullcomment"><div class="comment cmt"><p>Hadoop Writable types.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -2182,7 +2224,7 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#mkCaseWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkCaseWireFormat[T,A1](apply:A1=&gt;T,unapply:T=&gt;Option[A1])(implicitevidence$8:com.nicta.scoobi.core.WireFormat[A1]):com.nicta.scoobi.core.WireFormat[T]"></a>
+      <a id="mkCaseWireFormat[T,A1](apply:A1=&gt;T,unapply:T=&gt;Option[A1])(implicitevidence$17:com.nicta.scoobi.core.WireFormat[A1]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="mkCaseWireFormat[T,A1]((A1)⇒T,(T)⇒Option[A1])(WireFormat[A1]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2195,7 +2237,7 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </h4>
       
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#mkCaseWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkCaseWireFormat[T](apply:()=&gt;T,unapply:T=&gt;Boolean)(implicitevidence$6:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
+      <a id="mkCaseWireFormat[T](apply:()=&gt;T,unapply:T=&gt;Boolean)(implicitevidence$15:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="mkCaseWireFormat[T](()⇒T,(T)⇒Boolean)(Manifest[T]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2481,7 +2523,7 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#mkObjectWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkObjectWireFormat[T](x:T)(implicitevidence$4:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
+      <a id="mkObjectWireFormat[T](x:T)(implicitevidence$13:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="mkObjectWireFormat[T](T)(Manifest[T]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2546,7 +2588,7 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#taggedTypeWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="taggedTypeWireFormat[T,U](implicitevidence$19:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[scalaz.@@[T,U]]"></a>
+      <a id="taggedTypeWireFormat[T,U](implicitevidence$23:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[scalaz.@@[T,U]]"></a>
       <a id="taggedTypeWireFormat[T,U](WireFormat[T]):WireFormat[@@[T,U]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2639,6 +2681,8 @@ first generic record that is written / read to instance an appropriate AvroKeyRe
         <div id="inheritedMembers">
         <div class="parent" name="com.nicta.scoobi.codegen.GeneratedWireFormats">
               <h3>Inherited from <a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">
+              <h3>Inherited from <a href="LowPriorityWireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits">LowPriorityWireFormatImplicits</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
