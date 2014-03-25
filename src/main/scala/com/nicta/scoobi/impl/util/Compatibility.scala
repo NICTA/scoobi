@@ -160,7 +160,7 @@ object Compatibility {
     lazy val jobGetInstanceMethod2 = getMethod("org.apache.hadoop.mapreduce.Job", "getInstance", types = Seq("org.apache.hadoop.conf.Configuration", "java.lang.String"))
     lazy val getFileContextMethod  = getMethod("org.apache.hadoop.fs.FileContext", "getFileContext", types = Seq("org.apache.hadoop.conf.Configuration"))
     lazy val renameMethod          = getMethod("org.apache.hadoop.fs.FileContext", "rename", types = Seq("org.apache.hadoop.fs.Path", "org.apache.hadoop.fs.Path", "[Lorg.apache.hadoop.fs.Options$Rename;"))
-    lazy val renameOptions = Class.forName("org.apache.hadoop.fs.Options$Rename")
+    lazy val renameOptions         = Class.forName("org.apache.hadoop.fs.Options$Rename")
     // get all values, as long as OVERWRITE is in the Array, this will work
     // all other attempts to just get access to the OVERWRITE field and use it to invoke rename have failed
     lazy val overwrite = renameOptions.getDeclaredMethod("values").invoke(null)

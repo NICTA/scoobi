@@ -27,7 +27,6 @@ import java.net.URI
 import com.nicta.scoobi.impl.util.Compatibility
 import org.apache.hadoop.security.UserGroupInformation
 import java.io.IOException
-import org.apache.hadoop.fs.Options.Rename
 
 /**
  * A set of helper functions for implementing DataSources and DataSinks
