@@ -79,7 +79,7 @@ object dependencies {
 
   lazy val resolversSettings = resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snaspshots"),
+    Resolver.sonatypeRepo("snapshots"),
     "cloudera"             at "https://repository.cloudera.com/content/repositories/releases",
     "hortonworks-releases" at "http://repo.hortonworks.com/content/repositories/releases")
 }
