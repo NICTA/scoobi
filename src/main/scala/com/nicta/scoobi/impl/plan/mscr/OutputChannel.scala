@@ -304,7 +304,7 @@ object OutputChannel {
       if (filePath.indexOf(sourceDirPath) >=0) filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
       else filePath
 
-    val newPath        = new Path(fromSourceDir)
+    val newPath = new Path(fromSourceDir)
 
     val moved = moveTo(destDir).apply(path, newPath)
     if (!moved) outerLogger.error(s"can not move \n $path to \n ${new Path(destDir, newPath)}")

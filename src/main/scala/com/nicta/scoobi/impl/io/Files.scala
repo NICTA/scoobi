@@ -50,10 +50,12 @@ trait Files {
       val destPath = new Path(dirPath(dir.toString) + newPath)
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
-      if (sameFileSystem(from, to))
-        (path == destPath) || Compatibility.rename(path, destPath)
-      else
-        FileUtil.copy(from, path, to, destPath,
+      if (sameFileSystem(from, to)) {
+        // for now it looks like the renaming doesn't work on cdh5. Fallback to a copy in that case
+        try (path == destPath) || Compatibility.rename(path, destPath)
+        catch { case e: Throwable => FileUtil.copy(from, path, to, destPath, true, false, configuration) }
+      }
+      else FileUtil.copy(from, path, to, destPath,
                       true /* deleteSource */, false /* overwrite */, configuration)
     }
   }
