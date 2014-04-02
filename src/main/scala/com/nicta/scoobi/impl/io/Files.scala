@@ -52,7 +52,7 @@ trait Files {
 
       if (sameFileSystem(from, to)) {
         // for now it looks like the renaming doesn't work on cdh5. Fallback to a copy in that case
-        try (path == destPath) || Compatibility.rename(path, destPath)
+        try ((path == destPath) || Compatibility.rename(path, destPath))
         catch { case e: Throwable => FileUtil.copy(from, path, to, destPath, true, false, configuration) }
       }
       else FileUtil.copy(from, path, to, destPath,
