@@ -22,7 +22,7 @@ import java.lang.reflect.Method
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce._
-import org.apache.hadoop.fs.{FileSystem, Path, FileStatus}
+import org.apache.hadoop.fs.{FileUtil, FileSystem, Path, FileStatus}
 import org.apache.hadoop.io.SequenceFile
 import core.ScoobiConfiguration
 import org.apache.commons.logging.LogFactory
@@ -173,8 +173,17 @@ object Compatibility {
           val fileContext = invokeStatic(getFileContextMethod, configuration)
           invoke(renameMethod, fileContext, srcPath, destPath,overwrite)
           true
-        } catch { case e: Throwable => true }
-      } else FileSystem.get(configuration).rename(srcPath, destPath)
+        } catch { case e: Throwable =>
+          // for now it looks like the renaming doesn't work on cdh5. Fallback to a copy in that case
+          val from = Files.fileSystem(srcPath)
+          val to   = Files.fileSystem(destPath)
+
+          FileUtil.copy(from, srcPath, to, destPath, true, true, configuration)
+        }
+      } else {
+        logger.debug(s"renaming $srcPath to $destPath")
+        FileSystem.get(configuration).rename(srcPath, destPath)
+      }
     }
     
     private def getMethod(hadoop2Class: String, methodName: String, types: Seq[String] = Seq()) =

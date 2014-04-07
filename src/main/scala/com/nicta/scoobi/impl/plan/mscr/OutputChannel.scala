@@ -120,18 +120,14 @@ trait MscrOutputChannel extends OutputChannel { outer =>
     sinks.foreach {
       case sink: PartitionedSink[_,_,_,_] =>
         sink.outputPath foreach { outDir =>
-          mkdir(outDir)
-          outer.logger.debug("created directory "+outDir)
-
           // all directories are created under a <sink id> directory for easier collection in just a "rename"
           val baseDir = new Path(sc.temporaryOutputDirectory, new Path(sink.id.toString))
+          outer.logger.debug(s"Partitioned sink. Moving the files found in $baseDir to $outDir")
           moveTo(outDir)(sc.configuration)(baseDir, new Path("."))
         }
 
       case sink =>
         sink.outputPath foreach { outDir =>
-          mkdir(outDir)
-          outer.logger.debug("created directory "+outDir)
           moveOutputFiles(sink, outDir, outputFiles)
         }
     }
