@@ -307,6 +307,13 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     override def toString = "Int"
   }
 
+  implicit def ShortFmt = new ShortWireFormat
+  class ShortWireFormat extends WireFormat[Short] {
+    def toWire(x: Short, out: DataOutput) { out.writeShort(x) }
+    def fromWire(in: DataInput): Short = in.readShort()
+    override def toString = "Short"
+  }
+
   implicit def IntegerFmt: WireFormat[java.lang.Integer] = new IntegerWireFormat
   class IntegerWireFormat extends WireFormat[java.lang.Integer] {
     def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
