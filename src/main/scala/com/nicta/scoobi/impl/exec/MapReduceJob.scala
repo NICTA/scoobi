@@ -211,6 +211,8 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
           logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
             "Reduce " + reduce.getProgress.formatted("%3d") + "%")
 
+        // update the original configuration with the job counters for each job
+        configuration.updateCounters(job.getCounters)
         // Log task details
         taskDetailsLogger.logTaskCompletionDetails()
       }
@@ -228,7 +230,6 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
     mscr.outputChannels.foreach(_.collectOutputs(outputFiles))
     mscr.outputChannels.foreach(_.collectSuccessFile(successFiles.headOption))
     configuration.deleteTemporaryOutputDirectory
-    configuration.updateCounters(job.getCounters)
     this
   }
 }

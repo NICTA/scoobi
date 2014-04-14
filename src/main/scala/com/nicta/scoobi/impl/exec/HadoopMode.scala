@@ -177,8 +177,6 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
     /** report the execution of a Mscr */
     protected def reportMscr = ((job: MapReduceJob, step: String) => {
-      // update the original configuration with the job counters for each job
-      sc.updateCounters(job.job.getCounters)
       job.report
       (s"===== END OF MAP-REDUCE JOB $step (for the Scoobi job '${sc.jobId}') ======\n").info
     }).tupled
