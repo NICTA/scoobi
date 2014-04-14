@@ -32,6 +32,7 @@ import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import org.apache.hadoop.fs.Path
 import com.nicta.scoobi.impl.plan.mscr.OutputChannel
 import com.nicta.scoobi.io.partition.PartitionedSink
+import com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -96,11 +97,11 @@ trait ExecutionMode extends ShowNode with Optimiser {
       job.setOutputValueClass(sink.outputValueClass)
       ScoobiMetadata.saveMetadata("scoobi.metadata."+sink.outputValueClass.getName, elementWireformat, job.getConfiguration)
 
-      job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}out${sink.id}")
+      job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}-${sink.id}/${ChannelOutputFormat.basename}")
       // it is necessary to set the work output dir to the configuration so that the partition function, if any,
       // can be retrieved by the PartitionedSink (see `functionTag` in that class)
       job.getConfiguration.set("mapred.work.output.dir", sink.outputPath.getOrElse(sink.id).toString)
-      job.getConfiguration.set("avro.mo.config.namedOutput", s"ch${node.id}out${sink.id}")
+      job.getConfiguration.set("avro.mo.config.namedOutput", s"ch${node.id}-${sink.id}/${ChannelOutputFormat.basename}")
 
       sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
@@ -120,6 +121,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
       implicit val fs = sc.fileSystem
       implicit val fileSystems = FileSystems
+      implicit val configuration = sc.configuration
 
       sink match {
         case partitioned: PartitionedSink[_,_,_,_] =>
@@ -133,7 +135,14 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
         case normal =>
           normal.outputPath.foreach { outputDir =>
-            FileSystems.listPaths(outputDir) foreach OutputChannel.moveFileFromTo(srcDir = outputDir, destDir = outputDir)
+            fileSystems.listPaths(outputDir) foreach { path =>
+              if (!fileSystems.isDirectory(path)) {
+                if (path.getParent.getName != outputDir.getName) {
+                  OutputChannel.moveFileFromTo(srcDir = new Path(outputDir, path.getParent.getName), destDir = outputDir).apply(path)
+                  fs.delete(path.getParent, true)
+                }
+              }
+            }
           }
       }
     }

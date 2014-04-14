@@ -32,6 +32,7 @@ import com.nicta.scoobi.impl.ScoobiConfigurationImpl
 import com.nicta.scoobi.core.Compression
 import com.nicta.scoobi.impl.util.DistCache
 import java.net.URI
+import com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat
 
 case class PartitionedSink[P, K, V, B](
   subsink: DataSink[K, V, B],
@@ -122,8 +123,8 @@ abstract class PartitionedOutputFormat[P, K, V] extends FileOutputFormat[P, (K, 
     val outputDir = FileOutputFormat.getOutputPath(context)
     val outputCommitter = new FileOutputCommitter(outputDir, context)
     val workDir = outputCommitter.getWorkPath
-    val sinkId = context.getConfiguration.get("mapreduce.output.basename").split("out").drop(1).headOption.
-      getOrElse(throw new Exception("malformed output basename, it should be ch<tag>out<sink id>"))
+    val sinkId = context.getConfiguration.get("mapreduce.output.basename").split("-").drop(1).headOption.map(_.replace(s"/${ChannelOutputFormat.basename}", "")).
+      getOrElse(throw new Exception(s"malformed output basename, it should be ch<tag>-<sink id>/${ChannelOutputFormat.basename}"))
 
     new RecordWriter[P, (K, V)] {
 

@@ -150,11 +150,14 @@ trait MscrOutputChannel extends OutputChannel { outer =>
    * move the files of a given sink to its output directory.
    */
   private def moveOutputFiles(sink: Sink, outDir: Path, outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) = {
-    val outputs = outputFiles.filter(isResultFile(tag, sink.id))
+    val outputs = outputFiles.filter(isResultDirectory(tag, sink.id))
     outer.logger.debug("outputs result files for tag "+tag+" and sink id "+sink.id+" are "+outputs.map(_.getName).mkString("\n"))
 
-    // move files and cleanup temporary files if any
-    outputs foreach OutputChannel.moveFileFromTo(srcDir = sc.temporaryOutputDirectory, destDir = outDir)
+    // move the directory containing the output files for a given tag and sink
+    // and cleanup temporary files if any
+    outputs.foreach { path =>
+      OutputChannel.moveFileFromTo(srcDir = new Path(sc.temporaryOutputDirectory, path.getName), destDir = outDir).apply(path)
+    }
   }
 
   /**
@@ -293,14 +296,14 @@ object OutputChannel {
   def moveFileFromTo(srcDir: Path, destDir: Path)(implicit sc: ScoobiConfiguration, fileSystems: FileSystems, outerLogger: Log): Path => Unit = { path =>
     import fileSystems._; implicit val configuration = sc.configuration
 
-    val filePath       = path.toUri.getPath
+    val filePath       = if (isDirectory(path)) Files.dirPath(path.toUri.getPath) else path.toUri.getPath
     val sourceDirPath  = Files.dirPath(srcDir.toUri.getPath)
     // take only the path part which starts after the source directory
     val fromSourceDir  =
       if (filePath.indexOf(sourceDirPath) >=0) filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
       else filePath
 
-    val newPath = new Path(fromSourceDir)
+    val newPath = if (fromSourceDir.isEmpty) new Path(".") else new Path(fromSourceDir)
 
     val moved = moveTo(destDir).apply(path, newPath)
     if (!moved) outerLogger.error(s"can not move \n $path to \n ${new Path(destDir, newPath)}")

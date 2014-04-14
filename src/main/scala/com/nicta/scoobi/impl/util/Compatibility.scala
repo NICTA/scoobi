@@ -171,14 +171,15 @@ object Compatibility {
       if (isDirectory(FileSystem.get(configuration).getFileStatus(srcPath))) {
         try {
           val fileContext = invokeStatic(getFileContextMethod, configuration)
-          invoke(renameMethod, fileContext, srcPath, destPath,overwrite)
+          invoke(renameMethod, fileContext, srcPath, destPath, overwrite)
+          logger.debug(s"renamed $srcPath to $destPath using FileContext.rename")
           true
         } catch { case e: Throwable =>
-          // for now it looks like the renaming doesn't work on cdh5. Fallback to a copy in that case
-          val from = Files.fileSystem(srcPath)
-          val to   = Files.fileSystem(destPath)
+          // for now it looks like the renaming with FileContext doesn't work on cdh5. Fallback to a FileSystem.rename in that case
+          logger.debug(s"renaming with the FileContext didn't work: ${e.getMessage}. The Compatibility is: useHadoop2=$useHadoop2, useCdh4=${cdh4.useCdh4}")
+          logger.debug(s"So renaming $srcPath to $destPath using FileSystem.rename")
 
-          FileUtil.copy(from, srcPath, to, destPath, true, true, configuration)
+          FileSystem.get(configuration).rename(srcPath, destPath)
         }
       } else {
         logger.debug(s"renaming $srcPath to $destPath")
