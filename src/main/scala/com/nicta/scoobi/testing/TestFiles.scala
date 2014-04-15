@@ -92,7 +92,7 @@ trait TestFiles {
     new Path(remoteFile(file).getPath)
 
   private def remoteFile(file: File)(implicit configuration: ScoobiConfiguration) =
-    new File(configuration.workingDirectory+file.getName)
+    new File(configuration.workingDirectory.getName+"_"+file.getName)
 }
 
 object TestFiles extends TestFiles
