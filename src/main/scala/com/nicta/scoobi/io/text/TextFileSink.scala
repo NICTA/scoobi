@@ -23,9 +23,8 @@ import partition._
 import org.apache.hadoop.io.NullWritable
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
+import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat, FileOutputCommitter}
 import org.apache.hadoop.mapreduce.{Job, RecordWriter, TaskAttemptContext}
-import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter
 import impl.io.Files
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress.CompressionCodec
@@ -95,6 +94,18 @@ class PartitionedTextOutputFormat[P, K, V] extends PartitionedOutputFormat[P, K,
         // we need to use path as the work path for the record writers because it
         // already contains the work directories
         override def getWorkPath = path
+      }
+
+      /**
+       * override this method to give an output name without a directory
+       * so that files are written directly as year=2014/month=01/day=23/out-xxxx instead of
+       * year=2014/month=01/day=23/ch3-4/out-xxxx
+       *
+       * Because ch3-4/out is the default basename configured in ChannelOutputFormat
+       */
+      override def getDefaultWorkFile(context: TaskAttemptContext, extension: String): Path = {
+        val committer: FileOutputCommitter = getOutputCommitter(context).asInstanceOf[FileOutputCommitter]
+        new Path(committer.getWorkPath, FileOutputFormat.getUniqueFile(context, "out", extension))
       }
     }.getRecordWriter(context)
 }
