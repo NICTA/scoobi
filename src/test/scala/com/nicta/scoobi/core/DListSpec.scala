@@ -256,6 +256,27 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     in.run.toSeq must_== Seq(1, 1, 1)
   }
 
+  tag("issue 328")
+  "It must be possible to concatenate result lists" >> { implicit sc: SC =>
+
+    val init = DList(1, 2, 3, 2)
+
+    val validated: DList[Either[String, Int]] = init.map(i => if(i < 2) Left("number too low") else Right(i))
+    val errs: DList[String] = validated.collect { case Left(e) => e }
+    val good: DList[Int] = validated.collect { case Right(i) => i }
+
+    val secondVal: DList[Either[String, Int]] = good.groupBy(identity).collect {
+      case (k, vs) if vs.size > 1 => Right(k)
+      case (k, vs)                => Left(s"Too few entries in group $k")
+    }
+
+    val secondErrs = secondVal.collect { case Left(e) => e }
+    val secondGood = secondVal.collect { case Right(i) => i }
+
+    persist((errs ++ secondErrs), secondGood)
+    secondGood.run.toList must_== List(2)
+  }
+
 }
 
 case class PoorHashString(s: String) {

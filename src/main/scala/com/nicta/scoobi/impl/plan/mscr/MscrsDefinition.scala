@@ -157,8 +157,13 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
         .filter(layer.contains)
         .filterNot(gbkChannels.flatMap(_.mappers).contains)
         .toSeq
-      val lastLayer = layersOf(mappers).lastOption.getOrElse(Seq()).collect(isAParallelDo)
-      new FloatingInputChannel(inputNode, lastLayer, this)
+
+      // the "terminal" nodes for the input channel are all the ParallelDos on the last layer
+      // and all the parallelDos going to a Root node or Materialise parent
+      val layers = layersOf(mappers)
+      val lastLayerParallelDos = layers.lastOption.getOrElse(Seq()).collect(isAParallelDo)
+      val outputParallelDos = layers.dropRight(1).map(_.filter(p => isParallelDo(p) && parent(p).exists(isRoot || isMaterialise))).flatten
+      new FloatingInputChannel(inputNode, (lastLayerParallelDos ++ outputParallelDos).distinct, this)
     }.filterNot(_.isEmpty)
   }
 
