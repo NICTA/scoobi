@@ -64,7 +64,7 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
       // this will avoid stack overflows when optimising the graph
       case ParallelDo(nodes, env, dofn, wa, wb, sinks, _) if others.forall(isParallelDo) =>
         val pds = others.collect(isAParallelDo)
-        if (env == Return.unit        && pds.forall(_.env == Return.unit) &&
+        if (Return.isUnit(env)        && pds.forall(p => Return.isUnit(p.env)) &&
             comp.nodeSinks.isEmpty    && pds.forall(_.nodeSinks.isEmpty) &&
             dofn == EmitterDoFunction && pds.forall(_.dofn == EmitterDoFunction))
           nodes.toVector ++ pds.toVector

@@ -279,7 +279,14 @@ object Return {
     case rt: ReturnedValue => new Return(rt, wf)
     case _                 => new Return(new ReturnedValue(a), wf)
   }
-  lazy val unit = Return((), wireFormat[Unit])
+
+  /** this must not be a lazy val shared by all graphs because it breaks concurrent test execution */
+  def unit = Return((), wireFormat[Unit])
+
+  def isUnit(node: ValueNode) = node match {
+    case Return(a, _, _) => a.value == ()
+    case _               => false
+  }
 }
 
 case class Materialise(in: ProcessNode, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
