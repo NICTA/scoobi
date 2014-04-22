@@ -54,7 +54,7 @@ trait Layering extends ShowNode {
    */
   def layersOf(nodes: Seq[T]): Seq[Seq[T]] = {
 
-    val selectedNodes = nodes.flatMap(descendents)
+    val selectedNodes = nodes ++ nodes.flatMap(descendents)
 
     val (leaves, nonLeaves) = selectedNodes.partition(n => descendents(n).isEmpty)
     val leafNodes = if (leaves.isEmpty && nodes.nonEmpty) nodes else Vector[T]()

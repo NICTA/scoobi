@@ -56,7 +56,7 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
         val mscrLayer = createMscrs(inputNodes(firstLayer), visited)
         mscrLayer +: createLayers(startNodes, (visited ++ firstLayer ++ mscrLayer.nodes).distinct)
       }
-      case Nil => Vector()
+      case _ => Vector()
     }
 
   /** @return non-empty layers of processing nodes */

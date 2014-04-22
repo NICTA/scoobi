@@ -52,7 +52,7 @@ class GraphNodesSpec extends UnitSpecification with AllExpectations {
     (l1 -> parents)  ==== Vector(pd1, gbk1, pds1, mat1)
   }
   "the descendents of a node is the recursive list of all children" >> new nodes {
-    (mat1 -> descendents) ==== Vector(pds1, pd1, gbk1, pds1.env, l1, pd1.env)
+    (mat1 -> descendents) ==== Vector(pds1.env, pd1.env, l1, pd1, gbk1, pds1)
   }
   "the uses of a node are all the nodes having this node in their children" >> new nodes {
     (pds1 -> uses) ==== Set(mat1)

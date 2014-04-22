@@ -91,11 +91,7 @@ trait GraphNodes extends AttributionCore {
   @tailrec
   private def getDescendents(nodes: Seq[T], result: Seq[T] = Vector()): Seq[T] = {
     if (nodes.isEmpty) result.distinct
-    else if (nodes.size == 1) {
-      val node = nodes.head
-      if (children(node).isEmpty) result.distinct
-      else getDescendents(children(node).drop(1), children(node)(0) +: result)
-    } else {
+    else {
       val node = nodes.head
       getDescendents(children(node) ++ nodes.drop(1), node +: result)
     }

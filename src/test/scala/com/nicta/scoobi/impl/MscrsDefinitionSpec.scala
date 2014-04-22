@@ -98,7 +98,7 @@ Robustness
 ==========
 
   + A ProcessNode can only belong to one and only one channel and all ProcessNodes must belong to a channel
-    except if it is a flatten node
+    except for a flatten node
 """
 
   "layers" - new group with definition with layers with CompNodeData {
