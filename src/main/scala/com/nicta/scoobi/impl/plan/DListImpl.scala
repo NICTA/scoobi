@@ -19,6 +19,9 @@ package plan
 
 import org.apache.hadoop.io.compress.CompressionCodec
 import org.apache.hadoop.io.SequenceFile.CompressionType
+import com.nicta.scoobi.impl.plan.comp._
+import com.nicta.scoobi.impl.plan.comp.Load
+import CollectFunctions._
 
 import core._
 import comp._
@@ -53,7 +56,23 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(ParallelDo.create(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))
 
-  def ++(ins: DList[A]*): DList[A] = DListImpl.apply(comp +: ins.map(_.getComp))
+  def ++(ins: DList[A]*): DList[A] = DListImpl.apply {
+    val others = ins.map(_.getComp)
+    comp match {
+      // special case. If we just append processing nodes linked to sources
+      // then we can create only one parallelDo node
+      // this will avoid stack overflows when optimising the graph
+      case ParallelDo(nodes, env, dofn, wa, wb, sinks, _) if others.forall(isParallelDo) =>
+        val pds = others.collect(isAParallelDo)
+        if (env == Return.unit        && pds.forall(_.env == Return.unit) &&
+            comp.nodeSinks.isEmpty    && pds.forall(_.nodeSinks.isEmpty) &&
+            dofn == EmitterDoFunction && pds.forall(_.dofn == EmitterDoFunction))
+          nodes.toVector ++ pds.toVector
+        else getComp +: others.toVector
+
+      case other => other +: others.toVector
+    }
+  }
 
   def groupByKey[K, V]
       (implicit ev:   A <:< (K, V),
@@ -77,6 +96,6 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
 
 private[scoobi]
 object DListImpl {
-  def apply[A](source: DataSource[_,_, A])(implicit wf: WireFormat[A]): DListImpl[A] = apply(Seq(Load(source, wf)))
+  def apply[A](source: DataSource[_,_, A])(implicit wf: WireFormat[A]): DListImpl[A] = apply(Vector(Load(source, wf)))
   def apply[A](ins: Seq[CompNode])(implicit wf: WireFormat[A]): DListImpl[A] =  new DListImpl[A](ParallelDo.create(ins:_*)(wf))
 }

@@ -45,18 +45,18 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
    * where each layer contains independent map reduce jobs
    */
   def createMapReduceLayers(start: CompNode): Seq[Layer] =
-    createLayers(Seq(start)).filterNot(_.isEmpty)
+    createLayers(Vector(start)).filterNot(_.isEmpty)
 
   /**
    * From start nodes in the graph and the list of already visited nodes, create new layers of MapReduce jobs
    */
-  private def createLayers(startNodes: Seq[CompNode], visited: Seq[CompNode] = Seq()): Seq[Layer] =
+  private def createLayers(startNodes: Seq[CompNode], visited: Seq[CompNode] = Vector()): Seq[Layer] =
     processLayers(startNodes.distinct, visited) match {
       case firstLayer +: rest => {
         val mscrLayer = createMscrs(inputNodes(firstLayer), visited)
         mscrLayer +: createLayers(startNodes, (visited ++ firstLayer ++ mscrLayer.nodes).distinct)
       }
-      case Nil => Nil
+      case Nil => Vector()
     }
 
   /** @return non-empty layers of processing nodes */
@@ -97,7 +97,7 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
     val layerNodes       = transitiveUsesUntil(inputNodes, isAnOutputNode)
     val outputs          = layerNodes.filter(isAnOutputNode).filterNot(visited.contains)
     val outputLayers     = layersOf(outputs, isAnOutputNode)
-    val firstOutputLayer = outputLayers.dropWhile(l => !l.exists(outputs.contains)).headOption.map(_.filter(isAnOutputNode)).getOrElse(Seq()).distinct
+    val firstOutputLayer = outputLayers.dropWhile(l => !l.exists(outputs.contains)).headOption.map(_.filter(isAnOutputNode)).getOrElse(Vector()).distinct
 
     // some input process nodes might have been missed by in the inputNodes collection,
     // get them in by going back from the output nodes to the leaves
@@ -110,7 +110,7 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
   }
 
   private def transitiveUsesUntil(inputs: Seq[CompNode], until: CompNode => Boolean): Seq[CompNode] = {
-    if (inputs.isEmpty) Seq()
+    if (inputs.isEmpty) Vector()
     else {
       val (stop, continue) = inputs.flatMap(uses).toSeq.partition(until)
       stop ++ continue ++ transitiveUsesUntil(continue, until)
@@ -142,26 +142,27 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
     val in = inputNodes(layer.collect(isAProcessNode))
     in.flatMap { inputNode =>
       val groupByKeyUses = transitiveUses(inputNode).collect(isAGroupByKey).filter(gbks.contains).toSeq
-      if (groupByKeyUses.isEmpty) Seq()
-      else                        Seq(new GbkInputChannel(inputNode, groupByKeyUses, this))
+      if (groupByKeyUses.isEmpty) Vector()
+      else                        Vector(new GbkInputChannel(inputNode, groupByKeyUses, this))
     }
   }
 
   protected def floatingInputChannels(layer: Seq[CompNode]): Seq[FloatingInputChannel] = {
     val gbkChannels = gbkInputChannels(layer)
     val inputs = inputNodes(layer.collect(isAProcessNode))
+    val gbkMappers = gbkChannels.flatMap(_.mappers)
 
     inputs.map { inputNode =>
       val mappers = transitiveUses(inputNode)
         .collect(isAParallelDo)
         .filter(layer.contains)
-        .filterNot(gbkChannels.flatMap(_.mappers).contains)
-        .toSeq
+        .filterNot(gbkMappers.contains)
+        .toVector
 
       // the "terminal" nodes for the input channel are all the ParallelDos on the last layer
       // and all the parallelDos going to a Root node or Materialise parent
       val layers = layersOf(mappers)
-      val lastLayerParallelDos = layers.lastOption.getOrElse(Seq()).collect(isAParallelDo)
+      val lastLayerParallelDos = layers.lastOption.getOrElse(Vector()).collect(isAParallelDo)
       val outputParallelDos = layers.dropRight(1).map(_.filter(p => isParallelDo(p) && parent(p).exists(isRoot || isMaterialise))).flatten
       new FloatingInputChannel(inputNode, (lastLayerParallelDos ++ outputParallelDos).distinct, this)
     }.filterNot(_.isEmpty)

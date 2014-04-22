@@ -91,6 +91,11 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
     forall(sinks) { sink => hasBeenFilled(sink) must beFalse }
   }
 
+  "It must be possible to optimise a parallelDo with lots of inputs, with no SOE" >> new optimiser {
+    optimise(pd((1 to 10000).map(_ => pd(load)):_*))
+    ok
+  }
+
   trait optimiser extends factory with Optimiser
 
   implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.const(new factory{}))

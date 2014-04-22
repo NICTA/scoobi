@@ -36,16 +36,21 @@ trait ShowNode extends CompNodes {
    * show a node and recursively all its children
    */
   private def show(node: CompNode): Doc =
+    showMax(node, 100)
+
+  private def showMax(node: CompNode, depth: Int): Doc =
+    if (depth == 0) "<...>"
+    else
     node match {
       case Load1(_)              => value(showNode(node))
-      case pd @ ParallelDo1(ins) => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.toList.map(i => show(i)), line <> "+")) <> line <> "env. " <> show(pd.env))
+      case pd @ ParallelDo1(ins) => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.toList.map(i => showMax(i, depth - 1)), line <> "+")) <> line <> "env. " <> show(pd.env))
       case Return1(_)            => value(showNode(node))
       case ReturnSC1(_)          => value(showNode(node))
-      case Combine1(in)          => showNode(node) <> braces (nest (line <> show(in) <> line))
-      case GroupByKey1(in)       => showNode(node) <> braces (nest (line <> show(in) <> line))
-      case Materialise1(in)      => showNode(node) <> braces (nest (line <> show(in) <> line))
-      case Op1(in1, in2)         => showNode(node) <> braces (nest (line <> "1. " <> show(in1) <> line <> "2. " <> show(in2)))
-      case Root1(ins)            => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.toList.map(i => show(i)), line <> "+")))
+      case Combine1(in)          => showNode(node) <> braces (nest (line <> showMax(in, depth - 1) <> line))
+      case GroupByKey1(in)       => showNode(node) <> braces (nest (line <> showMax(in, depth - 1) <> line))
+      case Materialise1(in)      => showNode(node) <> braces (nest (line <> showMax(in, depth - 1) <> line))
+      case Op1(in1, in2)         => showNode(node) <> braces (nest (line <> "1. " <> showMax(in1, depth - 1) <> line <> "2. " <> showMax(in2, depth - 1)))
+      case Root1(ins)            => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.toList.map(i => showMax(i, depth - 1)), line <> "+")))
     }
 
   /** show a single node */

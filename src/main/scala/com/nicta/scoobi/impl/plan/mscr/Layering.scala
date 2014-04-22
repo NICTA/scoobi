@@ -48,11 +48,30 @@ trait Layering extends ShowNode {
     result.filterNot(_.isEmpty).distinct
   }
 
+  /**
+   * Specialisation of the layersOf function taking a selection function
+   * in the case where all nodes are selected
+   */
+  def layersOf(nodes: Seq[T]): Seq[Seq[T]] = {
+
+    val selectedNodes = nodes.flatMap(descendents)
+
+    val (leaves, nonLeaves) = selectedNodes.partition(n => descendents(n).isEmpty)
+    val leafNodes = if (leaves.isEmpty && nodes.nonEmpty) nodes else Vector[T]()
+
+    val result = (leaves ++ leafNodes) +:
+      nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toVector.sortBy(_._1).map(_._2)
+    result.filterNot(_.isEmpty).distinct
+  }
+
   private lazy val selectDescendentsOf =
     paramAttr((select: (CompNode => Boolean)) => (n: CompNode) => descendents(n).filter(select).distinct)
 
   lazy val longestPathSizeTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>
-    target.map(t => node -> longestPathSizeToNode(t)).max
+    val pathSizes = target.map(t => node -> longestPathSizeToNode(t))
+
+    if (pathSizes.isEmpty) 0
+    else pathSizes.max
   }
 
   lazy val longestPathSizeToNode: CompNode => CompNode => Int = paramAttr { (target: CompNode) => node: CompNode =>

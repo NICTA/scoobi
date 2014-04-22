@@ -46,7 +46,7 @@ trait CompNodes extends GraphNodes {
   /** collect all the sinks in the computation graph */
   @transient
   protected lazy val allSinks: CachedAttribute[CompNode, Seq[Sink]] = attr {
-    case n => n.sinks ++ children(n).flatMap(allSinks)
+    case n => n.sinks ++ descendents(n).flatMap(_.sinks)
   }
 
   /** mark a sink as filled so it doesn't have to be recomputed */

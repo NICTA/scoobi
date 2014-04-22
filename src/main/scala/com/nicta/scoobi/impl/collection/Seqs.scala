@@ -85,7 +85,7 @@ trait Seqs {
   def transitiveClosure[A](seq: Seq[A])(relation: (A, A) => Boolean) =
     seq.foldLeft(Seq[NonEmptyList[A]]()) { (res, cur) =>
       res.toList match {
-        case Nil          => Seq(nels(cur))
+        case Nil          => Vector(nels(cur))
         case head :: tail =>
           val groups = nel(head, tail).toZipper
           groups.findZ(_.list.exists(relation(_, cur))).map(_.modify(_ :::> List(cur))).
