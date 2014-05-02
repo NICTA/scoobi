@@ -27,6 +27,8 @@ import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.permission.FsAction
 import FsAction._
+import com.nicta.scoobi.impl.control.Exceptions._
+
 /**
  * An output store from a MapReduce job
  */
@@ -46,9 +48,11 @@ trait DataSink[K, V, B] extends Sink { outer =>
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration) = {
     compression map  { case Compression(codec, compressionType) =>
-      configuration.set("mapred.output.compress", "true")
-      configuration.set("mapred.output.compression.type", compressionType.toString)
-      configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
+      if (tryOk(codec.createCompressor)) {
+        configuration.set("mapred.output.compress", "true")
+        configuration.set("mapred.output.compression.type", compressionType.toString)
+        configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
+      } else configuration.set("mapred.output.compress", "false")
     } getOrElse {
       configuration.set("mapred.output.compress", "false")
     }
