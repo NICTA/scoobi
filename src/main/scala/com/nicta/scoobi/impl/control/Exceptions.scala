@@ -116,6 +116,13 @@ trait Exceptions {
     try { Right(a) }
     catch { case e: Throwable => Left(f(e)) }
   }
+  
+  /** @return true if no throwable was thrown */
+  def catchAllOk[T](a: =>T): Boolean = catchAllOr {a; true}(_ => false)
+
+  /** @return true if a throwable was thrown */
+  def catchAllKo[T](a: =>T): Boolean = !catchAllOk(a)
+
 }
 
 object Exceptions extends Exceptions
