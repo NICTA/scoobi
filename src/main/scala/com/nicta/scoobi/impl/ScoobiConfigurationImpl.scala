@@ -22,7 +22,7 @@ import java.net.URL
 import java.io.File
 import scala.collection.JavaConversions._
 import mapreducer.Env
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
@@ -55,6 +55,13 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
    */
   loadMapredSiteProperties
   def loadMapredSiteProperties = new JobConf
+
+  /**
+   * set the "mode" of the configuration based on the file system
+   * this mode can be changed later on if necessary
+   */
+  if (FileSystem.get(hadoopConfiguration).getScheme == "file") modeIs(Mode.Local)
+  else modeIs(Mode.Cluster)
 
   private implicit lazy val logger = getLog("scoobi.ScoobiConfiguration")
 
