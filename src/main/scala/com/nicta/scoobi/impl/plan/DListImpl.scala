@@ -30,6 +30,11 @@ import collection.Seqs._
 import WireFormat._
 import WireFormat._
 import com.nicta.scoobi.core
+import com.nicta.scoobi.impl.control.Exceptions._
+import com.nicta.scoobi.impl.plan.comp.Load
+import com.nicta.scoobi.impl.plan.comp.Materialise
+import com.nicta.scoobi.impl.plan.comp.Combine
+import com.nicta.scoobi.impl.plan.comp.GroupByKey
 
 /** An implementation of the DList trait that builds up a DAG of computation nodes. */
 private[scoobi]
@@ -51,7 +56,9 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
     storeComp puts (_.updateSinks(f))
 
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
-    storeComp puts ((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
+    if (catchAllOk(codec.createCompressor)) 
+      storeComp puts ((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
+    else this
 
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(ParallelDo.create(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))

@@ -48,11 +48,9 @@ trait DataSink[K, V, B] extends Sink { outer =>
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration) = {
     compression map  { case Compression(codec, compressionType) =>
-      if (catchAllOk(codec.createCompressor)) {
-        configuration.set("mapred.output.compress", "true")
-        configuration.set("mapred.output.compression.type", compressionType.toString)
-        configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
-      } else configuration.set("mapred.output.compress", "false")
+      configuration.set("mapred.output.compress", "true")
+      configuration.set("mapred.output.compression.type", compressionType.toString)
+      configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
     } getOrElse {
       configuration.set("mapred.output.compress", "false")
     }
