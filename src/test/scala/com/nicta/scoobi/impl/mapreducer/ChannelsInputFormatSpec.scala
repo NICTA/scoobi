@@ -32,7 +32,7 @@ import WireFormat._
 import rtt.RuntimeClass
 import com.nicta.scoobi.testing.{TempFiles, TestFiles}
 import impl.util.Compatibility
-import Compatibility.hadoop2._
+import Compatibility._
 import com.nicta.scoobi.io.text.TextSource
 import com.nicta.scoobi.testing.TestFiles._
 import com.nicta.scoobi.io.text.TextSource

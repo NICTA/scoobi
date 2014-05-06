@@ -20,7 +20,7 @@ package mapreducer
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
 import util._
-import Compatibility.hadoop2._
+import Compatibility._
 import core._
 
 /** A reference to the storage location of a value that represents the "environment"

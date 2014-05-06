@@ -54,7 +54,7 @@ trait Files {
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
       if (sameFileSystem(from, to))
-        (path == destPath) || Compatibility.rename(path, destPath)
+        (path == destPath) || tryOk(Compatibility.rename(path, destPath))
       else FileUtil.copy(from, path, to, destPath,
                       true /* deleteSource */, true /* overwrite */, configuration)
     }

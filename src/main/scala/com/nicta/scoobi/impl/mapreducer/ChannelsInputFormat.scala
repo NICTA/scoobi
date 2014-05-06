@@ -31,7 +31,7 @@ import Configurations._
 import ChannelsInputFormat._
 import monitor.Loggable._
 import impl.util.Compatibility
-import Compatibility.hadoop2._
+import Compatibility._
 import java.io.IOException
 
 /** An input format that delegates to multiple input formats, one for each

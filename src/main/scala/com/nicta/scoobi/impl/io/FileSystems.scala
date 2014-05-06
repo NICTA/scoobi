@@ -20,7 +20,7 @@ package io
 import java.io.{IOException, File}
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs._
-import impl.util.Compatibility.hadoop2._
+import impl.util.Compatibility._
 import com.nicta.scoobi.{impl, core}
 import core._
 import impl.ScoobiConfiguration._

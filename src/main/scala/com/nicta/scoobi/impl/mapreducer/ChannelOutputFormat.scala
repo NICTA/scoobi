@@ -27,7 +27,7 @@ import core._
 import Configurations._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import impl.util.Compatibility
-import Compatibility.hadoop2._
+import Compatibility._
 
 
 /**

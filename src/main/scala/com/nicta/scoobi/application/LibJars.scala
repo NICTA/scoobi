@@ -21,7 +21,7 @@ import java.io.File
 import org.apache.hadoop.fs.Path
 import core._
 import impl.io.FileSystems
-import impl.util.Compatibility.hadoop2._
+import impl.util.Compatibility._
 import impl.ScoobiConfiguration._
 import impl.ScoobiConfigurationImpl._
 import org.apache.commons.logging.LogFactory

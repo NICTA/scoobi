@@ -18,7 +18,7 @@ package impl
 package util
 
 import org.apache.hadoop.fs._
-import Compatibility.hadoop2._
+import Compatibility._
 import org.apache.hadoop.conf.Configuration
 import Configurations._
 import ScoobiConfiguration._

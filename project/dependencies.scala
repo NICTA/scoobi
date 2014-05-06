@@ -38,24 +38,10 @@ object dependencies {
 
   def hadoop(version: String, hadoopVersion: String = "2.2.0") =
 
-    if (version.contains("cdh3"))      Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
-                                           "org.apache.avro"   % "avro-mapred"   % "1.7.4")
-
-    else if (version.contains("cdh4")) Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
-                                           "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
-
-    else if (version.contains("cdh5")) Seq("org.apache.hadoop" % "hadoop-client" % "2.2.0-cdh5.0.0-beta-2" exclude("asm", "asm"),
-                                           "org.apache.avro"   % "avro-mapred"   % "1.7.5-cdh5.0.0-beta-2")
-    
-    else                               Seq("org.apache.hadoop" % "hadoop-common"                     % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-hdfs"                       % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-annotations"                % hadoopVersion exclude("asm", "asm"),
-                                           "org.apache.avro"   % "avro-mapred"                       % "1.7.4" classifier "hadoop2")
+    if (version.contains("cdh3"))      Seq("com.nicta" %% "scoobi-compatibility-cdh3" % "1.0")
+    else if (version.contains("cdh4")) Seq("com.nicta" %% "scoobi-compatibility-cdh4" % "1.0")
+    else if (version.contains("cdh5")) Seq("com.nicta" %% "scoobi-compatibility-cdh5" % "1.0")
+    else                               Seq("com.nicta" %% "scoobi-compatibility-hadoop2" % "1.0")
 
   def scalaz(scalazVersion: String = "7.0.6") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
