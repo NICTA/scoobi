@@ -114,6 +114,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
     if (scoobiJobIsSuccessful)
       outputDirectories.foreach { outDir =>
+        moveTo(outDir).apply(new Path(outDir, "._SUCCESS_JOB.crc"), new Path("._SUCCESS.crc"))
         moveTo(outDir).apply(new Path(outDir, "_SUCCESS_JOB"), new Path("_SUCCESS"))
       }
   }
