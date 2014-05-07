@@ -246,6 +246,7 @@ class CheckedSeqSource[K : Manifest, V : Manifest, A](paths: Seq[String],
         val seqReader: SequenceFile.Reader = Compatibility.newSequenceFileReader(sc.configuration, filePath)
         checkType(seqReader.getKeyClass, manifest[K].runtimeClass, "KEY")
         checkType(seqReader.getValueClass, manifest[V].runtimeClass, "VALUE")
+        seqReader.close
       }
   }
 

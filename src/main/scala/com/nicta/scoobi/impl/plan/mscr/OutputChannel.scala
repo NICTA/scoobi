@@ -108,11 +108,11 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   def collectOutputs(outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) {
     import fileSystems._; implicit val configuration = sc.configuration
 
-    outer.logger.debug("outputs files are "+outputFiles.mkString("\n"))
+    outer.logger.debug("output files are "+outputFiles.mkString("\n"))
     sinks.foreach { case sink =>
       sink.outputPath foreach { outDir =>
-          mkdir(outDir)
-          outer.logger.debug("created directory "+outDir)
+        mkdir(outDir)
+        outer.logger.debug("created directory "+outDir)
       }
     }
 
@@ -303,7 +303,7 @@ object OutputChannel {
       if (filePath.indexOf(sourceDirPath) >=0) filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
       else filePath
 
-    val newPath = if (fromSourceDir.isEmpty) new Path(".") else new Path(fromSourceDir)
+    val newPath = if (fromSourceDir.isEmpty) new Path(path.getName) else new Path(fromSourceDir)
 
     val moved = moveTo(destDir).apply(path, newPath)
     if (!moved) outerLogger.error(s"can not move \n $path to \n ${new Path(destDir, newPath)}")
