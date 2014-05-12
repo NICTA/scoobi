@@ -41,7 +41,11 @@ trait Data { outer =>
    *
    */
   implicit def genIsApply: Apply[Gen] = new Apply[Gen] {
-    def ap[A, B](fa: => Gen[A])(f: => Gen[(A) => B]) = fa.map2(f)((v, function) => function(v))
+    def ap[A, B](fa: => Gen[A])(fab: => Gen[(A) => B]) = for {
+      a <- fa
+      f <- fab
+    } yield f(a)
+
     def map[A, B](fa: Gen[A])(f: (A) => B) = fa map f
   }
 

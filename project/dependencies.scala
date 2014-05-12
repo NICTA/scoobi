@@ -18,10 +18,7 @@ import Keys._
 
 object dependencies {
 
-  lazy val settings = 
-    Seq(conflictWarning ~= { _.copy(failOnConflict = false) }) ++
-    dependencies ++ resolversSettings
-
+  lazy val settings = dependencies ++ resolversSettings
   lazy val dependencies = libraryDependencies ++=
     scoobi(scalaVersion.value) ++
     hadoop(version.value)      ++
@@ -34,36 +31,27 @@ object dependencies {
     "org.apache.avro"                   %  "avro"                      % "1.7.4",
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
-    "com.googlecode.kiama"              %% "kiama"                     % "1.5.3-SNAPSHOT",
-    "com.chuusai"                       %%  "shapeless"                % "2.0.0-M1",
+    "com.googlecode.kiama"              %% "kiama"                     % "1.5.3",
+    "com.chuusai"                       %% "shapeless"                 % "2.0.0",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
 
   def hadoop(version: String, hadoopVersion: String = "2.2.0") =
-    if (version.contains("hadoop2"))   Seq("org.apache.hadoop" % "hadoop-common"                     % hadoopVersion,
-                                           "org.apache.hadoop" % "hadoop-hdfs"                       % hadoopVersion,
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-app"       % hadoopVersion,
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion,
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-jobclient" % hadoopVersion,
-                                           "org.apache.hadoop" % "hadoop-mapreduce-client-core"      % hadoopVersion,
-                                           "org.apache.hadoop" % "hadoop-annotations"                % hadoopVersion,
-                                           "org.apache.avro"   % "avro-mapred"                       % "1.7.4" classifier "hadoop2")
 
-    else if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
-                                           "org.apache.avro"   % "avro-mapred"   % "1.7.4")
+    if (version.contains("cdh3"))      Seq("com.nicta" %% "scoobi-compatibility-cdh3" % "1.0.1")
+    else if (version.contains("cdh4")) Seq("com.nicta" %% "scoobi-compatibility-cdh4" % "1.0.1")
+    else if (version.contains("cdh5")) Seq("com.nicta" %% "scoobi-compatibility-cdh5" % "1.0.1")
+    else                               Seq("com.nicta" %% "scoobi-compatibility-hadoop2" % "1.0.1")
 
-    else                               Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm"),
-                                           "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
-                                           "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
-
-  def scalaz(scalazVersion: String = "7.0.5") = Seq(
+  def scalaz(scalazVersion: String = "7.0.6") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
+    "org.scalaz"                        %% "scalaz-iteratee"           % scalazVersion,
     "org.scalaz"                        %% "scalaz-concurrent"         % scalazVersion,
     "org.scalaz"                        %% "scalaz-scalacheck-binding" % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  def specs2(specs2Version: String = "2.3.7") = Seq(
+  def specs2(specs2Version: String = "2.3.11") = Seq(
     "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional") ++ Seq(
     "org.specs2"                        %% "specs2-mock"               % specs2Version      ,
     "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      ,
@@ -72,7 +60,7 @@ object dependencies {
     "org.specs2"                        %% "specs2-analysis"           % specs2Version      ).map(_ % "test")
 
   def repl = Seq(
-    "org.scala-lang"                    %  "jline"                     % "2.11.0-M7"
+    "org.scala-lang"                    %  "jline"                     % "2.10.3"
   )
 
   lazy val resolversSettings = resolvers ++= Seq(
