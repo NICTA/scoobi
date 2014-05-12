@@ -22,7 +22,7 @@ import java.net.URL
 import java.io.File
 import scala.collection.JavaConversions._
 import mapreducer.Env
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
@@ -56,6 +56,13 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   loadMapredSiteProperties
   def loadMapredSiteProperties = new JobConf
 
+  /**
+   * set the "mode" of the configuration based on the file system
+   * this mode can be changed later on if necessary
+   */
+  if (FileSystem.get(hadoopConfiguration).getUri.getScheme == "file") modeIs(Mode.Local)
+  else modeIs(Mode.Cluster)
+
   private implicit lazy val logger = getLog("scoobi.ScoobiConfiguration")
 
 
@@ -85,7 +92,8 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStepIs(stepId: Int, stepsNumber: Int) = {
-    configuration.set(JOB_STEP, s"step $stepId of ${stepsNumber}")
+    // no space in the step name because it will be used in paths and spaces could cause problems
+    configuration.set(JOB_STEP, s"step_${stepId}_of_$stepsNumber")
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+configuration.get(JOB_STEP))
     jobStep
   }
@@ -313,6 +321,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   private def setDefaultForInMemoryAndLocal = {
     set(Compatibility.defaultFSKeyName, "file:///")
     set("mapred.job.tracker", "local")
+    set("mapreduce.framework.name", "local")
     setDirectories
   }
 
@@ -357,9 +366,9 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def defaultScoobiDir                    = dirPath("/tmp/scoobi-"+sys.props.get("user.name").getOrElse("user"))
   lazy val scoobiDir                      = configuration.getOrSet("scoobi.dir", defaultScoobiDir)
   lazy val workingDir                     = configuration.getOrSet("scoobi.workingdir", dirPath(scoobiDir + jobId))
-  lazy val scoobiDirectory: Path          = new Path(scoobiDir)
-  lazy val workingDirectory: Path         = new Path(workingDir)
-  def temporaryOutputDirectory            = new Path(workingDirectory, "tmp-out-"+hadoopConfiguration.get(JOB_STEP)+"/")
+  lazy val scoobiDirectory: Path          = fileSystem.makeQualified(new Path(scoobiDir))
+  lazy val workingDirectory: Path         = fileSystem.makeQualified(new Path(workingDir))
+  def temporaryOutputDirectory            = fileSystem.makeQualified(new Path(workingDirectory, "tmp-out-"+hadoopConfiguration.get(JOB_STEP)+"/"))
   lazy val temporaryJarFile: File         = File.createTempFile("scoobi-job-"+jobId, ".jar")
 
   def deleteScoobiDirectory          = fileSystem.delete(scoobiDirectory, true)

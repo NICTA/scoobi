@@ -46,6 +46,9 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     serialisationIsOkFor[java.util.Date]
     serialisationIsOkFor[(Int, String)]
     serialisationIsOkFor[(Int, String, Long, Boolean, Double, Float, String, Byte)]
+    serialisationIsOkFor[List[Int]]
+    serialisationIsOkFor[Map[Int, String]]
+    serialisationIsOkFor[Map[List[Int], Option[String]]]
     serialisationIsOkFor[Seq[Int]]
     "but a null traversable cannot be serialised" >> {
       implicitly[WireFormat[Seq[Int]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
@@ -126,8 +129,9 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     import com.nicta.scoobi.testavroschema._
 
     "for avro SpecificRecord type" >> {
+      implicit val wireformat: WireFormat[SampleRecord] = AvroFmt
       val fixed = new SampleRecord("foo", 42, new Sha1(Array.fill(20)(0xAA.toByte)))
-      serialisationIsOkWith(fixed)
+      serialisationIsOkWith(fixed)(wireformat)
     }
 
     "for avro SpecificFixed type" >> {

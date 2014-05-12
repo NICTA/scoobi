@@ -19,7 +19,9 @@ import Keys._
 import com.typesafe.sbt._
 import pgp.PgpKeys._
 import sbt.Configuration
+import sbt.Configuration
 import SbtSite._
+import scala.Some
 import scala.Some
 import SiteKeys._
 import SbtGit._
@@ -34,6 +36,11 @@ import ls.Plugin._
 import LsKeys._
 import Utilities._
 import Defaults._
+import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
+import com.typesafe.tools.mima.plugin.MimaKeys.binaryIssueFilters
+import xerial.sbt.Sonatype._
+import SonatypeKeys._
 
 object build extends Build {
   type Settings = Def.Setting[_]
@@ -49,6 +56,7 @@ object build extends Build {
                testingSettings          ++
                siteSettings             ++
                publicationSettings      ++
+               mimaSettings             ++ 
                notificationSettings     ++
                releaseSettings          ++
                repl.settings
@@ -63,6 +71,7 @@ object build extends Build {
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
+    incOptions := incOptions.value.withNameHashing(true),
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:_"),
     scalacOptions in Test ++= Seq("-Yrangepos")
   )
@@ -73,6 +82,42 @@ object build extends Build {
     javaOptions in Test ++= Seq("-Xmx3g")
   )
 
+  /** 
+   * Compatibility with MIMA
+   */
+  lazy val scoobiMimaBasis =
+    SettingKey[String]("scoobi-mima-basis", "Version of scoobi against which to run MIMA.")
+
+  lazy val setMimaVersion: ReleaseStep = { st: State =>
+    val extracted = Project.extract(st)
+
+    val (releaseV, _) = st.get(versions).getOrElse(sys.error("impossible"))
+    // TODO switch to `versionFile` key when updating sbt-release
+    IO.write(new File("version.sbt"), "\n\nscoobiMimaBasis in ThisBuild := \"%s\"" format releaseV, append = true)
+    reapply(Seq(scoobiMimaBasis in ThisBuild := releaseV), st)
+  }
+
+  lazy val mimaSettings = 
+   mimaDefaultSettings ++ Seq[Settings](
+    binaryIssueFilters ++= {
+      import com.typesafe.tools.mima.core._
+      import com.typesafe.tools.mima.core.ProblemFilters._
+      Seq( // add classes here
+        ) map exclude[MissingMethodProblem]
+    }
+  ) ++ Seq[Settings](
+    previousArtifact <<= (organization, name, scalaBinaryVersion, scoobiMimaBasis.?) { (o, n, sbv, basOpt) =>
+      basOpt match {
+        case Some(bas) if !(sbv startsWith "2.11") =>
+          Some(o % (n + "_" + sbv) % bas)
+        case _ =>
+          None
+      }
+    })
+
+  /** 
+   * Site settings
+   */
   lazy val siteSettings: Seq[Settings] = ghpages.settings ++ SbtSite.site.settings ++ Seq(
     siteSourceDirectory <<= target (_ / "specs2-reports"),
     // depending on the version, copy the api files to a different directory
@@ -98,7 +143,7 @@ object build extends Build {
     publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
       if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
-      else                             Some("staging" at nexus + "service/local/staging/deploy/maven2")
+      else                             Some("staging"   at nexus + "service/local/staging/deploy/maven2")
     },
     publishMavenStyle := true,
     publishArtifact in Test := false,
@@ -132,10 +177,16 @@ object build extends Build {
           <name>Eric Torreborre</name>
           <url>http://etorreborre.blogspot.com/</url>
         </developer>
+        <developer>
+          <id>tmorris</id>
+          <name>Tony Morris</name>
+          <url>http://github.com/tmorris</url>
+        </developer>
       </developers>
     ),
     credentials := Seq(Credentials(Path.userHome / ".sbt" / "scoobi.credentials"))
-  )
+  ) ++
+  sonatypeSettings
 
   /**
    * RELEASE PROCESS
@@ -153,20 +204,23 @@ object build extends Build {
       generateReadMe,
       publishSite,
       publishSignedArtifacts,
-      publishForCDH3,
-      publishForHadoop2,
+      publishSignedForCDH3,
+      publishSignedForCDH4,
+      releaseToSonatype,
       notifyLs,
       notifyHerald,
       tagRelease,
       setNextVersion,
+      setMimaVersion,
       commitNextVersion,
       pushChanges
     ),
     releaseSnapshotProcess := Seq[ReleaseStep](
       generateUserGuide,
       publishSite,
-      publishSignedArtifacts,
-      publishForCDH3),
+      publishArtifacts,
+      publishForCDH3,
+      publishForCDH4),
     commands += releaseSnapshotCommand
   ) ++
   Seq(publishUserGuideTask <<= pushSite.dependsOn(makeSite).dependsOn(generateUserGuideTask)) ++
@@ -246,15 +300,30 @@ object build extends Build {
    */
   lazy val publishSignedArtifacts = executeStepTask(publishSigned, "Publishing signed artifacts")
 
+  lazy val publishSignedForCDH3 = publishSignedFor("cdh3")
+
+  lazy val publishSignedForCDH4 = publishSignedFor("cdh4")
+
+  def publishSignedFor(name: String) = ReleaseStep { st: State =>
+    val extracted = Project.extract(st)
+    val ref: ProjectRef = extracted.get(thisProjectRef)
+    val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+s"$name-SNAPSHOT" else v+s"-$name" }), st)
+    executeTask(publishSigned, s"Publishing $name signed artifacts")(st2)
+  }
+
+  lazy val releaseToSonatype = executeStepTask(sonatypeReleaseAll, "Closing and promoting the Sonatype repo")
+
+  lazy val publishArtifacts = executeStepTask(publish, "Publishing artifacts")
+
   lazy val publishForCDH3 = publishFor("cdh3")
 
-  lazy val publishForHadoop2 = publishFor("hadoop2")
+  lazy val publishForCDH4 = publishFor("cdh4")
 
   def publishFor(name: String) = ReleaseStep { st: State =>
     val extracted = Project.extract(st)
     val ref: ProjectRef = extracted.get(thisProjectRef)
     val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+s"$name-SNAPSHOT" else v+s"-$name" }), st)
-    executeTask(publishSigned, s"Publishing $name signed artifacts")(st2)
+    executeTask(publish, s"Publishing $name artifacts")(st2)
   }
 
   /**

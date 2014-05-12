@@ -39,7 +39,10 @@ class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedVal
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
     val jobStep = ScoobiConfiguration(context.getConfiguration).jobStep
-    combiners = DistCache.pullObject[Combiners](context.getConfiguration, s"scoobi.combiners-$jobStep").getOrElse(Map())
+
+    // the combiner setup function might be called several times
+    // this is why we memoise the deserialised combiners to improve performances
+    combiners = DistCache.pullObject[Combiners](context.getConfiguration, s"scoobi.combiners-$jobStep", memoise = true).getOrElse(Map())
     tv = ReflectionUtils.newInstance(context.getMapOutputValueClass, context.getConfiguration).asInstanceOf[TaggedValue]
   }
 

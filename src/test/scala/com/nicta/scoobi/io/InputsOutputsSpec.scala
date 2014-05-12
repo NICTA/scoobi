@@ -91,7 +91,7 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=22/file.part"), Seq("a", "b"), isRemote)
     TempFiles.writeLines(new File(directory+"/year=2014/month=01/day=23/file.part"), Seq("c", "d"), isRemote)
 
-    fromPartitionedTextFiles(directory+"/*/*/*/*").mapKeys { path: String =>
+    fromTextFileWithPath(directory+"/*/*/*/*").mapKeys { path: String =>
       val parts = path.split("/").dropRight(1).reverse.take(3).map(p => Seq("year=", "month=", "day=").foldLeft(p)(_.replace(_, "")))
       val (year, month, day) = (parts(2), parts(1), parts(0))
       s"$year/$month/$day"
@@ -104,7 +104,7 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
 
     list.toPartitionedTextFile(directory, partition = (s: String) => s, overwrite = true).run
 
-    Seq("22", "23") must contain((date: String) => new File(directory+"/2014/01/"+date).listFiles.toSeq must contain(aFile).forall).forall
+    Seq("22", "23") must contain((date: String) => new File(directory+"/2014/01/"+date).listFiles.toSeq must contain(aFile).atLeastOnce).forall
   }
 
   "5. Round-trip of writing and reading partitioned text files" >> { implicit sc: SC =>
@@ -112,7 +112,29 @@ class InputsOutputsSpec extends NictaSimpleJobs with FileMatchers {
     val list = DList((Date(2014, 1, 22), "a"), (Date(2014, 1, 22), "b"), (Date(2014, 1, 23), "c"), (Date(2014, 1, 23), "d"))
 
     val written = list.toPartitionedTextFile(directory, partition = (_:Date).toPath, overwrite = true).run
-    val read    = fromPartitionedTextFiles(directory+"/*/*/*/*").mapKeys(Date.fromPath)
+    val read    = fromTextFileWithPath(directory+"/*/*/*/*").mapKeys(Date.fromPath)
+
+    read.run.normalise === written.normalise
+  }
+
+  tag("issue 320")
+  "6. Output files must be copied to the right place" >> { implicit sc: SC =>
+
+    val base = path(TempFiles.createTempDir("tmp").getPath).pp
+    val partitions = base + "/partitions"
+    val dlist = DList(("a/b/c", 1), ("a/b/c", 2), ("a/b/c", 3))
+
+    dlist.toPartitionedTextFile(partitions, identity).persist
+
+    new File(partitions).list.toSet must_== Set("_SUCCESS", "._SUCCESS.crc", "a")
+  }
+
+  "7. Round-trip of writing and reading partitioned sequence files" >> { implicit sc: SC =>
+    val directory = path(TempFiles.createTempDir("output").getPath)
+    val list = DList((Date(2014, 1, 22), (1, "a")), (Date(2014, 1, 22), (2, "b")), (Date(2014, 1, 23), (3, "c")), (Date(2014, 1, 23), (4, "d")))
+
+    val written = list.toPartitionedSequenceFile(directory, partition = (_:Date).toPath, overwrite = true).run
+    val read    = fromSequenceFileWithPath[Int, String](directory+"/*/*/*/*").mapKeys(Date.fromPath)
 
     read.run.normalise === written.normalise
   }

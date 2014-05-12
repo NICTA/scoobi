@@ -2,7 +2,7 @@ Scoobi version for Hadoop2!
 
 ### Features
 
- * scoobi-0.8.0-hadoop2.jar can be used with Hadoop 2.2.0
+ * `scoobi-0.8.0.jar` can be used with Hadoop 2.2.0. If you want to go on using CDH4 you need to use `scoobi-0.8.0-cdh4.jar`
  * added the possibility to use counters to count the number of values per mapper or reducer (see `ScoobiConfiguration`) [#297](https://github.com/NICTA/scoobi/issues/297)
  * add wire format for fixed avro type [#301](https://github.com/NICTA/scoobi/issues/306), PR by Jan Prach
  * added methods to read and write "partitioned" files, for example files created in directories where the name is meaningful: `year=2014/month=02/day=01/part.txt`. When reading, a `DList[(String, String)]` is created where each value is a line in the file and the key is the file path. When writing, a function `K => String` can be provided in order to output the text files to specific directories based on each key
@@ -21,5 +21,7 @@ Scoobi version for Hadoop2!
  * fixed the persistence of a DObject when defined from just a value
  * In-memory mode does not keep track of hadoop counters [#306](https://github.com/NICTA/scoobi/issues/306), PR by Ilya Maykov
  * MR job numbering broken in HadoopMode for job plans with more than 1 layer [#308](https://github.com/NICTA/scoobi/issues/308), PR by Ilya Maykov
+ * prevent extra delimiter on sequence types in listToDelimitedTextFile [#311](https://github.com/NICTA/scoobi/issues/311)
+ * extracted the converter used in fromTextFileWithPaths to avoid duplication [#315](https://github.com/NICTA/scoobi/issues/315)
  
 ------ 

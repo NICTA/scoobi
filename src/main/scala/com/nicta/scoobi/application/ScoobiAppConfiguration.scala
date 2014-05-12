@@ -66,7 +66,6 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
   lazy val configurationFilesDiagnostic = {
     if (!isHadoopConfigured) logger.error(s"No configuration directory could be found. $$HADOOP_HOME is $HADOOP_HOME, $$HADOOP_CONF_DIR is $HADOOP_CONF_DIR")
     hadoopConfDirs.foreach { dir =>
-      val configurationFiles = Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml")
       logger.info(s"looking for configuration files in $dir. Found ${configurationFiles.map(name => s"$name: ${new File(dir+"/"+name).exists}").mkString(", ")}")
     }
   }
@@ -77,7 +76,7 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
     configurationFilesDiagnostic
 
     hadoopConfDirs.foreach { dir =>
-      val configurationFiles = Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml")
+      logger.info("SCOOBI: when using Hadoop2 you can safely ignore the deprecation warnings for old properties")
       configurationFiles.foreach { r =>
         val path = dir+r
         if (new File(path).exists) {
@@ -87,5 +86,7 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
     }
     conf
   }
+
+  private val configurationFiles = Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml", "yarn-site.xml")
 }
 

@@ -123,7 +123,7 @@ Files accessed with Hive can typically be stored by date:
 
 In this case, part of the file path is meaningful and we want associate each value read in the file with its corresponding path: ${snippet{
   // read the values
-  val list: DList[(String, String)] = fromPartitionedTextFiles("out/*/*/*")
+  val list: DList[(String, String)] = fromTextFileWithPath("out/*/*/*")
 
   // parse the path component to extract a date
   val toDate: String => java.util.Date = ??? // date parsing function

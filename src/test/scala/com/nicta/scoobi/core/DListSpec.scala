@@ -26,8 +26,22 @@ import impl.plan.comp.CompNodeData._
 import org.scalacheck._
 import org.scalacheck.Arbitrary._
 import org.specs2.execute.Skipped
+import com.nicta.scoobi.testing.TestFiles._
+import com.nicta.scoobi.testing.TempFiles
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
+
+  "length" >> { implicit sc: SC =>
+    DList(1, 2, 3).length.run must_== 3
+  }
+
+  "we can create a DList by calling a function repeatedly with 'tabulate' " >> { implicit sc: SC =>
+    DList.tabulate(3)(_.toString).run.toList must_== List("0", "1", "2")
+  }
+
+  "we can create a DList with some elements" >> { implicit sc: SC =>
+    DList(1, 2, 3).run.toList must_== List(1, 2, 3)
+  }
 
   "it must be possible to create an empty DList from an empty Seq and persist it" >> { implicit sc: SC =>
     DList[Int]().run must_== Seq()
@@ -86,6 +100,25 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   tag("issue 194")
   "Length of an empty list should be zero" >> { implicit sc: SC =>
      DList[Int]().length.run === 0
+  }
+
+  tag("issue 319")
+  "Sum and maps" >> { implicit sc: ScoobiConfiguration =>
+    implicit val wf = WireFormat.EitherFmt[String, Int]
+
+    val dlist = DList[Either[String, Int]](Left("test"), Right(1))
+
+    val lefts = dlist.collect { case Left(l) => l+"2" }
+    val rights = dlist.collect { case Right(r) => r+1 }
+
+    val other = rights.map[Either[String, Int]](r => Left[String, Int](r.toString+"3"))
+    val otherLefts = other.collect { case Left(l) => l+"last" }
+
+    val all = (lefts ++ otherLefts)
+
+    val size = all.length
+    persist(size, all.toTextFile(path(TempFiles.createTempDir("bug").getPath), overwrite = true))
+    size.run must_== 2
   }
 
   "DLists can be concatenated via reduce" >> {
@@ -221,6 +254,35 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     sc.set("mapred.map.tasks", 10)
     val in = DList(1, 1, 1)
     in.run.toSeq must_== Seq(1, 1, 1)
+  }
+
+  tag("issue 328")
+  "It must be possible to concatenate result lists" >> { implicit sc: SC =>
+
+    val init = DList(1, 2, 3, 2)
+
+    val validated: DList[Either[String, Int]] = init.map(i => if(i < 2) Left("number too low") else Right(i))
+    val errs: DList[String] = validated.collect { case Left(e) => e }
+    val good: DList[Int] = validated.collect { case Right(i) => i }
+
+    val secondVal: DList[Either[String, Int]] = good.groupBy(identity).collect {
+      case (k, vs) if vs.size > 1 => Right(k)
+      case (k, vs)                => Left(s"Too few entries in group $k")
+    }
+
+    val secondErrs = secondVal.collect { case Left(e) => e }
+    val secondGood = secondVal.collect { case Right(i) => i }
+
+    persist(errs ++ secondErrs, secondGood)
+    secondGood.run.toList must_== List(2)
+  }
+
+  "A DList with lots of inputs must not overflow during the Scoobi job compilation" >> { implicit sc: SC =>
+    skipped {
+      val list = (1 to 1000).foldLeft(DList(0)) { (res, cur) => res ++ DList(cur) }
+      list.run
+      ok
+    }
   }
 
 }

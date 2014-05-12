@@ -29,6 +29,9 @@ trait Cluster {
 
   /** @return the jobtracker address  */
   def jobTracker: String
+
+  /** @return the framework name: yarn, classic or local. This is only relevant for CDH5 */
+  def frameworkName: String
 }
 
 
@@ -39,7 +42,8 @@ trait ClusterConfiguration extends Cluster {
 
   def configuration: com.nicta.scoobi.core.ScoobiConfiguration
 
-  def fs         = configuration.get(Compatibility.defaultFSKeyName, "file:///")
-  def jobTracker = configuration.get("mapred.job.tracker", "local")
+  def fs            = configuration.get(Compatibility.defaultFSKeyName, "file:///")
+  def jobTracker    = configuration.get("mapred.job.tracker", "local")
+  def frameworkName = configuration.get("mapreduce.framework.name", "local")
 }
 

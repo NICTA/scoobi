@@ -31,6 +31,7 @@ import monitor.Loggable._
 import CollectFunctions._
 import control.Functions._
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
+import com.nicta.scoobi.io.partition.PartitionedSink
 
 /**
  * An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping
@@ -61,6 +62,9 @@ trait OutputChannel extends Channel {
 
   /** copy all outputs files to the destinations specified by sink files */
   def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems)
+
+  /** copy the success file to the destinations specified by sink files */
+  def collectSuccessFile(successFile: Option[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems)
 }
 
 /**
@@ -104,18 +108,41 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   def collectOutputs(outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) {
     import fileSystems._; implicit val configuration = sc.configuration
 
-    outer.logger.debug("outputs files are "+outputFiles.mkString("\n") )
-    // copy the each result file to its sink
-    sinks.foreach { sink =>
+    outer.logger.debug("output files are "+outputFiles.mkString("\n"))
+    sinks.foreach { case sink =>
       sink.outputPath foreach { outDir =>
         mkdir(outDir)
         outer.logger.debug("created directory "+outDir)
-        moveOutputFiles(sink, outDir, outputFiles)
       }
     }
-    // copy the success file to every output directory
-    outputFiles.find(_.getName ==  "_SUCCESS").foreach { successFile =>
-      sinks.flatMap(_.outputPath).foreach { outDir => copyTo(outDir).apply(successFile) }
+
+    // copy the each result file to its sink
+    sinks.foreach {
+      case sink: PartitionedSink[_,_,_,_] =>
+        sink.outputPath foreach { outDir =>
+          // all directories are created under a <sink id> directory for easier collection in just a "rename"
+          val baseDir = new Path(sc.temporaryOutputDirectory, new Path(sink.id.toString))
+          outer.logger.debug(s"Partitioned sink. Moving the files found in $baseDir to $outDir")
+          moveTo(outDir)(sc.configuration)(baseDir, new Path("."))
+        }
+
+      case sink =>
+        sink.outputPath foreach { outDir =>
+          moveOutputFiles(sink, outDir, outputFiles)
+        }
+    }
+  }
+
+  def collectSuccessFile(successFile: Option[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) = {
+    import fileSystems._; implicit val configuration = sc.configuration
+
+    // if the job is successful, create a success file to every output directory
+    // however create it as a _SUCCESS_JOB file
+    // this will be switched to a _SUCCESS job if all the jobs of the Scoobi job succeed
+    successFile.foreach { successFile =>
+      sinks.flatMap(_.outputPath).foreach { outDir =>
+        FileSystems.fileSystem(outDir).create(new Path(outDir, "_SUCCESS_JOB"))
+      }
     }
   }
 
@@ -123,11 +150,14 @@ trait MscrOutputChannel extends OutputChannel { outer =>
    * move the files of a given sink to its output directory.
    */
   private def moveOutputFiles(sink: Sink, outDir: Path, outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) = {
-    val outputs = outputFiles.filter(isResultFile(tag, sink.id))
+    val outputs = outputFiles.filter(isResultDirectory(tag, sink.id))
     outer.logger.debug("outputs result files for tag "+tag+" and sink id "+sink.id+" are "+outputs.map(_.getName).mkString("\n"))
 
-    // move files and cleanup temporary files if any
-    outputs foreach OutputChannel.moveFileFromTo(srcDir = sc.temporaryOutputDirectory, destDir = outDir)
+    // move the directory containing the output files for a given tag and sink
+    // and cleanup temporary files if any
+    outputs.foreach { path =>
+      OutputChannel.moveFileFromTo(srcDir = new Path(sc.temporaryOutputDirectory, path.getName), destDir = outDir).apply(path)
+    }
   }
 
   /**
@@ -256,23 +286,24 @@ object OutputChannel {
   }
 
   /**
-   * This function moves a file to the expected output directory
+   * This function moves a file to the expected output directory,
+   * keeping the subdirectories in which the file was created
    *
-   * Some files (created with partitionedTextFileSink) might have a path portion like
-   *   year=2013/month=12/day=01/_temporary/_attempt_201301010000_0001_m_000001_0
+   * For example some files created with partitionedTextFileSink might have a path portion like
+   *   year=2013/month=12/day=01/ch4out5-m-00000
    *
-   * The code below removes the _temporary and _attempt part from path before moving the file and makes sure that
-   *   year=2013/month=12/day=01 remains
    */
   def moveFileFromTo(srcDir: Path, destDir: Path)(implicit sc: ScoobiConfiguration, fileSystems: FileSystems, outerLogger: Log): Path => Unit = { path =>
     import fileSystems._; implicit val configuration = sc.configuration
 
-    val filePath       = path.toUri.getPath
+    val filePath       = if (isDirectory(path)) Files.dirPath(path.toUri.getPath) else path.toUri.getPath
     val sourceDirPath  = Files.dirPath(srcDir.toUri.getPath)
     // take only the path part which starts after the source directory
-    val fromSourceDir  = filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
-    val withoutAttempt = fromSourceDir.split("/").filterNot(n => Seq("_attempt", "_temporary").exists(n.startsWith)).mkString("/")
-    val newPath        = new Path(withoutAttempt)
+    val fromSourceDir  =
+      if (filePath.indexOf(sourceDirPath) >=0) filePath.substring(filePath.indexOf(sourceDirPath)).replace(sourceDirPath, "")
+      else filePath
+
+    val newPath = if (fromSourceDir.isEmpty) new Path(".") else new Path(fromSourceDir)
 
     val moved = moveTo(destDir).apply(path, newPath)
     if (!moved) outerLogger.error(s"can not move \n $path to \n ${new Path(destDir, newPath)}")

@@ -29,6 +29,7 @@ import impl.io.FileSystems
 import impl.control.Exceptions._
 import Scoobi._
 import TestFiles._
+import com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat
 
 class CompressionSpec extends NictaSimpleJobs with CompressedFiles with ResultFiles {
 
@@ -79,18 +80,18 @@ trait ResultFiles extends MustThrownMatchers {
   def containFiles(extension: String)(implicit sc: ScoobiConfiguration): Matcher[File] = (resultDir: File) =>  {
     val files = getFiles(resultDir)
     files must not (beEmpty)
-    files.filter(_.getName.matches("ch.*"+extension)) must not (beEmpty)
+    files.filter(_.getName.matches(s"${ChannelOutputFormat.basename}.*"+extension)) must not (beEmpty)
   }
   def notContainFiles(extension: String)(implicit sc: ScoobiConfiguration): Matcher[File] = (resultDir: File) =>  {
     val files = getFiles(resultDir)
     files must not (beEmpty)
-    files.filter(_.getName.matches("ch.*"+extension)) must beEmpty
+    files.filter(_.getName.matches(s"${ChannelOutputFormat.basename}.*"+extension)) must beEmpty
   }
   def containFilesWithNoExtension(implicit sc: ScoobiConfiguration): Matcher[File] = (resultDir: File) =>  {
     val files = getFiles(resultDir)
 
     files must not (beEmpty)
-    files.filter(_.getName.matches("ch[^\\.]*")) must not(beEmpty)
+    files.filter(_.getName.matches(s"${ChannelOutputFormat.basename}[^\\.]*")) must not(beEmpty)
   }
 
   def copyResults(resultDir: File)(implicit sc: ScoobiConfiguration) = {

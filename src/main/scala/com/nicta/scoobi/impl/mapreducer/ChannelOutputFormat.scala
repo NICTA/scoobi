@@ -27,7 +27,7 @@ import core._
 import Configurations._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import impl.util.Compatibility
-import Compatibility.hadoop2._
+import Compatibility._
 
 
 /**
@@ -62,8 +62,8 @@ class ChannelOutputFormat(val context: TaskAttemptContext) {
       job.setOutputFormatClass(format)
       job.setOutputKeyClass(conf.getClass(ChannelOutputFormat.keyClassProperty(tag, sinkId), null))
       job.setOutputValueClass(conf.getClass(ChannelOutputFormat.valueClassProperty(tag, sinkId), null))
-      job.getConfiguration.set("mapreduce.output.basename",  "ch" + tag + "out" + sinkId)
-      job.getConfiguration.set("avro.mo.config.namedOutput", "ch" + tag + "out" + sinkId)
+      job.getConfiguration.set("mapreduce.output.basename",  s"ch$tag-$sinkId/${ChannelOutputFormat.basename}")
+      job.getConfiguration.set("avro.mo.config.namedOutput", s"ch$tag-$sinkId/${ChannelOutputFormat.basename}")
 
       val PropertyPrefix = (ChannelOutputFormat.otherProperty(tag, sinkId) + """(.*)""").r
       conf.toMap collect { case (PropertyPrefix(k), v) => (k, v) } foreach {
@@ -93,10 +93,11 @@ class ChannelOutputFormat(val context: TaskAttemptContext) {
   * to be specified. */
 object ChannelOutputFormat {
   /** format of output file names */
-  val OutputChannelFileName = """ch(\d+)out(\d+)-.-\d+.*""".r
+  val OutputChannelFileName = """ch(\d+)-(\d+)""".r
+  val basename = "out"
 
   /** @return true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file */
-  def isResultFile(tag: Int, sinkId: Int) =
+  def isResultDirectory(tag: Int, sinkId: Int) =
     (f: Path) => f.getName match {
       case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == sinkId
       case _                           => false

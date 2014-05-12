@@ -1,0 +1,1 @@
+Maintenance version. Dependency fix: using shapeless for Scala 2.10.3

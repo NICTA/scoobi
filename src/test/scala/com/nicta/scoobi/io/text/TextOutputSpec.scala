@@ -13,20 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobi
-package impl
-package mapreducer
+package com.nicta
+package scoobi
+package io
+package text
 
-import org.apache.hadoop.fs.Path
+import testing._
+import TextOutput._
 
-import ChannelOutputFormat._
-import testing.mutable.UnitSpecification
+class TextOutputSpec extends UnitSpecification { def is = s2"""
 
-class ChannelOutputFormatSpec extends UnitSpecification {
-  "Channels determine result files for a given job run" >> {
-    "ch1-2/ is a result directory for a sink with tag 1 and sink id 2" >> {
-      isResultDirectory(1, 2)(new Path("ch1-2/"))
-    }
-  }
+  For delimited text files we need a toString method working on any kind of Product:
+    Tuples      $e1
+    case class  $e2
+    List        $e3
+    Option      $e5
+  """
 
+  def e1 = anyToString((1, 2, 3), "|") === "1|2|3"
+  def e2 = anyToString(A(1, 2, 3), "|") === "1|2|3"
+  def e3 = anyToString(List(1, 2, 3), "|") === "1|2|3"
+  def e5 = anyToString(Option(1), "|") === "1"
+
+  case class A(i: Int, j: Int, k: Int)
 }
+
+

@@ -34,7 +34,7 @@ trait CaseClassData extends Data {
     Arbitrary(implicitly[Arbitrary[Int]].arbitrary.map(i => new java.lang.Integer(i)))
 
   implicit def arbitrarySeq[T : Arbitrary]: Arbitrary[Seq[T]] =
-    Arbitrary(nonEmptyContainerOf(implicitly[Arbitrary[T]].arbitrary)(buildableCanBuildFrom[T, Seq], (seq: Seq[T]) => seq))
+    Arbitrary(nonEmptyContainerOf[Seq, T](implicitly[Arbitrary[T]].arbitrary))
 
   /**
    * Generators

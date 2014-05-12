@@ -35,8 +35,12 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.mapreduce.AvroKeyOutputFormat.RecordWriterFactory
 import org.apache.avro.Schema
-import org.apache.avro.file.CodecFactory
+import org.apache.avro.file.{DataFileWriter, CodecFactory}
 import java.util.zip.Deflater
+import com.nicta.scoobi.impl.util.Compatibility
+import org.apache.avro.io.DatumWriter
+import java.io.OutputStream
+import org.apache.avro.reflect.ReflectDatumWriter
 
 /** Functions for persisting distributed lists by storing them as Avro files. */
 trait AvroOutput {
@@ -112,8 +116,22 @@ class GenericAvroKeyOutputFormat[T] extends AvroKeyOutputFormat[T] {
       else CodecFactory.nullCodec()
     } else CodecFactory.nullCodec()
   }
+
   private def createRecordWriterFactory(schema: Schema, context: TaskAttemptContext) = new RecordWriterFactory[T] {
-    def createWriter = super.create(schema, getCodecFactory(context), parent.getAvroFileOutputStream(context))
+    val datumWriter = new ReflectDatumWriter[T](schema)
+    def createWriter = createAvroKeyRecordWriter(schema, datumWriter, getCodecFactory(context), parent.getAvroFileOutputStream(context))
+  }
+
+  private def createAvroKeyRecordWriter(schema: Schema, datumWriter: DatumWriter[T], codecFactory: CodecFactory, outputStream: OutputStream) = new RecordWriter[AvroKey[T], NullWritable] {
+    private val fileWriter: DataFileWriter[T] = {
+      val writer: DataFileWriter[T] =
+        new DataFileWriter[T](datumWriter)
+      writer.setCodec(codecFactory)
+      writer.create(schema, outputStream)
+    }
+
+    override def close(context: TaskAttemptContext) = fileWriter.close()
+    override def write(key: AvroKey[T], value: NullWritable) = fileWriter.append(key.datum)
   }
 
   override def getRecordWriter(context: TaskAttemptContext) = new RecordWriter[AvroKey[T], NullWritable] {

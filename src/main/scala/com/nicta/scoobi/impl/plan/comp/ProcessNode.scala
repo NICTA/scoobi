@@ -172,13 +172,16 @@ object ParallelDo {
 
   private[scoobi]
   def create(ins: CompNode*)(wf: WireReaderWriter): ParallelDo =
-    new ParallelDo(ins, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf)
+    new ParallelDo(ins.toVector, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf)
+
   def create(ins: Seq[CompNode], env: ValueNode, dofn: DoFunction, wfa: WireReaderWriter, wfb: WireReaderWriter): ParallelDo =
-    new ParallelDo(ins, env, dofn, wfa, wfb)
+    new ParallelDo(ins.toVector, env, dofn, wfa, wfb)
+
   def create(ins: Seq[CompNode], env: ValueNode, dofn: DoFunction, wfa: WireReaderWriter, wfb: WireReaderWriter, bridgeStoreId: String): ParallelDo =
-    new ParallelDo(ins, env, dofn, wfa, wfb, Seq(), bridgeStoreId)
+    new ParallelDo(ins.toVector, env, dofn, wfa, wfb, Seq(), bridgeStoreId)
+
   def create(ins: Seq[CompNode], env: ValueNode, dofn: DoFunction, wfa: WireReaderWriter, wfb: WireReaderWriter, nodeSinks: Seq[Sink], bridgeStoreId: String): ParallelDo =
-    new ParallelDo(ins, env, dofn, wfa, wfb, nodeSinks, bridgeStoreId)
+    new ParallelDo(ins.toVector, env, dofn, wfa, wfb, nodeSinks, bridgeStoreId)
 
 }
 
@@ -276,7 +279,14 @@ object Return {
     case rt: ReturnedValue => new Return(rt, wf)
     case _                 => new Return(new ReturnedValue(a), wf)
   }
+
+  /** this must not be a lazy val shared by all graphs because it breaks concurrent test execution */
   def unit = Return((), wireFormat[Unit])
+
+  def isUnit(node: ValueNode) = node match {
+    case Return(a, _, _) => a.value == ()
+    case _               => false
+  }
 }
 
 case class Materialise(in: ProcessNode, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {

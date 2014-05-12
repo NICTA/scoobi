@@ -27,6 +27,8 @@ import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.permission.FsAction
 import FsAction._
+import com.nicta.scoobi.impl.control.Exceptions._
+
 /**
  * An output store from a MapReduce job
  */

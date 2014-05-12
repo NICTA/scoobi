@@ -1,0 +1,8 @@
+	Maintenance version
+
+### Fixes
+
+ * moved the partitioned files to the right place for inmemory execution [#320](http://github.com/NICTA/scoobi/issues/320)
+ * updated specs2 in scoobi to 2.3.10
+  
+------ 

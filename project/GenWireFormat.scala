@@ -29,12 +29,12 @@ object GenWireFormat {
      val place = dir / "scoobi" / "codegen" / "GeneratedWireFormats.scala"
      IO.write(place,
 """package com.nicta.scoobi.codegen
-import com.nicta.scoobi.core.WireFormat
+import com.nicta.scoobi.core.{WireFormat, LowPriorityWireFormatImplicits}
 import java.io._
 
 object GeneratedWireFormats extends GeneratedWireFormats
 
-trait GeneratedWireFormats {
+trait GeneratedWireFormats extends LowPriorityWireFormatImplicits {
 """ + gen_section_1(22) + "\n\n" + gen_section_2(22) + "\n}")
 
      Seq(place)

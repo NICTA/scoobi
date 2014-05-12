@@ -29,6 +29,6 @@ import org.specs2.ScalaCheck
 trait MscrAttributes extends ShowNode with CompNodes {
   override def toString = "<MscrAttributes>"
   def mscrAttributes = new MscrAttributes {}
-  implicit def mscrAttributesArbitrary: Arbitrary[MscrAttributes] = Arbitrary(Gen.value(mscrAttributes))
+  implicit def mscrAttributesArbitrary: Arbitrary[MscrAttributes] = Arbitrary(Gen.const(mscrAttributes))
 }
 

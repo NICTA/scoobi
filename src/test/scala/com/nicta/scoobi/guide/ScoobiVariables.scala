@@ -38,11 +38,11 @@ trait ScoobiVariables {
   lazy val API_DIR            = LANDING_PAGE+"api/"
   lazy val API_OFFICIAL_PAGE  = API_DIR+PREVIOUS_VERSION_IF_SNAPSHOT+"/index.html"
   lazy val API_SNAPSHOT_PAGE  = API_DIR+"master/index.html"
-  lazy val API_PAGE           = (if (IS_SNAPSHOT) API_SNAPSHOT_PAGE else API_OFFICIAL_PAGE)
+  lazy val API_PAGE           = if (IS_SNAPSHOT) API_SNAPSHOT_PAGE else API_OFFICIAL_PAGE
 
   lazy val GUIDE_OFFICIAL_DIR = "guide/"
   lazy val GUIDE_SNAPSHOT_DIR = "guide-SNAPSHOT/guide/"
-  lazy val GUIDE_DIR          = (if (IS_SNAPSHOT) GUIDE_SNAPSHOT_DIR else GUIDE_OFFICIAL_DIR)
+  lazy val GUIDE_DIR          = if (IS_SNAPSHOT) GUIDE_SNAPSHOT_DIR else GUIDE_OFFICIAL_DIR
 
   lazy val GUIDE_OFFICIAL_PAGE = LANDING_PAGE + GUIDE_OFFICIAL_DIR
   lazy val GUIDE_SNAPSHOT_PAGE = LANDING_PAGE + GUIDE_SNAPSHOT_DIR

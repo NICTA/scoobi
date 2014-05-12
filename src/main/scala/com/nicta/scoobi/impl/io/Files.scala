@@ -27,11 +27,14 @@ import java.net.URI
 import com.nicta.scoobi.impl.util.Compatibility
 import org.apache.hadoop.security.UserGroupInformation
 import java.io.IOException
+import org.apache.commons.logging.LogFactory
 
 /**
  * A set of helper functions for implementing DataSources and DataSinks
  */
 trait Files {
+  private implicit lazy val logger = LogFactory.getLog("scoobi.Files")
+
   /**
    * @return the file system for a given path and configuration
    */
@@ -51,10 +54,9 @@ trait Files {
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
       if (sameFileSystem(from, to))
-        (path == destPath) || from.rename(path, destPath)
-      else
-        FileUtil.copy(from, path, to, destPath,
-                      true /* deleteSource */, false /* overwrite */, configuration)
+        (path == destPath) || tryOk(Compatibility.rename(path, destPath))
+      else FileUtil.copy(from, path, to, destPath,
+                      true /* deleteSource */, true /* overwrite */, configuration)
     }
   }
 
@@ -81,7 +83,9 @@ trait Files {
   }
 
   /** @return true if the file is a directory */
-  def isDirectory(fileStatus: FileStatus) = Compatibility.isDirectory(fileStatus)
+  def isDirectory(fileStatus: FileStatus): Boolean = Compatibility.isDirectory(fileStatus)
+  /** @return true if the path is a directory */
+  def isDirectory(path: Path)(implicit configuration: Configuration): Boolean = isDirectory(fileStatus(path))
 
   /** check if a READ or WRITE action can be done on a given file based on the current user and on the file permissions */
   def checkFilePermissions(path: Path, action: FsAction)(implicit configuration: Configuration) = {

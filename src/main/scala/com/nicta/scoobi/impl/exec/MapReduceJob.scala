@@ -211,6 +211,8 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
           logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
             "Reduce " + reduce.getProgress.formatted("%3d") + "%")
 
+        // update the original configuration with the job counters for each job
+        configuration.updateCounters(job.getCounters)
         // Log task details
         taskDetailsLogger.logTaskCompletionDetails()
       }
@@ -224,9 +226,10 @@ case class MapReduceJob(mscr: Mscr, layerId: Int, mscrNumber: Int, mscrsNumber: 
 
   private[scoobi] def collectOutputs = {
     /* Move named file-based sinks to their correct output paths. */
-    mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory)))
+    val (successFiles, outputFiles) = fileSystems.listDirectPaths(configuration.temporaryOutputDirectory).partition(_.getName == "_SUCCESS")
+    mscr.outputChannels.foreach(_.collectOutputs(outputFiles))
+    mscr.outputChannels.foreach(_.collectSuccessFile(successFiles.headOption))
     configuration.deleteTemporaryOutputDirectory
-    configuration.updateCounters(job.getCounters)
     this
   }
 }

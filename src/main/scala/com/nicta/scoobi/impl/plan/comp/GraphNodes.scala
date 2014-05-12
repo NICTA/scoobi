@@ -23,6 +23,7 @@ import scalaz.std.vector.vectorSyntax._
 import org.kiama.attribution.{Attributable, AttributionCore}
 import control.Exceptions._
 import scala.collection.GenTraversable
+import scala.annotation.tailrec
 
 /**
  * generic functions for a nodes graph
@@ -50,15 +51,15 @@ trait GraphNodes extends AttributionCore {
         val childNodes =
         node.productIterator.flatMap { child =>
           child match {
-            case Some (o)              => setParent(Seq(o)         , node)
-            case Left (l)              => setParent(Seq(l)         , node)
-            case Right (r)             => setParent(Seq(r)         , node)
-            case (a, b)                => setParent(Seq(a, b)      , node)
-            case (a, b, c)             => setParent(Seq(a, b, c)   , node)
-            case (a, b, c, d)          => setParent(Seq(a, b, c, d), node)
-            case s : GenTraversable[_] => setParent(s.seq.toSeq    , node)
-            case a: Attributable       => setParent(Seq(a)         , node)
-            case other                 => Seq()
+            case Some (o)              => setParent(Vector(o)         , node)
+            case Left (l)              => setParent(Vector(l)         , node)
+            case Right (r)             => setParent(Vector(r)         , node)
+            case (a, b)                => setParent(Vector(a, b)      , node)
+            case (a, b, c)             => setParent(Vector(a, b, c)   , node)
+            case (a, b, c, d)          => setParent(Vector(a, b, c, d), node)
+            case s : GenTraversable[_] => setParent(s.seq.toVector    , node)
+            case a: Attributable       => setParent(Vector(a)         , node)
+            case other                 => Vector()
           }
         }.map(_.asInstanceOf[T])
         childNodes.foldLeft(Vector[T]()) { _ :+ _ }
@@ -80,7 +81,20 @@ trait GraphNodes extends AttributionCore {
    * They are all the recursive children reachable from this node
    */
   lazy val descendents : CachedAttribute[T, Seq[T]] = attr { case node =>
-    (children(node) ++ children(node).flatMap(descendents)).distinct
+    getDescendents(children(node))
+  }
+
+  /**
+   * This could be implemented as a recursive attribute but then
+   * it might stack overflow
+   */
+  @tailrec
+  private def getDescendents(nodes: Seq[T], result: Seq[T] = Vector()): Seq[T] = {
+    if (nodes.isEmpty) result.distinct
+    else {
+      val node = nodes.head
+      getDescendents(children(node) ++ nodes.drop(1), node +: result)
+    }
   }
 
   lazy val descendentsUntil: CachedParamAttribute[(T => Boolean), T, Seq[T]] = paramAttr { (predicate: (T => Boolean)) => (node: T) =>

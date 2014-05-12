@@ -154,13 +154,16 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     override lazy val arguments = Arguments(("scoobi" +: args).mkString(" "))
     val fs = "fs"
     val jobTracker = "jobtracker"
+    val frameworkName = "local"
   }
 }
 
 trait HadoopExamplesForTesting extends Specification with HadoopExamples with Mockito { outer =>
   val mocked = mock[HadoopExamples]
-  override val fs = "fs"
-  override val jobTracker = "jobtracker"
+  val fs = "fs"
+  val jobTracker = "jobtracker"
+  val frameworkName = "local"
+
   var timing = false
   var verbose = false
 

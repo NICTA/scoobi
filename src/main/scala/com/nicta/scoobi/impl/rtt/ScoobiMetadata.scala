@@ -39,11 +39,17 @@ object ScoobiMetadata {
     metadataTag
   }
 
+  // local cache for metadata
+  private var map = new scala.collection.mutable.WeakHashMap[String, Any]
+
   /** we retrieve metadata from the distributed cache and memoise each retrieved piece of metadata */
-  def metadata(implicit configuration: Configuration) = (metadataTag: String) => Memo.weakHashMapMemo[String, Any]{ metadataTag: String =>
-    logger.debug("retrieving metadata for tag "+metadataTag)
-    DistCache.pullObject(configuration, metadataTag).get: Any
-  }.apply(metadataTag)
+  def metadata(configuration: Configuration)(metadataTag: String) = {
+    lazy val retrieveMetadata: Any = {
+      logger.debug("retrieving metadata for tag "+metadataTag)
+      DistCache.pullObject(configuration, metadataTag, memoise = false).get: Any
+    }
+    map.getOrElseUpdate(metadataTag, retrieveMetadata)
+  }
 }
 
 /**

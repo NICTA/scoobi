@@ -29,6 +29,8 @@ import syntax.traverse._
 import std.list._
 import concurrent.Promise
 import control.Exceptions._
+import org.apache.hadoop.fs.Path
+import com.nicta.scoobi.impl.io.FileSystems
 
 /**
  * Execution of Scoobi applications using Hadoop
@@ -58,34 +60,9 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph)
 
   /**
-   * execute a computation node
+   * execute a computation node and return a result if one is expected
    */
-  private
-  def executeNode: CompNode => Any = {
-    /** return the result of the last layer */
-    def executeLayers(node: CompNode) {
-      val layers = createMapReduceLayers(node).info("Executing layers", showLayers)
-      if (!showPlanOnly(sc)) {
-        val perLayerJobs = layers.map { _.mscrs.size }
-        val totalJobs = perLayerJobs.sum
-        val prevLayerJobs = (0 until perLayerJobs.size).map { i => perLayerJobs.slice(0, i).sum }
-        assert(prevLayerJobs.size == layers.size)
-        layers.zip(prevLayerJobs).foreach { case (layer, prevJobs) => executeLayer(prevJobs, totalJobs)(layer) }
-      }
-    }
-
-    def showLayers = (layers: Seq[Layer]) =>
-      mkStrings(layers.flatMap(l => l +: l.mscrs))
-
-    def getValue(node: CompNode): Any = {
-      node match {
-        case n @ Op1(a, b)        => n.execute(getValue(a), getValue(b))
-        case n @ Materialise1(in) => read(in.bridgeStore)
-        case n @ Return1(v)       => v
-        case n @ ReturnSC1(v)     => v(sc)
-        case other                => Seq()
-      }
-    }
+  private def executeNode: CompNode => Any = {
     // execute value nodes recursively, other nodes start a "layer" execution
     attr { node =>
       val banner = s"${"="*(sc.jobId.size+37)}"
@@ -103,11 +80,43 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
         } else Seq()
 
       banner.info
+
       s"===== END OF SCOOBI JOB '${sc.jobId}'   ========".info
       (banner+"\n").info
 
       result
     }
+  }
+
+  /** create "execution layers" from a given node and execute them one by one */
+  private def executeLayers(node: CompNode) {
+    val layers = createMapReduceLayers(node).info("Executing layers", showLayers)
+    if (!showPlanOnly(sc)) {
+      val perLayerJobs = layers.map { _.mscrs.size }
+      val totalJobs = perLayerJobs.sum
+      val prevLayerJobs = (0 until perLayerJobs.size).map { i => perLayerJobs.slice(0, i).sum }
+      assert(prevLayerJobs.size == layers.size)
+
+      layers.zip(prevLayerJobs).foreach { case (layer, prevJobs) => executeLayer(prevJobs, totalJobs)(layer) }
+      setJobSuccess(layers)
+    }
+  }
+
+  /**
+   * if each hadoop job executed successfully, change the _SUCCESS_JOB file into _SUCCESS
+   * in each output directory
+   */
+  private def setJobSuccess(layers: Seq[Layer]) = {
+    import FileSystems._; implicit val configuration = sc.configuration
+
+    val outputDirectories = layers.flatMap(_.sinks.flatMap(_.outputPath(sc)))
+    val scoobiJobIsSuccessful = outputDirectories.forall(dir => listDirectPaths(dir)(sc).exists(_.getName == "_SUCCESS_JOB"))
+
+    if (scoobiJobIsSuccessful)
+      outputDirectories.foreach { outDir =>
+        moveTo(outDir).apply(new Path(outDir, "._SUCCESS_JOB.crc"), new Path("._SUCCESS.crc"))
+        moveTo(outDir).apply(new Path(outDir, "_SUCCESS_JOB"), new Path("_SUCCESS"))
+      }
   }
 
   private def executeLayer(prevLayersMscrs: Int, totalMscrsNumber: Int): Layer => Unit =
@@ -169,8 +178,8 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
     /** report the execution of a Mscr */
     protected def reportMscr = ((job: MapReduceJob, step: String) => {
-      // update the original configuration with the job counters for each job
-      sc.updateCounters(job.job.getCounters)
+        // update the original configuration with the job counters for each job
+        sc.updateCounters(job.job.getCounters)
       job.report
       (s"===== END OF MAP-REDUCE JOB $step (for the Scoobi job '${sc.jobId}') ======\n").info
     }).tupled
@@ -209,6 +218,17 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     usesAsEnvironment(node).map(_.pushEnv(result))
     result
   }
+
+  private def showLayers = (layers: Seq[Layer]) => mkStrings(layers.flatMap(l => l +: l.mscrs))
+
+  private def getValue(node: CompNode): Any =
+    node match {
+      case n @ Op1(a, b)        => n.execute(getValue(a), getValue(b))
+      case n @ Materialise1(in) => read(in.bridgeStore)
+      case n @ Return1(v)       => v
+      case n @ ReturnSC1(v)     => v(sc)
+      case other                => Seq()
+    }
 
 }
 

@@ -20,7 +20,7 @@ package io
 import java.io.{IOException, File}
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs._
-import impl.util.Compatibility.hadoop2._
+import impl.util.Compatibility._
 import com.nicta.scoobi.{impl, core}
 import core._
 import impl.ScoobiConfiguration._
@@ -77,7 +77,7 @@ trait FileSystems extends Files {
   /** @return the list of files in a given directory on the file system */
   def listPaths(dest: String)(implicit configuration: ScoobiConfiguration): Seq[Path] = listPaths(new Path(dest))
 
-  /** @return the list of files in a given directory on the file system */
+  /** @return the recursive list of files in a given directory on the file system */
   def listPaths(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
     if (!fileSystem.exists(dest)) Seq()
     else {
@@ -85,6 +85,12 @@ trait FileSystems extends Files {
       val (directories, files) = paths.partition(fileSystem.isDirectory)
       files ++ directories.flatMap(listPaths)
     }
+  }
+
+  /** @return the list of children files in a given directory on the file system  - do not recurse */
+  def listDirectPaths(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
+    if (!fileSystem.exists(dest)) Seq()
+    else fileSystem.listStatus(dest).toSeq.map(_.getPath)
   }
 
   /**

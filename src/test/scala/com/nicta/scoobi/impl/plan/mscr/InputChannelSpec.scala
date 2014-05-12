@@ -110,7 +110,7 @@ Processing
       val pd3 = pd(pd2)
       val graph = new MscrsDefinition {}
       graph.reinit(Root(Seq(gbk1, gbk2, pd3))) // make sure all relations are set-up
-      new GbkInputChannel(l1, Seq(gbk1, gbk2), graph).outputNodes === Seq(gbk1, gbk2, pd2)
+      new GbkInputChannel(l1, Seq(gbk1, gbk2), graph).outputNodes === Seq(gbk1, gbk2, pd3)
     }
     eg := floatingInputChannel(l1, pd1).outputNodes === Seq(pd1)
 
@@ -236,11 +236,12 @@ Processing
     eg := {
       val pd2 = pd(pd1).copy(dofn = MapFunction(a => (a, a.toString+" now")))
       val pd3 = pd(pd1).copy(dofn = MapFunction(a => (a, a.toString+" later")))
-      val (gbk1, gbk2, pd4) = (gbk(pd2), gbk(pd3), pd(pd1))
+      val pd4 = pd(pd1)
+      val (gbk1, gbk2, pd5) = (gbk(pd2), gbk(pd3), pd4)
 
-      val channel = new GbkInputChannel(l1, Seq(gbk1, gbk2), nodes = graph(gbk1, gbk2, pd4)) with MockInputChannel
+      val channel = new GbkInputChannel(l1, Seq(gbk1, gbk2), nodes = graph(gbk1, gbk2, pd5)) with MockInputChannel
       channel.map("1", "stARt", channel.context)
-      channel.context.valuesByTag.toSet === Set((gbk1.id, Seq("START now")), (gbk2.id, Seq("START later")), (pd1.id, Seq("START")))
+      channel.context.valuesByTag.toSet === Set((gbk1.id, Seq("START now")), (gbk2.id, Seq("START later")), (pd4.id, Seq("START")))
     }
 
     eg := {

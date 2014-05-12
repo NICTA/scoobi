@@ -40,7 +40,7 @@ import org.apache.hadoop.util.ReflectionUtils
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoint: Option[Checkpoint] = None, compression: Option[Compression] = None, pattern: String = "ch*") extends
+case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoint: Option[Checkpoint] = None, compression: Option[Compression] = None, pattern: String = BridgeStore.pattern) extends
    DataSource[NullWritable, ScoobiWritable[A], A] with
    DataSink[NullWritable, ScoobiWritable[A], A]   with
    Bridge {
@@ -73,10 +73,10 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
   lazy val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
   def inputCheck(implicit sc: ScoobiConfiguration) {}
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-     FileInputFormat.addInputPath(job, new Path(path(sc), "ch*"))
+     FileInputFormat.addInputPath(job, new Path(path(sc), pattern))
   }
 
-  def inputSize(implicit sc: ScoobiConfiguration): Long = Files.pathSize(new Path(path, "ch*"))(sc)
+  def inputSize(implicit sc: ScoobiConfiguration): Long = Files.pathSize(new Path(path, pattern))(sc)
 
   lazy val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
     def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get
@@ -121,9 +121,10 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
 object BridgeStore {
   /** runtime class for bridgestores, they shouldn't be recreated after it's been created once */
   val runtimeClasses: scala.collection.mutable.Map[String, RuntimeClass] = new scala.collection.mutable.HashMap()
+  val pattern = s"${ChannelOutputFormat.basename}*"
 }
 
-class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration, pattern: String = "ch*") extends Iterator[A] {
+class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration, pattern: String = BridgeStore.pattern) extends Iterator[A] {
   private lazy val iterator = new GlobIterator[A](new Path(path, pattern), GlobIterator.scoobiWritableIterator(value)(sc.configuration))(sc.configuration)
   def next() = iterator.next
   def hasNext = iterator.hasNext

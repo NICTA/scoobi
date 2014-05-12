@@ -56,7 +56,99 @@ trait AvroFixed[T] {
   def fromArray(t: Array[Byte]): T
 }
 
-object AvroSchema {
+// Deprioritize expensive implicits to improve compile times.
+//
+// These implicits lead to more expensive implicit searches, as they need to trigger
+// nested searchs for implicit arguments. If they are defined directly in `AvroSchema`,
+// this cost is incurred even for "trival" searches like `implicitly[AvroSchema[Double]]`
+//
+// However, if the compiler sees that they are defined in proper superclass of an an
+// already-found, eligible search result, it can short circuit the search altogether:
+// even if one of these was found to be eligible, it would be deemed lower priority
+// by the subclass rule of static overload resolution.
+//
+// These changes, together with corresponding changes in `WireFormat`, leads to a 5.5x
+// speedup (2600ms ~> 460ms) in compiling a benchmark: 
+// https://gist.github.com/retronym/fdef5a41c8e1e31124a4
+//
+// The goal is the reduce the number of lines like the following under `-Xlog-implicits`
+//
+// Hoisted.scala:25: avro.this.AvroSchema.AvroRecordSchema is not a valid implicit value for com.nicta.scoobi.io.avro.AvroSchema[String] because:
+//   typing TypeApply reported errors for the implicit tree: type arguments [String] do not conform to method AvroRecordSchema's type parameter bounds [T <: org.apache.avro.generic.GenericContainer]
+//
+trait LowPriorityAvroSchemaImplicits {
+  self: AvroSchema.type =>
+
+  /* Map-like types AvroSchema type class instances. */
+  implicit def MapSchema[CC[String, X] <: Map[String, X], T](implicit sch: AvroSchema[T], bf: CanBuildFrom[_, (String, T), CC[String, T]]) = new AvroSchema[CC[String, T]] {
+    type AvroType = JMap[String, sch.AvroType]
+
+    val schema: Schema = Schema.createMap(sch.schema)
+
+    val b: Builder[(String, T), CC[String, T]] = bf()
+
+    def fromAvro(xs: AvroType): CC[String, T] = {
+      b.clear()
+      xs.foreach { case (s, v) => b += (s.toString -> sch.fromAvro(v)) }
+      b.result()
+    }
+
+    def toAvro(xs: CC[String, T]): AvroType = xs map { case (k, v) => k -> sch.toAvro(v) }
+  }
+
+  /* Traversable type AvroSchema type class instances. */
+  implicit def TraversableSchema[CC[X] <: Traversable[X], T](implicit sch: AvroSchema[T], bf: CanBuildFrom[_, T, CC[T]]) = new AvroSchema[CC[T]] {
+    type AvroType = GenericData.Array[sch.AvroType]
+
+    val schema: Schema = Schema.createArray(sch.schema)
+
+
+    def fromAvro(array: GenericData.Array[sch.AvroType]): CC[T] = {
+      val b: Builder[T, CC[T]] = bf()
+      array.iterator.foreach { x => b += sch.fromAvro(x) }
+      b.result()
+    }
+
+    def toAvro(xs: CC[T]): GenericData.Array[sch.AvroType] =
+      new GenericData.Array[sch.AvroType](schema, xs.map(sch.toAvro(_)).toIterable)
+  }
+
+  object FixedCounter extends UniqueInt
+
+  implicit def FixedSchema[T](implicit fxd: AvroFixed[T]) = new AvroSchema[T]  {
+    private val id = FixedCounter.get
+    type AvroType = GenericData.Fixed
+    val schema: Schema = Schema.createFixed("anonfixed" + id, "", " ", fxd.length)
+    def fromAvro(data: GenericData.Fixed) = {
+      val bytes = data.bytes()
+      require(bytes.length == fxd.length)
+      fxd.fromArray(bytes)
+    }
+    def toAvro(data: T): GenericData.Fixed = {
+      val bytes = fxd.toArray(data)
+      require(bytes.length == fxd.length)
+      new GenericData.Fixed(schema, bytes)
+    }
+  }
+
+  /**
+   *  Actual Avro Generic/SpecificRecord support
+   *
+   *  When T is a GenericRecord, we use the NULL schema type.
+   *
+   *  @see AvroInput/AvroOutput how the NULL schema type is used to create the appropriate AvroKeyRecordReader/AvroKeyRecordWriter instance
+   */
+  implicit def AvroRecordSchema[T <: GenericContainer](implicit r: Manifest[T]) = new AvroSchema[T] {
+    val sclass = r.runtimeClass.asInstanceOf[Class[T]]
+    def schema: Schema = tryOrElse(sclass.newInstance().getSchema)(Schema.create(Schema.Type.NULL))
+
+    type AvroType = T
+    def fromAvro(x: T): T = x
+    def toAvro(x: T): T = x
+  }
+}
+
+object AvroSchema extends LowPriorityAvroSchemaImplicits {
 
   /* Primitive Scala type AvroSchema type class instances. */
   implicit def BooleanSchema = new AvroSchema[Boolean] {
@@ -101,57 +193,11 @@ object AvroSchema {
     def toAvro(x: String): String = x
   }
 
-  /* Traversable type AvroSchema type class instances. */
-  implicit def TraversableSchema[CC[X] <: Traversable[X], T](implicit sch: AvroSchema[T], bf: CanBuildFrom[_, T, CC[T]]) = new AvroSchema[CC[T]] {
-    type AvroType = GenericData.Array[sch.AvroType]
-
-    val schema: Schema = Schema.createArray(sch.schema)
-
-
-    def fromAvro(array: GenericData.Array[sch.AvroType]): CC[T] = {
-      val b: Builder[T, CC[T]] = bf()
-      array.iterator.foreach { x => b += sch.fromAvro(x) }
-      b.result()
-    }
-
-    def toAvro(xs: CC[T]): GenericData.Array[sch.AvroType] =
-      new GenericData.Array[sch.AvroType](schema, xs.map(sch.toAvro(_)).toIterable)
-  }
-
-  object FixedCounter extends UniqueInt
-
-  implicit def FixedSchema[T](implicit fxd: AvroFixed[T]) = new AvroSchema[T]  {
-    private val id = FixedCounter.get
-    type AvroType = GenericData.Fixed
-    val schema: Schema = Schema.createFixed("anonfixed" + id, "", " ", fxd.length)
-    def fromAvro(data: GenericData.Fixed) = {
-      val bytes = data.bytes()
-      require(bytes.length == fxd.length)
-      fxd.fromArray(bytes)
-    }
-    def toAvro(data: T): GenericData.Fixed = {
-      val bytes = fxd.toArray(data)
-      require(bytes.length == fxd.length)
-      new GenericData.Fixed(schema, bytes)
-    }
-  }
-
-  /* Map-like types AvroSchema type class instances. */
-  implicit def MapSchema[CC[String, X] <: Map[String, X], T](implicit sch: AvroSchema[T], bf: CanBuildFrom[_, (String, T), CC[String, T]]) = new AvroSchema[CC[String, T]] {
-    type AvroType = JMap[String, sch.AvroType]
-
-    val schema: Schema = Schema.createMap(sch.schema)
-
-    val b: Builder[(String, T), CC[String, T]] = bf()
-
-    def fromAvro(xs: AvroType): CC[String, T] = {
-      b.clear()
-      xs.foreach { case (s, v) => b += (s.toString -> sch.fromAvro(v)) }
-      b.result()
-    }
-
-    def toAvro(xs: CC[String, T]): AvroType = xs map { case (k, v) => k -> sch.toAvro(v) }
-  }
+  // redundant, but better for performance to have this here rather than forcing
+  // this common implicit serach to go through TraversableSchema.
+  implicit def SeqSchema[T](implicit sch: AvroSchema[T]): AvroSchema[Seq[T]] = TraversableSchema[Seq, T]
+  implicit def SetSchema[T](implicit sch: AvroSchema[T]): AvroSchema[Set[T]] = TraversableSchema[Set, T]
+  implicit def ImmutableMapSchema[T](implicit sch: AvroSchema[T]): AvroSchema[Map[String, T]] = MapSchema[Map, T]
 
   /* AvroSchema type class instance for Arrays. */
   implicit def ArraySchema[T](implicit mf: Manifest[T], sch: AvroSchema[T]) = new AvroSchema[Array[T]] {
@@ -381,22 +427,6 @@ object AvroSchema {
       record.put(7, sch8.toAvro(x._8))
       record
     }
-  }
-
-  /**
-   *  Actual Avro Generic/SpecificRecord support
-   *
-   *  When T is a GenericRecord, we use the NULL schema type.
-   *
-   *  @see AvroInput/AvroOutput how the NULL schema type is used to create the appropriate AvroKeyRecordReader/AvroKeyRecordWriter instance
-   */
-  implicit def AvroRecordSchema[T <: GenericContainer](implicit r: Manifest[T]) = new AvroSchema[T] {
-    val sclass = r.runtimeClass.asInstanceOf[Class[T]]
-    def schema: Schema = tryOrElse(sclass.newInstance().getSchema)(Schema.create(Schema.Type.NULL))
-
-    type AvroType = T
-    def fromAvro(x: T): T = x
-    def toAvro(x: T): T = x
   }
 
   /* Helper methods. */

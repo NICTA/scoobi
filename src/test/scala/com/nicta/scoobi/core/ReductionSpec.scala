@@ -27,7 +27,10 @@ import std.stream._
 import std.option._
 import std.list._
 import std.string._
-import scalacheck.ScalazArbitrary._
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen._
+
+//import scalacheck.ScalazArbitrary._
 
 class ReductionSpec extends UnitSpecification with ScalaCheck {
   import Reduction._
@@ -167,11 +170,6 @@ class ReductionSpec extends UnitSpecification with ScalaCheck {
         R.Sum.short.associative(x, y, z)
     }
 
-  "digit sum is associative" >> prop {
-      (x: Digit, y: Digit, z: Digit) =>
-        R.Sum.digit.associative(x, y, z)
-    }
-
   "big int product is associative" >> prop {
       (x: BigInt, y: BigInt, z: BigInt) =>
         R.Product.bigint.associative(x, y, z)
@@ -202,9 +200,13 @@ class ReductionSpec extends UnitSpecification with ScalaCheck {
         R.Product.short.associative(x, y, z)
     }
 
-  "digit product is associative" >> prop {
-      (x: Digit, y: Digit, z: Digit) =>
-        R.Product.digit.associative(x, y, z)
-    }
+  import NonEmptyList._
+  implicit def NonEmptyListArbitrary[A : Arbitrary]: Arbitrary[NonEmptyList[A]] = Arbitrary(for {
+    a  <- implicitly[Arbitrary[A]].arbitrary
+    la <- implicitly[Arbitrary[List[A]]].arbitrary
+  } yield (nel(a, la)))
+
+  import scalaz.Ordering._
+  implicit def OrderingArbitrary: Arbitrary[Ordering] = Arbitrary(org.scalacheck.Gen.oneOf(LT, EQ, GT))
 
 }
