@@ -122,7 +122,8 @@ trait MscrOutputChannel extends OutputChannel { outer =>
         sink.outputPath foreach { outDir =>
           // all directories are created under a <sink id> directory for easier collection in just a "rename"
           val baseDir = new Path(sc.temporaryOutputDirectory, new Path(sink.id.toString))
-          outer.logger.debug(s"Partitioned sink. Moving the files found in $baseDir to $outDir")
+          outer.logger.debug(s"Partitioned sink. Moving the files found in $baseDir to $outDir. The files are:")
+          fileSystems.listPaths(baseDir).foreach(p => outer.logger.debug(s" --> found $p"))
           moveTo(outDir)(sc.configuration)(baseDir, new Path("."))
         }
 
