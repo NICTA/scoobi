@@ -50,7 +50,7 @@ trait Files {
       val from = fileSystem(path)
       val to   = fileSystem(dir)
 
-      val destPath = new Path(dirPath(dir.toString) + newPath)
+      val destPath = to.makeQualified(new Path(dirPath(dir.toString) + newPath))
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
       if (sameFileSystem(from, to))
