@@ -57,12 +57,14 @@ trait Files {
         (path == destPath) || {
           logger.debug(s"renaming $path to $destPath")
           tryOk {
-            val result = Compatibility.rename(path, destPath)
-            logger.debug(s"renaming was successful: "+result)
+            Compatibility.rename(path, destPath)
           }
         }
-      else FileUtil.copy(from, path, to, destPath,
-                      true /* deleteSource */, true /* overwrite */, configuration)
+      else {
+        logger.debug(s"copying $path to $destPath")
+        FileUtil.copy(from, path, to, destPath,
+          true /* deleteSource */, true /* overwrite */, configuration)
+      }
     }
   }
 
