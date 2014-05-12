@@ -54,7 +54,13 @@ trait Files {
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
       if (sameFileSystem(from, to))
-        (path == destPath) || tryOk(Compatibility.rename(path, destPath))
+        (path == destPath) || {
+          logger.debug(s"renaming $path to $destPath")
+          tryOk {
+            val result = Compatibility.rename(path, destPath)
+            logger.debug(s"renaming was successful: "+result)
+          }
+        }
       else FileUtil.copy(from, path, to, destPath,
                       true /* deleteSource */, true /* overwrite */, configuration)
     }
