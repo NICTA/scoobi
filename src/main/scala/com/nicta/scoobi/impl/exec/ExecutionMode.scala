@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package impl
 package exec
 
+import com.nicta.scoobi.BuildInfo._
 import core._
 import plan.comp._
 import org.apache.commons.logging.Log
@@ -43,6 +44,8 @@ trait ExecutionMode extends ShowNode with Optimiser {
     * - checking the sources and sinks
     */
   protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) = {
+    modeLogger.info(s"SCOOBI version: $version, commit: $commit, timestamp: $datetime")
+
     reinit(node)
     val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
     checkSourceAndSinks(toExecute.debug("Active nodes", prettyGraph))
