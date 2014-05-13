@@ -1,0 +1,14 @@
+Maintenance version
+
+### Improvements
+
+ * allow output files to be directly created during the mapping phase if possible
+ * creating a _SUCCESS file in the output directory only if all Hadoop jobs are successful for a given Scoobi job. Otherwise there is only a _SUCCESS_JOB file
+ * added support for partitioned sequence files
+ * better implicit search for faster compilation times (thanks to @retronym)
+ * compression codecs are not being used if they can't be instantiated for a given platform instead of throwing exceptions
+ * created separate jars for cdh3, cdh4, cdh5, hadoop2 compatibility, instead of a Compatibility class using reflection. With cdh4/cdh5, the files of a partitioned output are 
+   being moved with a single rename
+
+  
+------ 
