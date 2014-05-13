@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.text.SimpleDateFormat
+import java.util.Date
 import sbt._
 import complete.DefaultParsers._
 import Keys._
@@ -41,6 +43,7 @@ import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
 import com.typesafe.tools.mima.plugin.MimaKeys.binaryIssueFilters
 import xerial.sbt.Sonatype._
 import SonatypeKeys._
+import sbtbuildinfo.Plugin._
 
 object build extends Build {
   type Settings = Def.Setting[_]
@@ -52,6 +55,7 @@ object build extends Build {
     settings = Defaults.defaultSettings ++
                scoobiSettings           ++
                dependencies.settings    ++
+               buildSettings            ++
                compilationSettings      ++
                testingSettings          ++
                siteSettings             ++
@@ -68,6 +72,17 @@ object build extends Build {
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
     scalaVersion := "2.10.3")
+
+  lazy val buildSettings: Seq[Settings] =
+    buildInfoSettings ++
+      Seq(sourceGenerators in Compile <+= buildInfo,
+          buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, "commit" -> commit, "datetime" -> datetime),
+          buildInfoPackage := "com.nicta.scoobi")
+
+  def commit = Process(s"git log --pretty=format:%h -n 1").lines.head
+
+  def datetime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss Z").format(new Date)
+
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
