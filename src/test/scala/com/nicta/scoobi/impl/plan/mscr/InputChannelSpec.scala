@@ -108,8 +108,7 @@ Processing
     eg := { gbkInputChannel(l1, Seq(gbk1, gbk2)).inputNodes === Seq(l1, pd1.env, pd2.env) }
     eg := {
       val pd3 = pd(pd2)
-      val graph = new MscrsDefinition {}
-      graph.reinit(Root(Seq(gbk1, gbk2, pd3))) // make sure all relations are set-up
+      val graph = Graph(Root(Seq(gbk1, gbk2, pd3))).init
       new GbkInputChannel(l1, Seq(gbk1, gbk2), graph).outputNodes === Seq(gbk1, gbk2, pd3)
     }
     eg := floatingInputChannel(l1, pd1).outputNodes === Seq(pd1)
@@ -239,7 +238,7 @@ Processing
       val pd4 = pd(pd1)
       val (gbk1, gbk2, pd5) = (gbk(pd2), gbk(pd3), pd4)
 
-      val channel = new GbkInputChannel(l1, Seq(gbk1, gbk2), nodes = graph(gbk1, gbk2, pd5)) with MockInputChannel
+      val channel = new GbkInputChannel(l1, Seq(gbk1, gbk2), graph =graph(gbk1, gbk2, pd5)) with MockInputChannel
       channel.map("1", "stARt", channel.context)
       channel.context.valuesByTag.toSet === Set((gbk1.id, Seq("START now")), (gbk2.id, Seq("START later")), (pd4.id, Seq("START")))
     }
@@ -248,7 +247,7 @@ Processing
       val pd2 = pd(pd1).copy(dofn = MapFunction(a => (a, a.toString+" now")))
       val pd3 = pd(pd1).copy(dofn = MapFunction(a => (a, a.toString+" later")))
 
-      val channel = new FloatingInputChannel(l1, Seq(pd2, pd3), nodes = graph(pd2, pd3)) with MockInputChannel
+      val channel = new FloatingInputChannel(l1, Seq(pd2, pd3), graph = graph(pd2, pd3)) with MockInputChannel
       channel.map("1", "stARt", channel.context)
       channel.context.valuesByTag.toSet === Set((pd2.id, Seq(("START", "START now"))), (pd3.id, Seq(("START", "START later"))))
     }
@@ -292,15 +291,10 @@ Processing
     override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
   }
 
-  def graph(nodes: CompNode*) = {
-    val g = new Layering{}
-    g.reinit(Root(nodes))
-    g
-  }
+  def graph(nodes: CompNode*) = Graph(Root(nodes)).init
 
   def floatingInputChannel(sourceNode: CompNode, terminalNodes: Seq[CompNode]): FloatingInputChannel with MockInputChannel = {
-    val graph = new MscrsDefinition {}
-    graph.reinit(Root(terminalNodes))
+    val graph = Graph(Root(terminalNodes)).init
     new FloatingInputChannel(sourceNode, terminalNodes, graph) with MockInputChannel
   }
 
@@ -308,7 +302,7 @@ Processing
     floatingInputChannel(sourceNode, Seq(terminalNode))
 
   def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) =
-    new GbkInputChannel(sourceNode, groupByKeys, nodes = graph(groupByKeys:_*)) with MockInputChannel
+    new GbkInputChannel(sourceNode, groupByKeys, graph = graph(groupByKeys:_*)) with MockInputChannel
 
   def beDistinct[T]: Matcher[Seq[T]] = (seq: Seq[T]) => (seq.distinct.size == seq.size, "The sequence contains duplicated elements:\n"+seq)
 }

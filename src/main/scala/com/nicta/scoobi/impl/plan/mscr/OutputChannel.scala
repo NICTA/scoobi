@@ -73,8 +73,8 @@ trait OutputChannel extends Channel {
 trait MscrOutputChannel extends OutputChannel { outer =>
   protected implicit lazy val logger = LogFactory.getLog("scoobi.OutputChannel")
 
-  def nodes: Layering
-  lazy val graphNodes = nodes
+  def graph: Graph
+  lazy val graphNodes = graph
 
   override def equals(a: Any) = a match {
     case o: OutputChannel => o.tag == tag
@@ -84,7 +84,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 
   /** @return all the sinks defined by the nodes of the input channel */
   lazy val sinks: Seq[Sink] = {
-    if (nodes.uses(lastNode).forall(isRoot) && lastNode.sinks.size > 1) lastNode.sinks.filterNot(_ == lastNode.bridgeStore)
+    if (graph.uses(lastNode).forall(isRoot) && lastNode.sinks.size > 1) lastNode.sinks.filterNot(_ == lastNode.bridgeStore)
     else lastNode.sinks
   }
 
@@ -94,6 +94,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   protected var emitter: EmitterWriter = _
 
   def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    graph.init
     logger.info("Outputs are " + sinks.map(_.outputPath(ScoobiConfiguration(configuration))).mkString("\n"))
 
     sinks.foreach(_.outputSetup(ScoobiConfiguration(configuration)))
@@ -201,14 +202,14 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 case class GbkOutputChannel(groupByKey: GroupByKey,
                             combiner:   Option[Combine]    = None,
                             reducer:    Option[ParallelDo] = None,
-                            nodes: Layering = new Layering {}) extends MscrOutputChannel {
+                            graph: Graph = Graph(Root(Seq()))) extends MscrOutputChannel {
 
   /** the tag identifying a GbkOutputChannel is the groupByKey id */
   lazy val tag = groupByKey.id
   /** return the reducer environment if there is one */
   lazy val inputNodes = reducer.toSeq.map(_.env)
   /** output nodes for this channel */
-  lazy val outputNodes: Seq[CompNode] = nodes.uses(lastNode).toSeq
+  lazy val outputNodes: Seq[CompNode] = graph.uses(lastNode).toSeq
 
   /** store the reducer environment during the setup if there is one */
   protected var environment: Any = _
@@ -259,14 +260,14 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
  * This output channel simply copy values coming from a ParallelDo input (a mapper in an Input channel)
  * to this node sinks and bridgeStore
  */
-case class BypassOutputChannel(input: ParallelDo, nodes: Layering = new Layering {}) extends MscrOutputChannel {
+case class BypassOutputChannel(input: ParallelDo, graph: Graph = Graph(Root(Seq()))) extends MscrOutputChannel {
   /** the tag identifying a BypassOutputChannel is the parallelDo id */
   lazy val tag = input.id
   /** @return the last node of this channel */
   lazy val lastNode = input
   /** return the environment of the input node */
   lazy val inputNodes = Seq(input.env)
-  lazy val outputNodes = nodes.uses(input).toSeq
+  lazy val outputNodes = graph.uses(input).toSeq
   /**
    * Just emit the values to the sink, the key is irrelevant since it is a RollingInt in that case
    */
