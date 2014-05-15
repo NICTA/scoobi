@@ -62,7 +62,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
    */
   def parDoFuse = traverseSomebu(parDoFuseRule)
 
-  def parDoFuseRule = rule[Any] {
+  def parDoFuseRule = rule[ParallelDo] {
     case p2 @ ParallelDo((p1: ParallelDo) +: rest,_,_,_,_,_,_) if
       rest.isEmpty                          &&
       uses(p1).filterNot(_ == p2).isEmpty   &&
@@ -101,8 +101,8 @@ trait Optimiser extends CompNodes with MemoRewriter {
   /**
    * add a map to output values to non-filled sink nodes if there are some
    */
-  def addParallelDoForNonFilledSinks = oncebu(rule[Any] {
-    case p: ProcessNode if p.sinks.exists(!hasBeenFilled) && p.sinks.exists(hasBeenFilled) =>
+  def addParallelDoForNonFilledSinks = oncebu(rule[ProcessNode] {
+    case p if p.sinks.exists(!hasBeenFilled) && p.sinks.exists(hasBeenFilled) =>
       logger.debug("add a parallelDo node to output non-filled sinks of "+p)
       ParallelDo.create(p)(p.wf).copy(nodeSinks = p.sinks.filterNot(hasBeenFilled))
   })
@@ -124,7 +124,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
     }
 
   /** duplicate the whole graph by copying all nodes */
-  lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule[Any] {
+  lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule[CompNode] {
     case n: Op          => n.copy()
     case n: Materialise => n.copy()
     case n: GroupByKey  => n.copy()
@@ -163,7 +163,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
       }
     }
 
-    val truncateRule = rule[Any] { case n: Any =>
+    val truncateRule = rule[Any] { case n =>
       if (condition(n)) truncateNode(n)
       else              n
     }
