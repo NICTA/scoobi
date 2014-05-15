@@ -31,7 +31,7 @@ object dependencies {
     "org.apache.avro"                   %  "avro"                      % "1.7.4",
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
-    "com.googlecode.kiama"              %% "kiama"                     % "1.5.2",
+    "com.googlecode.kiama"              %% "kiama"                     % "1.6.0-SNAPSHOT",
     "com.chuusai"                       %  "shapeless_2.10.3"          % "2.0.0-M1",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
