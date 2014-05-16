@@ -90,7 +90,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
   /** create "execution layers" from a given node and execute them one by one */
   private def executeLayers(node: CompNode) {
-    val layers = createMapReduceLayers(node).info("Executing layers", showLayers)
+    val layers = createMapReduceLayers(node).debug("Executing layers", showLayers)
     if (!showPlanOnly(sc)) {
       val perLayerJobs = layers.map { _.mscrs.size }
       val totalJobs = perLayerJobs.sum
@@ -130,7 +130,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   private case class Execution(layer: Layer, prevLayersMscrs: Int, totalMscrsNumber: Int) {
 
     def execute {
-      (s"Executing layer ${layer.id}\n"+layer).info
+      (s"Executing layer ${layer.id}\n"+layer).debug
       runMscrs(layer.mscrs, prevLayersMscrs, totalMscrsNumber)
 
       layer.sinks.info("Layer sinks: ").foreach(markSinkAsFilled)
@@ -144,7 +144,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
     private def runMscrs(mscrs: Seq[Mscr], prevLayersMscrs: Int, totalMscrsNumber: Int) {
-      ("executing map reduce jobs"+mscrs.mkString("\n", "\n", "\n")).info
+      ("executing map reduce jobs"+mscrs.mkString("\n", "\n", "\n")).debug
 
       val configured = mscrs.toList.zipWithIndex.map { case (mscr, i) =>
         configureMscr(prevLayersMscrs + i + 1, totalMscrsNumber)(mscr)
