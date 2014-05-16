@@ -78,7 +78,7 @@ However, we do need some of Scoobi's dependencies -- so we have to add them in m
 "org.apache.avro"                   %  "avro"                      % "1.7.4",       // Note: you only need this if you use it
 "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"        intransitive(),
 "javassist"                         %  "javassist"                 % "3.12.1.GA",
-"com.googlecode.kiama"              %% "kiama"                     % "1.5.2",
+"com.googlecode.kiama"              %% "kiama"                     % "1.6.0",
 "com.chuusai"                       %  "shapeless_2.10.2"          % "2.0.0-M1",
 ```
 
@@ -123,7 +123,7 @@ libraryDependencies ++= Seq(
     "org.scalaz"               %% "scalaz-core"                      % "7.0.2",
     "com.thoughtworks.xstream" %  "xstream"                          % "1.4.4"    intransitive(),
     "javassist"                %  "javassist"                        % "3.12.1.GA",
-    "com.googlecode.kiama"     %% "kiama"                            % "1.5.2",
+    "com.googlecode.kiama"     %% "kiama"                            % "1.6.0",
     "com.chuusai"              %  "shapeless_2.10.2"                 % "2.0.0-M1",
   )
 
@@ -144,7 +144,7 @@ libraryDependencies ++= Seq(
     "org.scala-lang"           %  "scala-compiler"    % "2.10.3",
     "com.thoughtworks.xstream" %  "xstream"           % "1.4.4"        intransitive(),
     "javassist"                %  "javassist"         % "3.12.1.GA",
-    "com.googlecode.kiama"     %% "kiama"             % "1.5.2",
+    "com.googlecode.kiama"     %% "kiama"             % "1.6.0",
     "com.chuusai"              %  "shapeless_2.10.2"  % "2.0.0-M1",
   )
 
@@ -157,7 +157,7 @@ libraryDependencies ++= Seq(
     "org.scala-lang"           %  "scala-compiler"    % "2.10.3",
     "com.thoughtworks.xstream" %  "xstream"           % "1.4.4"              intransitive(),
     "javassist"                %  "javassist"         % "3.12.1.GA",
-    "com.googlecode.kiama"     %% "kiama"             % "1.5.2",
+    "com.googlecode.kiama"     %% "kiama"             % "1.6.0",
     "com.chuusai"              %  "shapeless_2.10.2"  % "2.0.0-M1"
   )
 
