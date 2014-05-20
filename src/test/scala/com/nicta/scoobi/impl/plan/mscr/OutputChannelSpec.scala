@@ -93,14 +93,10 @@ Processing
 
     eg := GbkOutputChannel(gbk1).sinks === Seq(gbk1.bridgeStore)
     eg := GbkOutputChannel(gbk2).sinks === Seq(StringSink())
-    eg := GbkOutputChannel(gbk2, nodes = graph(mt(gbk2))).sinks.toSet === Set(gbk2.bridgeStore, StringSink())
-    eg := GbkOutputChannel(gbk2, nodes = graph(pd(gbk2))).sinks.toSet === Set(gbk2.bridgeStore, StringSink())
+    eg := GbkOutputChannel(gbk2, graph = graph(mt(gbk2))).sinks.toSet === Set(gbk2.bridgeStore, StringSink())
+    eg := GbkOutputChannel(gbk2, graph = graph(pd(gbk2))).sinks.toSet === Set(gbk2.bridgeStore, StringSink())
 
-    def graph(nodes: CompNode*) = {
-      val g = new Layering{}
-      g.reinit(aRoot(nodes:_*))
-      g
-    }
+    def graph(nodes: CompNode*) = Graph(aRoot(nodes:_*)).init
   }
 
   "processing" - new group with factory {

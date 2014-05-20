@@ -60,8 +60,10 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
    * set the "mode" of the configuration based on the file system
    * this mode can be changed later on if necessary
    */
-  if (FileSystem.get(hadoopConfiguration).getUri.getScheme == "file") modeIs(Mode.Local)
-  else modeIs(Mode.Cluster)
+  if (hadoopConfiguration.get(SCOOBI_MODE) == null) {
+    if (FileSystem.get(hadoopConfiguration).getUri.getScheme == "file") modeIs(Mode.Local)
+    else modeIs(Mode.Cluster)
+  }
 
   private implicit lazy val logger = getLog("scoobi.ScoobiConfiguration")
 

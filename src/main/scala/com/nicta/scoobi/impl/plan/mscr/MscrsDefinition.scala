@@ -45,16 +45,16 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
    * where each layer contains independent map reduce jobs
    */
   def createMapReduceLayers(start: CompNode): Seq[Layer] =
-    createLayers(Vector(start)).filterNot(_.isEmpty)
+    createLayers(Vector(start), Graph(start)).filterNot(_.isEmpty)
 
   /**
    * From start nodes in the graph and the list of already visited nodes, create new layers of MapReduce jobs
    */
-  private def createLayers(startNodes: Seq[CompNode], visited: Seq[CompNode] = Vector()): Seq[Layer] =
+  private def createLayers(startNodes: Seq[CompNode], graph: Graph, visited: Seq[CompNode] = Vector()): Seq[Layer] =
     processLayers(startNodes.distinct, visited) match {
       case firstLayer +: rest => {
-        val mscrLayer = createMscrs(inputNodes(firstLayer), visited)
-        mscrLayer +: createLayers(startNodes, (visited ++ firstLayer ++ mscrLayer.nodes).distinct)
+        val mscrLayer = createMscrs(inputNodes(firstLayer), visited, graph)
+        mscrLayer +: createLayers(startNodes, graph, (visited ++ firstLayer ++ mscrLayer.nodes).distinct)
       }
       case _ => Vector()
     }
@@ -70,16 +70,16 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
   /**
    * create a layer of Mscrs from input nodes, making sure not to use already visited nodes
    */
-  protected def createMscrs(inputNodes: Seq[CompNode], visited: Seq[CompNode]): Layer =
-    createMscrs(createInputOutputLayer(inputNodes, visited))
+  protected def createMscrs(inputNodes: Seq[CompNode], visited: Seq[CompNode], graph: Graph): Layer =
+    createMscrs(createInputOutputLayer(inputNodes, visited), graph)
 
   /**
    * find the input and output channels on the layer, assemble them into Mscrs when they have common tags
    */
-  protected def createMscrs(inputOutputLayer: Seq[CompNode]): Layer = {
+  protected def createMscrs(inputOutputLayer: Seq[CompNode], graph: Graph): Layer = {
 
-    val outChannels = outputChannels(inputOutputLayer)
-    val channelsWithCommonTags = groupInputChannelsByOutputTags(inputOutputLayer)
+    val outChannels = outputChannels(inputOutputLayer, graph)
+    val channelsWithCommonTags = groupInputChannelsByOutputTags(inputOutputLayer, graph)
 
     // create Mscr for each set of channels with common tags
     Layer(channelsWithCommonTags.map { inputChannels =>
@@ -120,13 +120,14 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
   /**
    * @return groups of input channels having the same output tags
    */
-  protected def groupInputChannelsByOutputTags(layer: Seq[CompNode]): Seq[Seq[InputChannel]] = {
-    Seqs.transitiveClosure(inputChannels(layer)) { (i1: InputChannel, i2: InputChannel) =>
+  protected def groupInputChannelsByOutputTags(layer: Seq[CompNode], graph: Graph): Seq[Seq[InputChannel]] = {
+    Seqs.transitiveClosure(inputChannels(layer, graph)) { (i1: InputChannel, i2: InputChannel) =>
       (i1.tags intersect i2.tags).nonEmpty
     }.map(_.list)
   }
 
-  protected def inputChannels(layer: Seq[CompNode]): Seq[InputChannel] = gbkInputChannels(layer) ++ floatingInputChannels(layer)
+  protected def inputChannels(layer: Seq[CompNode], graph: Graph): Seq[InputChannel] =
+    gbkInputChannels(layer, graph) ++ floatingInputChannels(layer, graph)
 
   /**
    * @return Process or Load nodes which are children of the nodes parameters but not included in the group
@@ -137,18 +138,18 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
       children(node).filterNot(isValueNode || nodes.contains)
     }.flatten.distinct
 
-  protected def gbkInputChannels(layer: Seq[CompNode]): Seq[GbkInputChannel] = {
+  protected def gbkInputChannels(layer: Seq[CompNode], graph: Graph): Seq[GbkInputChannel] = {
     val gbks = layer.filter(isGroupByKey)
     val in = inputNodes(layer.collect(isAProcessNode))
     in.flatMap { inputNode =>
       val groupByKeyUses = transitiveUses(inputNode).collect(isAGroupByKey).filter(gbks.contains).toSeq
       if (groupByKeyUses.isEmpty) Vector()
-      else                        Vector(new GbkInputChannel(inputNode, groupByKeyUses, this))
+      else                        Vector(new GbkInputChannel(inputNode, groupByKeyUses, graph))
     }
   }
 
-  protected def floatingInputChannels(layer: Seq[CompNode]): Seq[FloatingInputChannel] = {
-    val gbkChannels = gbkInputChannels(layer)
+  protected def floatingInputChannels(layer: Seq[CompNode], graph: Graph): Seq[FloatingInputChannel] = {
+    val gbkChannels = gbkInputChannels(layer, graph)
     val inputs = inputNodes(layer.collect(isAProcessNode))
     val gbkMappers = gbkChannels.flatMap(_.mappers)
 
@@ -164,35 +165,35 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
       val layers = layersOf(mappers)
       val lastLayerParallelDos = layers.lastOption.getOrElse(Vector()).collect(isAParallelDo)
       val outputParallelDos = layers.dropRight(1).map(_.filter(p => isParallelDo(p) && parent(p).exists(isRoot || isMaterialise))).flatten
-      new FloatingInputChannel(inputNode, (lastLayerParallelDos ++ outputParallelDos).distinct, this)
+      new FloatingInputChannel(inputNode, (lastLayerParallelDos ++ outputParallelDos).distinct, graph)
     }.filterNot(_.isEmpty)
   }
 
-  protected def gbkOutputChannels(layer: Seq[CompNode]): Seq[OutputChannel] = {
+  protected def gbkOutputChannels(layer: Seq[CompNode], graph: Graph): Seq[OutputChannel] = {
     val gbks = layer.collect(isAGroupByKey)
-    gbks.map(gbk => gbkOutputChannel(gbk))
+    gbks.map(gbk => gbkOutputChannel(gbk, graph))
   }
 
   /**
    * @return a gbk output channel based on the nodes which are following the gbk
    */
-  protected def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
+  protected def gbkOutputChannel(gbk: GroupByKey, graph: Graph): GbkOutputChannel = {
     parents(gbk) match {
-      case (c: Combine) +: (p: ParallelDo) +: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p), nodes = this)
-      case (p: ParallelDo) +: rest                 if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p), nodes = this)
-      case (c: Combine) +: rest                                    => GbkOutputChannel(gbk, combiner = Some(c), nodes = this)
-      case _                                                       => GbkOutputChannel(gbk, nodes = this)
+      case (c: Combine) +: (p: ParallelDo) +: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p), graph = graph)
+      case (p: ParallelDo) +: rest                 if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p), graph = graph)
+      case (c: Combine) +: rest                                    => GbkOutputChannel(gbk, combiner = Some(c), graph = graph)
+      case _                                                       => GbkOutputChannel(gbk, graph = graph)
     }
   }
 
   /** @return all output channels for a given layer */
-  protected def outputChannels(layer: Seq[CompNode]): Seq[OutputChannel] =
-    gbkOutputChannels(layer) ++ bypassOutputChannels(layer)
+  protected def outputChannels(layer: Seq[CompNode], graph: Graph): Seq[OutputChannel] =
+    gbkOutputChannels(layer, graph) ++ bypassOutputChannels(layer, graph)
 
   /** @return the bypass output channels for a given layer */
-  protected def bypassOutputChannels(layer: Seq[CompNode]): Seq[OutputChannel] = {
-    val bypassMappers = inputChannels(layer).flatMap(_.bypassOutputNodes)
-    bypassMappers.distinct.map(m => BypassOutputChannel(m, nodes = this))
+  protected def bypassOutputChannels(layer: Seq[CompNode], graph: Graph): Seq[OutputChannel] = {
+    val bypassMappers = inputChannels(layer, graph).flatMap(_.bypassOutputNodes)
+    bypassMappers.distinct.map(m => BypassOutputChannel(m, graph = graph))
   }
 
   /** @return true if a node is an input node for a given layer */
@@ -249,5 +250,13 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
     case pd: ParallelDo          => isReducer(pd)
     case Combine1(_: GroupByKey) => true
     case other                   => false
+  }
+}
+
+case class Graph(start: CompNode) extends Layering {
+  init
+  def init = {
+    reinit(start)
+    this
   }
 }

@@ -101,7 +101,7 @@ object CompNodeData { outer =>
    * a different order
    */
   def normalise(result: Any) = rewrite {
-    everywherebu(rule {
+    everywherebu(rule[Any] {
       case iterable: Iterable[_] => Vector(iterable.iterator.toSeq.sortBy(_.toString):_*)
       case other                 => other
     })

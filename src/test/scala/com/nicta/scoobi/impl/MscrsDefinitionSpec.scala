@@ -147,49 +147,51 @@ Robustness
   }
 
   "Output channels" - new group with definition with factory {
-
+    val graph1 = Graph(Root(Seq()))
     eg := {
       val (gbk1, gbk2, gbk3) = (gbk(load), gbk(load), gbk(load))
-      outputChannels(Seq(gbk1, gbk2, gbk3)) === Seq(GbkOutputChannel(gbk1), GbkOutputChannel(gbk2), GbkOutputChannel(gbk3))
+      outputChannels(Seq(gbk1, gbk2, gbk3), graph1) === Seq(GbkOutputChannel(gbk1), GbkOutputChannel(gbk2), GbkOutputChannel(gbk3))
     }
     eg := {
       val gbk1 = gbk(load)
-      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1))
+      outputChannels(Seq(gbk1), graph1) === Seq(GbkOutputChannel(gbk1))
     }
     eg := {
       val gbk1 = gbk(load); val cb1 = cb(gbk1)
-      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1, combiner = Some(cb1)))
+      outputChannels(Seq(gbk1), graph1) === Seq(GbkOutputChannel(gbk1, combiner = Some(cb1)))
     }
     eg := {
       val gbk1 = gbk(load); val pd1 = pd(gbk1)
-      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1, reducer = Some(pd1)))
+      outputChannels(Seq(gbk1), graph1) === Seq(GbkOutputChannel(gbk1, reducer = Some(pd1)))
     }
     eg := {
       val gbk1 = gbk(load); val cb1 = cb(gbk1); val pd1 = pd(cb1)
-      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1)))
+      outputChannels(Seq(gbk1), graph1) === Seq(GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1)))
     }
     eg := "there is one bypass output channel for pd2" ==> {
       val l1 = load
       val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load))
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
-      aRoot(mt(pd2), gbk1, gbk2, gbk3)
-      bypassOutputChannels(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)) must haveSize(1)
+      val g1 = Graph(aRoot(mt(pd2), gbk1, gbk2, gbk3)).init
+      bypassOutputChannels(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), g1) must haveSize(1)
     }
     eg := "there is one bypass output channel for pd4" ==> {
       val l1 = load
       val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load)); val pd4 = pd(pd1)
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
-      aRoot(mt(pd4), gbk1, gbk2, gbk3)
-      bypassOutputChannels(Seq(pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3)) must haveSize(1)
+      val g1 = Graph(aRoot(mt(pd4), gbk1, gbk2, gbk3))
+      bypassOutputChannels(Seq(pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3), g1) must haveSize(1)
     }
   }
 
   "Input channels" - new group with definition with factory {
+    val graph1 = Graph(Root(Seq()))
+
     eg := {
       val l1 = load
       val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load))
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
-      inputChannels(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)) must haveSize(2)
+      inputChannels(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1) must haveSize(2)
     }
     eg := "there is a FloatingInput channel for the materialised mapper" ==> {
       val l1 = load
@@ -197,25 +199,28 @@ Robustness
       val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load)); val pd4 = pd(pd0)
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
       aRoot(mt(pd4), gbk1, gbk2, gbk3)
-      inputChannels(Seq(pd0, pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3)) must haveSize(3)
+      inputChannels(Seq(pd0, pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3), graph1) must haveSize(3)
     }
   }
 
   "mscrs creation" - new group with definition with factory {
+    val graph1 = Graph(Root(Seq()))
+
     val (l1, l2) = (load, load)
     val (pd1, pd2) = (pd(l1), pd(l2)); val pd3 = pd(pd1, pd2); val pd4 = pd(load)
     val (gbk1, gbk2, gbk3) = (gbk(pd3), gbk(pd3), gbk(pd4))
     aRoot(gbk1, gbk2, gbk3)
 
     eg := "there is one mscr with 2 input channels and one mscr with 1 input channel" ==> {
-      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)).mscrs.map(_.inputChannels.size) === Seq(2, 1)
+      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1).mscrs.map(_.inputChannels.size) === Seq(2, 1)
     }
     eg := "there is one mscr with 2 output channels and one mscr with 1 output channel" ==> {
-      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)).mscrs.map(_.outputChannels.size) === Seq(2, 1)
+      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1).mscrs.map(_.outputChannels.size) === Seq(2, 1)
     }
   }
 
   "robustness" - new group with definition with Debug with CompNodeData with factory {
+
     eg := prop { (l1: DList[String]) =>
       val start = optimise(l1.getComp)
       val mscrLayers = createMapReduceLayers(start)

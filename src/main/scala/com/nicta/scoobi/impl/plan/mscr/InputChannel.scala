@@ -111,8 +111,8 @@ trait Channel {
 trait MscrInputChannel extends InputChannel {
   implicit lazy val logger = LogFactory.getLog("scoobi.InputChannel")
 
-  def nodes: Layering
-  lazy val graphNodes = nodes
+  def graph: Graph
+  lazy val graphNodes = graph
 
   /**
    * data source for this input channel
@@ -161,6 +161,8 @@ trait MscrInputChannel extends InputChannel {
     tks = Map(tags.map(t => { val key = ReflectionUtils.newInstance(context.context.getMapOutputKeyClass, configuration).asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
     tvs = Map(tags.map(t => { val value = ReflectionUtils.newInstance(context.context.getMapOutputValueClass, configuration).asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
 
+    graph.init
+
     emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
     vectorEmitter = VectorEmitterWriter(context)
     environments = Map(mappers.map(mapper => (mapper, mapper.environment(scoobiConfiguration))):_*)
@@ -174,7 +176,7 @@ trait MscrInputChannel extends InputChannel {
 
   /** memoise the mappers tree to improve performance */
   private lazy val nextMappers: CompNode => Seq[ParallelDo] = attribute("nextMappers") {
-    case node => nodes.uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains)
+    case node => graph.uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains)
   }
   /** memoise the final mappers tree to improve performance */
   private lazy val isFinal: CompNode => Boolean = attribute("isFinal") {
@@ -228,8 +230,8 @@ trait MscrInputChannel extends InputChannel {
 /**
  * This input channel is a tree of Mappers which are all connected to Gbk nodes
  */
-class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey], val nodes: Layering) extends MscrInputChannel {
-  import nodes._
+class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey], val graph: Graph) extends MscrInputChannel {
+  import graph._
 
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
@@ -238,7 +240,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
 
   /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
   lazy val gbkMappers =
-    groupByKeys.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal))
+    groupByKeys.flatMap(terminal => graph.pathsToNode(sourceNode)(terminal))
       // drop the source node from the path
       .map(path => path.filterNot(_ == sourceNode))
       // retain only the paths which contain parallelDos or a terminal node
@@ -300,7 +302,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
   protected def outputTags(mapper: ParallelDo) = outputTagsMemo(mapper)
 
   private lazy val outputTagsMemo = scalaz.Memo.weakHashMapMemo((mapper: ParallelDo) =>
-    (bypassOutputNodes.filter(_ == mapper) ++ nodes.uses(mapper).filter(groupByKeys.contains)).map(_.id).toSeq)
+    (bypassOutputNodes.filter(_ == mapper) ++ graph.uses(mapper).filter(groupByKeys.contains)).map(_.id).toSeq)
 
   def processNodes: Seq[ProcessNode] = mappers
 }
@@ -308,8 +310,8 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
 /**
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
-class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode], val nodes: Layering) extends MscrInputChannel {
-  import nodes._
+class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode], val graph: Graph) extends MscrInputChannel {
+  import graph._
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags
@@ -322,7 +324,7 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
   }
 
   lazy val mappers =
-    terminalNodes.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal))
+    terminalNodes.flatMap(terminal => graph.pathsToNode(sourceNode)(terminal))
       // drop the source node from the path
       .map(path => path.filterNot(_ == sourceNode))
       // retain only the paths which contain parallelDos or a terminal node

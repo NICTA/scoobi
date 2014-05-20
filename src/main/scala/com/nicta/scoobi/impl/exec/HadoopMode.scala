@@ -62,7 +62,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   /**
    * execute a computation node and return a result if one is expected
    */
-  private def executeNode: CompNode => Any = {
+  private lazy val executeNode: CompNode => Any = {
     // execute value nodes recursively, other nodes start a "layer" execution
     attr { node =>
       val banner = s"${"="*(sc.jobId.size+37)}"
