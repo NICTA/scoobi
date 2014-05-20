@@ -254,6 +254,7 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
 }
 
 case class Graph(start: CompNode) extends Layering {
+  init
   def init = {
     reinit(start)
     this
