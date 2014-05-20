@@ -80,6 +80,36 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles with NoTimeConvers
     }
   }
 
+  "6. If there are 2 checkpointed Hadoop jobs in the same Scoobi job and one of them fails, the checkpoint of the first one "+
+   "must be used" >> { implicit sc: SC =>
+    val (sink1, sink2) = (TempFiles.createTempDir("test1"), TempFiles.createTempDir("test2"))
+
+    val list0 = DList(1, 2, 3)
+    val list1 = list0.map { i =>
+      if (i == 1) { example6_evaluations += 1 }
+      i + 1
+    }.checkpoint(path(sink1)).map(_+1)
+
+    val list2 = list0.map(i => (i, i)).groupByKey.map { case (k, vs) => (k, k) }.groupByKey.map { case (k, vs) =>
+      if (example6_list2_first_try) {
+        example6_list2_first_try = false
+        sys.error("fails the first time")
+      }
+      k
+    }.checkpoint(path(sink2)).map(_+1)
+
+    // compute once, ignore the exception
+    try { persist(list1, list2) } catch { case e: Exception => }
+
+    // compute twice
+    persist(list1, list2)
+
+    "the intermediate results are used for job1 instead of recomputing the list" ==> {
+      example6_evaluations must be_==(1)
+    }
+  }
+
+
   def runListWithExpiry(archiving: ExpiryPolicy.ArchivingPolicy)(implicit sc: SC): File = {
     val sink = TestFiles.createTempDir("test")
     persist(list(sink.getPath, 1 second, archiving))
@@ -105,7 +135,8 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles with NoTimeConvers
     normalise(compute(sink, restart)) === "Vector(i11, i21, i31)"
     "the intermediate results must be used instead of recomputing the list" ==> {
       // this way of testing if the computation has been done only once can only work locally
-      evaluationsNb1 must be_==(1).unless(sc.isRemote)
+      // this is why the specification is marked as isCluster = false
+      evaluationsNb1 must be_==(1)
     }
   }
 
@@ -121,11 +152,17 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles with NoTimeConvers
     val list2 = list.map(_ + "1")
     list2.run(configuration)
   }
+
+  override def isCluster = false
 }
 
 object CheckpointEvaluations1 {
   var evaluationsNb1: Int = 0
   var evaluationsNb2: Int = 0
+  
+  var example6_evaluations = 0
+  var example6_list2_first_try = true
+  
   var oldFileIsDeleted = false
 }
 

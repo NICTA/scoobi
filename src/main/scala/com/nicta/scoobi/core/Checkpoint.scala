@@ -42,9 +42,10 @@ case class Checkpoint(path: Path, expiryPolicy: ExpiryPolicy = ExpiryPolicy.defa
 
   /** @return true if the checkpoint has expired */
   def hasExpired(implicit sc: ScoobiConfiguration) = expiryPolicy.hasExpired(path, sc)
+
   /** @return true if the files of this checkpoint are the result of a successful job */
   def outputIsSuccess(outputPath: Path, sc: ScoobiConfiguration) =
-    sc.fileSystem.exists(outputPath) && Option(sc.fileSystem.listStatus(outputPath)).exists(_.toList.exists(_.getPath.getName == "_SUCCESS"))
+    sc.fileSystem.exists(outputPath) && Option(sc.fileSystem.listStatus(outputPath)).exists(_.toList.exists(_.getPath.getName.startsWith("_SUCCESS")))
 }
 
 /**
