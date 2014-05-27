@@ -297,6 +297,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
 
     }
     def context = ioContext
+    def configuration = context.configuration
   }
 
   protected def outputTags(mapper: ParallelDo) = outputTagsMemo(mapper)
@@ -350,6 +351,7 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
       ioContext.write(key, value)
     }
     def context = ioContext
+    def configuration = context.configuration
   }
 
   protected def outputTags(mapper: ParallelDo): Seq[Int] = outputTagsMemo(mapper)

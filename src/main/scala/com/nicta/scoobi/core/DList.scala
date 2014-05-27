@@ -16,10 +16,11 @@
 package com.nicta.scoobi
 package core
 
-import impl.control.{ImplicitParameter2, ImplicitParameter1, ImplicitParameter}
+import com.nicta.scoobi.impl.control.{ImplicitParameter3, ImplicitParameter2, ImplicitParameter1, ImplicitParameter}
 import com.nicta.scoobi.impl.collection.WeakHashSet
 import Reduction.{Reduction => R}
 import scalaz.Monoid
+import org.apache.hadoop.conf.Configuration
 
 /**
  * A list that is distributed across multiple machines.
@@ -79,6 +80,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def parallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParameter): DList[B] = parallelDo(DoFn.fromFunctionWithCounters(fn))
   def parallelDo[B](fn: (A, Heartbeat) => B)(implicit wf: WireFormat[B], p: ImplicitParameter1): DList[B] = parallelDo(DoFn.fromFunctionWithHeartbeat(fn))
   def parallelDo[B](fn: (A, ScoobiJobContext) => B)(implicit wf: WireFormat[B], p: ImplicitParameter2): DList[B] = parallelDo(DoFn.fromFunctionWithScoobiJobContext(fn))
+  def parallelDo[B](fn: (A, Configuration) => B)(implicit wf: WireFormat[B], p: ImplicitParameter3): DList[B] = parallelDo(DoFn.fromFunctionWithConfiguration(fn))
 
   /**
    * Group the values of a distributed list with key-value elements by key. And explicitly

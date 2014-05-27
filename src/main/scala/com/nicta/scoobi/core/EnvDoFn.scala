@@ -19,6 +19,7 @@ package core
 import collection.immutable.VectorBuilder
 import impl.plan.comp.ParallelDo
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
+import org.apache.hadoop.conf.Configuration
 
 /**
  * Interface for specifying parallel operation over DLists. The semantics
@@ -85,6 +86,12 @@ object DoFn {
     def cleanup(emitter: Emitter[B]) {}
   }
 
+  def fromFunctionWithConfiguration[A, B](fn: (A, Configuration) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter.configuration)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
 }
 
 /** Interface for writing outputs from a DoFn */
@@ -138,7 +145,9 @@ trait EmitterWriter extends ScoobiJobContext {
   def write(value: Any)
 }
 
-trait ScoobiJobContext extends Counters with Heartbeat
+trait ScoobiJobContext extends Counters with Heartbeat {
+  def configuration: Configuration
+}
 
 trait Counters {
   def incrementCounter(groupName: String, name: String, increment: Long = 1)
@@ -162,6 +171,7 @@ trait DelegatedScoobiJobContext extends ScoobiJobContext { outer =>
   def getCounter(groupName: String, name: String) = delegate.getCounter(groupName, name)
   def tick { delegate.tick }
   def delegate: ScoobiJobContext
+  def configuration = delegate.configuration
 }
 
 trait InputOutputContextScoobiJobContext extends ScoobiJobContext {

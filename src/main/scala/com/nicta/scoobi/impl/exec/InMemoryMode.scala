@@ -119,6 +119,8 @@ case class InMemoryMode() extends ExecutionMode {
 
       def getCounter(groupName: String, name: String): Long =
         sc.counters.getGroup(groupName).findCounter(name).getValue
+
+      def configuration = sc.configuration
     }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).headOption.getOrElse(()))
