@@ -20,7 +20,7 @@ import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.fs._
-import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.conf.{Configurable, Configuration}
 import Data._
 import com.nicta.scoobi.impl.io.{FileSystems, Files}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
@@ -50,9 +50,19 @@ trait DataSink[K, V, B] extends Sink { outer =>
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration) = {
     compression.filter { c =>
-      val compressorAvailable = catchAllOk(c.codec.createCompressor)
-      logger.debug(s"compressor available for codec type ${c.codec.getClass}: $compressorAvailable")
-      compressorAvailable
+      val compressorAvailable = c.codec match {
+        case configurable: CompressionCodec with Configurable =>
+          configurable.setConf(configuration)
+          trye(c.codec.createCompressor)(identity)
+
+        case other =>
+          trye(c.codec.createCompressor)(identity)
+      }
+
+      compressorAvailable.fold(
+      { e => logger.debug(s"compressor not available for codec type ${c.codec.getClass}: $e"); false },
+      { _ => logger.debug(s"compressor available for codec type ${c.codec.getClass}"); true })
+
     } map  { case Compression(codec, compressionType) =>
       configuration.set("mapred.output.compress", "true")
       configuration.set("mapred.output.compression.type", compressionType.toString)
