@@ -33,6 +33,8 @@ import com.nicta.scoobi.impl.control.Exceptions._
  * An output store from a MapReduce job
  */
 trait DataSink[K, V, B] extends Sink { outer =>
+  private lazy val logger = LogFactory.getLog("scoobi.DataSink")
+
   val id = ids.get
   lazy val stringId = id.toString
 
@@ -47,11 +49,16 @@ trait DataSink[K, V, B] extends Sink { outer =>
   def compression: Option[Compression]
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration) = {
-    compression.filter(c => catchAllOk(c.codec.createCompressor)) map  { case Compression(codec, compressionType) =>
+    compression.filter { c =>
+      val compressorAvailable = catchAllOk(c.codec.createCompressor)
+      logger.debug(s"compressor available for codec type ${c.codec.getClass}: $compressorAvailable")
+      compressorAvailable
+    } map  { case Compression(codec, compressionType) =>
       configuration.set("mapred.output.compress", "true")
       configuration.set("mapred.output.compression.type", compressionType.toString)
       configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
     } getOrElse {
+      logger.debug(s"no compression set on this sink")
       configuration.set("mapred.output.compress", "false")
     }
     this
