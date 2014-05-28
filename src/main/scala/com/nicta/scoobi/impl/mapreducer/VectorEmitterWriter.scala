@@ -40,7 +40,6 @@ case class VectorEmitterWriter(context: InputOutputContext) extends EmitterWrite
   // for testing only
   protected[scoobi] def result = vb.result
 
-  def configuration = context.configuration
 }
 
 // used for testing only

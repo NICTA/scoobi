@@ -174,7 +174,6 @@ trait MscrOutputChannel extends OutputChannel { outer =>
       }
     }
     def context = new InputOutputContext(channelOutput.context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]])
-    def configuration = configuration1
   }
 
   /** use the output converter of a sink to convert a value to a key/value */

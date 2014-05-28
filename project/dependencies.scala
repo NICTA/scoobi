@@ -38,10 +38,10 @@ object dependencies {
 
   def hadoop(version: String, hadoopVersion: String = "2.2.0") =
 
-    if (version.contains("cdh3"))      Seq("com.nicta" %% "scoobi-compatibility-cdh3" % "1.0.1")
-    else if (version.contains("cdh4")) Seq("com.nicta" %% "scoobi-compatibility-cdh4" % "1.0.1")
-    else if (version.contains("cdh5")) Seq("com.nicta" %% "scoobi-compatibility-cdh5" % "1.0.1")
-    else                               Seq("com.nicta" %% "scoobi-compatibility-hadoop2" % "1.0.1")
+    if (version.contains("cdh3"))      Seq("com.nicta" %% "scoobi-compatibility-cdh3"    % "1.0.2")
+    else if (version.contains("cdh4")) Seq("com.nicta" %% "scoobi-compatibility-cdh4"    % "1.0.2")
+    else if (version.contains("cdh5")) Seq("com.nicta" %% "scoobi-compatibility-cdh5"    % "1.0.2")
+    else                               Seq("com.nicta" %% "scoobi-compatibility-hadoop2" % "1.0.2")
 
   def scalaz(scalazVersion: String = "7.0.6") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,

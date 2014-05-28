@@ -29,6 +29,16 @@ import ScoobiConfiguration._
 import Configurations._
 import scalaz.Scalaz._
 import CollectFunctions._
+import org.apache.hadoop.mapreduce._
+import com.nicta.scoobi.impl.util.Compatibility
+import org.apache.hadoop.mapreduce.lib.output.{FileOutputCommitter}
+import com.nicta.scoobi.impl.plan.comp.Combine
+import com.nicta.scoobi.impl.plan.comp.GroupByKey
+import com.nicta.scoobi.impl.plan.comp.Op
+import com.nicta.scoobi.impl.plan.comp.Load
+import com.nicta.scoobi.impl.plan.comp.Root
+import com.nicta.scoobi.impl.plan.comp.ReturnSC
+import com.nicta.scoobi.impl.plan.comp.Materialise
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -120,7 +130,7 @@ case class InMemoryMode() extends ExecutionMode {
       def getCounter(groupName: String, name: String): Long =
         sc.counters.getGroup(groupName).findCounter(name).getValue
 
-      def configuration = sc.configuration
+      def context = new InputOutputContext(taskContext)
     }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).headOption.getOrElse(()))
@@ -186,6 +196,11 @@ case class InMemoryMode() extends ExecutionMode {
       (k, combine.combine(vs))
     }.debug("computeCombine")
 
+
+  private def taskContext(implicit sc: ScoobiConfiguration) = {
+    val attemptId = TaskAttemptID.forName("attempt_201301010000_0001_m_000001_0")
+    Compatibility.newTaskInputOutputContext(sc.configuration, attemptId)
+  }
 
 }
 

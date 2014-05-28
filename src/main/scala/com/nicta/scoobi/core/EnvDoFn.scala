@@ -92,6 +92,11 @@ object DoFn {
     def cleanup(emitter: Emitter[B]) {}
   }
 
+  def fromFunctionWithContext[A, B](fn: (A, InputOutputContext) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter.context)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
 }
 
 /** Interface for writing outputs from a DoFn */
@@ -146,7 +151,8 @@ trait EmitterWriter extends ScoobiJobContext {
 }
 
 trait ScoobiJobContext extends Counters with Heartbeat {
-  def configuration: Configuration
+  def context: InputOutputContext
+  def configuration: Configuration = context.configuration
 }
 
 trait Counters {
@@ -171,7 +177,7 @@ trait DelegatedScoobiJobContext extends ScoobiJobContext { outer =>
   def getCounter(groupName: String, name: String) = delegate.getCounter(groupName, name)
   def tick { delegate.tick }
   def delegate: ScoobiJobContext
-  def configuration = delegate.configuration
+  def context = delegate.context
 }
 
 trait InputOutputContextScoobiJobContext extends ScoobiJobContext {
