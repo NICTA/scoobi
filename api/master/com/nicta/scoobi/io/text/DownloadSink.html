@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>TextFileSink - com.nicta.scoobi.io.text.TextFileSink</title>
-          <meta name="description" content="TextFileSink - com.nicta.scoobi.io.text.TextFileSink" />
-          <meta name="keywords" content="TextFileSink com.nicta.scoobi.io.text.TextFileSink" />
+          <title>DownloadSink - com.nicta.scoobi.io.text.DownloadSink</title>
+          <meta name="description" content="DownloadSink - com.nicta.scoobi.io.text.DownloadSink" />
+          <meta name="keywords" content="DownloadSink com.nicta.scoobi.io.text.DownloadSink" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.io.text.TextFileSink';
+            var hash = 'com.nicta.scoobi.io.text.DownloadSink';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,24 +24,32 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="TextFileSink$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
+        <img src="../../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.io.text">text</a></p>
-        <h1><a href="TextFileSink$.html" title="Go to companion">TextFileSink</a></h1>
+        <h1>DownloadSink</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">TextFileSink</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Sink.defaultOutputCheck</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]</span>)</span><span class="result"> extends <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">DownloadSink</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This is a dummy sink just used to collect files downloaded in map tasks</p><p>The map task must be a parallelDo like this:</p><p>def download = (path: String, InputOutputContext) =&gt; {
+  // get the output directory for the current map task
+  val outputDir = FileOutputFormat.getWorkOutputPath(context.context)
+  val outDir = outputDir.toString.replace(&quot;file:&quot;, &quot;&quot;)
+  logger.debug(&quot;output dir is &quot;+outDir)</p><p>  // download the file
+  // ...
+}</p><p>val sink = new DownloadSink(&quot;target/test&quot;, (_:String).startsWith(&quot;source&quot;))</p><p>val fileNames: DList[String] = ???
+fileNames.parallelDo(download).addSink(sink).persist</p><p>The downloaded files will be collected from the working directory of the map task and go to &quot;target/test&quot; based on their path
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +67,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.io.text.TextFileSink"><span>TextFileSink</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.nicta.scoobi.core.DataSink"><span>DataSink</span></li><li class="in" name="com.nicta.scoobi.core.Sink"><span>Sink</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.io.text.DownloadSink"><span>DownloadSink</span></li><li class="in" name="com.nicta.scoobi.core.Sink"><span>Sink</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,16 +87,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.io.text.TextFileSink#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,compression:Option[com.nicta.scoobi.core.Compression])(implicitevidence$1:Manifest[A]):com.nicta.scoobi.io.text.TextFileSink[A]"></a>
-      <a id="&lt;init&gt;:TextFileSink[A]"></a>
+              <ol><li name="com.nicta.scoobi.io.text.DownloadSink#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(target:String,isDownloadedFile:org.apache.hadoop.fs.Path=&gt;Boolean,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.io.text.DownloadSink"></a>
+      <a id="&lt;init&gt;:DownloadSink"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">TextFileSink</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Sink.defaultOutputCheck</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]</span>)</span>
+        <span class="name">DownloadSink</span><span class="params">(<span name="target">target: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isDownloadedFile">isDownloadedFile: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="defval" name="com.nicta.scoobi.core.Sink.defaultOutputCheck">...</span></span>)</span>
       </span>
       </h4>
       
@@ -179,19 +187,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#check" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
-      <a id="check:(Path,Boolean,ScoobiConfiguration)⇒Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">check</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -224,45 +219,32 @@
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new sink with Gzip compression enabled</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#compressWith" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="compressWith(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):com.nicta.scoobi.io.text.TextFileSink[A]"></a>
-      <a id="compressWith(CompressionCodec,CompressionType):TextFileSink[A]"></a>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#compressWith" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compressWith(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):com.nicta.scoobi.core.Sink"></a>
+      <a id="compressWith(CompressionCodec,CompressionType):Sink"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">compressWith</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]</span>
+        <span class="name">compressWith</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new sink with compression enabled</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#compression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="compression:Option[com.nicta.scoobi.core.Compression]"></a>
-      <a id="compression:Option[Compression]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">compression</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a compression object if this sink is compressed</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSink#configureCompression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="configureCompression(configuration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.DataSink[K,V,B]"></a>
-      <a id="configureCompression(Configuration):DataSink[NullWritable,A,A]"></a>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new sink with compression enabled</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#configureCompression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configureCompression(configuration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.Sink"></a>
+      <a id="configureCompression(Configuration):Sink"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureCompression</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]</span>
+        <span class="name">configureCompression</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">configure the compression for a given job</p><div class="fullcomment"><div class="comment cmt"><p>configure the compression for a given job</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
+      <p class="shortcomment cmt">configure the compression for a given job</p><div class="fullcomment"><div class="comment cmt"><p>configure the compression for a given job</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -276,6 +258,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -308,7 +303,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSink#id" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#id" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="id:Int"></a>
       <a id="id:Int"></a>
       <h4 class="signature">
@@ -320,20 +328,7 @@
         <span class="name">id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">unique id for this Sink</p><div class="fullcomment"><div class="comment cmt"><p>unique id for this Sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSink#isCompressed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isCompressed:Boolean"></a>
-      <a id="isCompressed:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isCompressed</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink is compressed</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
+      <p class="shortcomment cmt">unique id for this Sink</p><div class="fullcomment"><div class="comment cmt"><p>unique id for this Sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -347,7 +342,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Sink#isSinkResult" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#isSinkResult" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isSinkResult(tag:Int):org.apache.hadoop.fs.Path=&gt;Boolean"></a>
       <a id="isSinkResult(Int):(Path)⇒Boolean"></a>
       <h4 class="signature">
@@ -359,7 +354,7 @@
         <span class="name">isSinkResult</span><span class="params">(<span name="tag">tag: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -399,7 +394,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputCheck" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputCheck" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="outputCheck(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="outputCheck(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
@@ -411,8 +406,8 @@
         <span class="name">outputCheck</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Check the validity of the DataSink specification.</p><div class="fullcomment"><div class="comment cmt"><p>Check the validity of the DataSink specification.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputConfigure" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Check the validity of the DataSink specification.</p><div class="fullcomment"><div class="comment cmt"><p>Check the validity of the DataSink specification.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputConfigure" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="outputConfigure(job:org.apache.hadoop.mapreduce.Job)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="outputConfigure(Job)(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
@@ -424,34 +419,34 @@
         <span class="name">outputConfigure</span><span class="params">(<span name="job">job: <span class="extype" name="org.apache.hadoop.mapreduce.Job">Job</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Configure the DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>Configure the DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputConverter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputConverter:com.nicta.scoobi.core.OutputConverter[org.apache.hadoop.io.NullWritable,A,A]"></a>
-      <a id="outputConverter:OutputConverter[NullWritable,A,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outputConverter</span><span class="result">: <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputFormat(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[org.apache.hadoop.mapreduce.lib.output.TextOutputFormat[org.apache.hadoop.io.NullWritable,A]]"></a>
-      <a id="outputFormat(ScoobiConfiguration):Class[TextOutputFormat[NullWritable,A]]"></a>
+      <p class="shortcomment cmt">Configure the DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>Configure the DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputConverter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputConverter:com.nicta.scoobi.core.OutputConverter[org.apache.hadoop.io.NullWritable,Unit,Unit]"></a>
+      <a id="outputConverter:OutputConverter[NullWritable,Unit,Unit]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputFormat</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.output.TextOutputFormat">TextOutputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]]</span>
+        <span class="name">outputConverter</span><span class="result">: <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="scala.Unit">Unit</span>, <span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The OutputFormat specifying the type of output for this DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>The OutputFormat specifying the type of output for this DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputKeyClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Maps the type consumed by this DataSink to the key-values of its OutputFormat.</p><div class="fullcomment"><div class="comment cmt"><p>Maps the type consumed by this DataSink to the key-values of its OutputFormat.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputFormat(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[org.apache.hadoop.mapreduce.lib.output.TextOutputFormat[org.apache.hadoop.io.NullWritable,Unit]]"></a>
+      <a id="outputFormat(ScoobiConfiguration):Class[TextOutputFormat[NullWritable,Unit]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputFormat</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.output.TextOutputFormat">TextOutputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="scala.Unit">Unit</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The OutputFormat specifying the type of output for this DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>The OutputFormat specifying the type of output for this DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputKeyClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="outputKeyClass(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[org.apache.hadoop.io.NullWritable]"></a>
       <a id="outputKeyClass(ScoobiConfiguration):Class[NullWritable]"></a>
       <h4 class="signature">
@@ -463,21 +458,21 @@
         <span class="name">outputKeyClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The Class of the OutputFormat's key.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's key.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputPath(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Some[org.apache.hadoop.fs.Path]"></a>
-      <a id="outputPath(ScoobiConfiguration):Some[Path]"></a>
+      <p class="shortcomment cmt">The Class of the OutputFormat's key.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's key.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputPath(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Option[org.apache.hadoop.fs.Path]"></a>
+      <a id="outputPath(ScoobiConfiguration):Option[Path]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputPath</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Some">Some</span>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>
+        <span class="name">outputPath</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for this Sink.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputSetup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for this Sink.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputSetup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="outputSetup(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="outputSetup(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
@@ -489,8 +484,8 @@
         <span class="name">outputSetup</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">This method is called just before writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just before writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSink#outputTeardown" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">This method is called just before writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just before writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputTeardown" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="outputTeardown(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="outputTeardown(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
@@ -502,47 +497,21 @@
         <span class="name">outputTeardown</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">This method is called just after writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just after writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputValueClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputValueClass(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[A]"></a>
-      <a id="outputValueClass(ScoobiConfiguration):Class[A]"></a>
+      <p class="shortcomment cmt">This method is called just after writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just after writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#outputValueClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputValueClass(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[Unit]"></a>
+      <a id="outputValueClass(ScoobiConfiguration):Class[Unit]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputValueClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]</span>
+        <span class="name">outputValueClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The Class of the OutputFormat's value.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's value.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#overwrite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="overwrite:Boolean"></a>
-      <a id="overwrite:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">overwrite</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#path" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="path:String"></a>
-      <a id="path:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">path</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.core.DataSink#stringId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">The Class of the OutputFormat's value.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's value.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.DownloadSink#stringId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="stringId:String"></a>
       <a id="stringId:String"></a>
       <h4 class="signature">
@@ -554,7 +523,7 @@
         <span class="name">stringId</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.DownloadSink">DownloadSink</a> → Sink</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -568,7 +537,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextFileSink#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -580,7 +549,7 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -647,17 +616,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.DataSink">
-              <h3>Inherited from <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]</h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.Sink">
+        <div class="parent" name="com.nicta.scoobi.core.Sink">
               <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
