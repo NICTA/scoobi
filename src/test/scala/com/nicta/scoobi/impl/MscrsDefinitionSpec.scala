@@ -89,10 +89,7 @@ Input channels
 Mscrs
 =====
 
- The mscrs are created by
-  + grouping all the input channels when they have at least one output tag in common into the same mscr
-  + adding the corresponding output channels (the ones having the same output tag) to the mscr
-
+ + The mscrs are created by adding input channels and output channels together
 
 Robustness
 ==========
@@ -211,11 +208,8 @@ Robustness
     val (gbk1, gbk2, gbk3) = (gbk(pd3), gbk(pd3), gbk(pd4))
     aRoot(gbk1, gbk2, gbk3)
 
-    eg := "there is one mscr with 2 input channels and one mscr with 1 input channel" ==> {
-      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1).mscrs.map(_.inputChannels.size) === Seq(2, 1)
-    }
-    eg := "there is one mscr with 2 output channels and one mscr with 1 output channel" ==> {
-      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1).mscrs.map(_.outputChannels.size) === Seq(2, 1)
+    eg := "there is one mscr with 3 input channels" ==> {
+      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1).mscrs.map(_.inputChannels.size) === Seq(3)
     }
   }
 

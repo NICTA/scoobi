@@ -77,17 +77,7 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
    * find the input and output channels on the layer, assemble them into Mscrs when they have common tags
    */
   protected def createMscrs(inputOutputLayer: Seq[CompNode], graph: Graph): Layer = {
-
-    val outChannels = outputChannels(inputOutputLayer, graph)
-    val channelsWithCommonTags = groupInputChannelsByOutputTags(inputOutputLayer, graph)
-
-    // create Mscr for each set of channels with common tags
-    Layer(channelsWithCommonTags.map { inputChannels =>
-      val correspondingOutputTags = inputChannels.flatMap(_.tags)
-      val out = outChannels.filter(o => correspondingOutputTags.contains(o.tag))
-
-      Mscr.create(inputChannels, out)
-    }.filterNot(_.isEmpty))
+    Layer(Seq(Mscr.create(inputChannels(inputOutputLayer, graph), outputChannels(inputOutputLayer, graph))).filterNot(_.isEmpty))
   }
 
   /**
@@ -118,7 +108,7 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
   }
 
   /**
-   * @return groups of input channels having the same output tags
+   * @return groups of input channels having at least one output tag in common
    */
   protected def groupInputChannelsByOutputTags(layer: Seq[CompNode], graph: Graph): Seq[Seq[InputChannel]] = {
     Seqs.transitiveClosure(inputChannels(layer, graph)) { (i1: InputChannel, i2: InputChannel) =>
