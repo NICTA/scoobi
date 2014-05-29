@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package core
 
 import org.apache.hadoop.mapreduce._
-import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
+import org.apache.hadoop.io.compress.{Compressor, GzipCodec, CompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.fs._
 import org.apache.hadoop.conf.{Configurable, Configuration}
@@ -52,17 +52,8 @@ trait DataSink[K, V, B] extends Sink { outer =>
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration) = {
     compression.filter { c =>
-      val compressorAvailable = c.codec match {
-        case configurable: CompressionCodec with Configurable =>
-          configurable.setConf(configuration)
-          trye(c.codec.createCompressor)(identity)
-
-        case other =>
-          trye(c.codec.createCompressor)(identity)
-      }
-
-      compressorAvailable.fold(
-      { e => logger.debug(s"compressor not available for codec type ${c.codec.getClass}: $e"); false },
+      Compression.getCompressor(c.codec)(configuration).fold(
+      { e => logger.error(s"compressor not available for codec type ${c.codec.getClass}: $e"); throw e },
       { _ => logger.debug(s"compressor available for codec type ${c.codec.getClass}"); true })
 
     } map  { case Compression(codec, compressionType) =>
@@ -92,6 +83,21 @@ trait DataSink[K, V, B] extends Sink { outer =>
 
 /** store the compression parameters for sinks */
 case class Compression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK)
+
+object Compression {
+  def isCodecAvailable(codec: CompressionCodec)(implicit configuration: Configuration): Boolean =
+    getCompressor(codec).right.toOption.isDefined
+
+  def getCompressor(codec: CompressionCodec)(implicit configuration: Configuration): Either[Exception, Compressor] =
+    codec match {
+      case configurable: CompressionCodec with Configurable =>
+        configurable.setConf(configuration)
+        trye(codec.createCompressor)(identity)
+
+      case other =>
+        trye(codec.createCompressor)(identity)
+    }
+}
 
 /**
  * Internal untyped definition of a Sink to store result data
