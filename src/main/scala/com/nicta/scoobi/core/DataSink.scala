@@ -85,8 +85,8 @@ trait DataSink[K, V, B] extends Sink { outer =>
 case class Compression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK)
 
 object Compression {
-  def isCodecAvailable(codec: CompressionCodec)(implicit configuration: Configuration): Boolean =
-    getCompressor(codec).right.toOption.isDefined
+  def isCodecAvailable(codec: CompressionCodec): Boolean =
+    getCompressor(codec)(new Configuration).right.toOption.isDefined
 
   def getCompressor(codec: CompressionCodec)(implicit configuration: Configuration): Either[Exception, Compressor] =
     codec match {
