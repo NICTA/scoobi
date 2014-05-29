@@ -1,12 +1,13 @@
 package com.nicta.scoobi.io.text
 
-import com.nicta.scoobi.core.{ScoobiConfiguration, Sink}
-import com.nicta.scoobi.core.Data.ids
+import com.nicta.scoobi.core._
 import org.apache.hadoop.mapreduce.{RecordWriter, Job}
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress._
 import org.apache.hadoop.io.SequenceFile.CompressionType
+import org.apache.hadoop.io.NullWritable
+import com.nicta.scoobi.core
+import com.nicta.scoobi.core.Compression
 
 /**
  * This is a dummy sink just used to collect files downloaded in map tasks
@@ -30,28 +31,17 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
  *
  * The downloaded files will be collected from the working directory of the map task and go to "target/test" based on their path
  */
-
-class DownloadSink(target: String, isDownloadedFile: Path => Boolean, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) extends Sink {
-  val id = ids.get
-  lazy val stringId = id.toString
-  private val delegate = new TextFileSink[Unit](target, overwrite, check)
-
-  def outputFormat(implicit sc: ScoobiConfiguration)              = delegate.outputFormat
-  def outputKeyClass(implicit sc: ScoobiConfiguration)            = delegate.outputKeyClass
-  def outputValueClass(implicit sc: ScoobiConfiguration)          = delegate.outputValueClass
-  def outputConverter                                             = delegate.outputConverter
-  def outputCheck(implicit sc: ScoobiConfiguration)               = delegate.outputCheck
-  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = delegate.outputConfigure(job)
-  def outputPath(implicit sc: ScoobiConfiguration): Option[Path]  = delegate.outputPath
-  def outputSetup(implicit sc: ScoobiConfiguration)               = delegate.outputSetup
-  def outputTeardown(implicit sc: ScoobiConfiguration)            = delegate.outputTeardown
-  def configureCompression(configuration: Configuration): Sink    = this
-  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): Sink = this
-
-  private[scoobi] def isCompressed: Boolean = false
-
-  private [scoobi] def write(values: Traversable[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration) {}
-
+class DownloadSink(target: String, isDownloadedFile: Path => Boolean, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) extends DataSink[NullWritable, NullWritable, NullWritable] {
+  private val delegate = new TextFileSink[NullWritable](target, overwrite, check)
   override def isSinkResult(tag: Int) = isDownloadedFile
 
+  override def compressWith(codec: CompressionCodec, compressionType: CompressionType) = delegate.compressWith(codec, compressionType)
+  override def outputPath(implicit sc: core.ScoobiConfiguration): Option[Path] = delegate.outputPath
+  override def compression: Option[Compression] = None
+  override def outputConfigure(job: Job)(implicit sc: core.ScoobiConfiguration) = delegate.outputConfigure(job)
+  override def outputCheck(implicit sc: core.ScoobiConfiguration) = delegate.outputCheck
+  override def outputConverter: OutputConverter[NullWritable, NullWritable, NullWritable] = delegate.outputConverter
+  override def outputValueClass(implicit sc: core.ScoobiConfiguration) = delegate.outputValueClass
+  override def outputKeyClass(implicit sc: core.ScoobiConfiguration) = delegate.outputKeyClass
+  override def outputFormat(implicit sc: core.ScoobiConfiguration) = delegate.outputFormat
 }
