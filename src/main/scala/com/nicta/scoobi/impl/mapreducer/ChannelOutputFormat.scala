@@ -96,13 +96,6 @@ object ChannelOutputFormat {
   val OutputChannelFileName = """ch(\d+)-(\d+)""".r
   val basename = "out"
 
-  /** @return true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file */
-  def isResultDirectory(tag: Int, sinkId: Int) =
-    (f: Path) => f.getName match {
-      case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == sinkId
-      case _                           => false
-    }
-
   private def propertyPrefix(tag: Int, sinkId: Int) = "scoobi.output." + tag + ":" + sinkId
   private def formatProperty(tag: Int, sinkId: Int) = propertyPrefix(tag, sinkId) + ".format"
   private def keyClassProperty(tag: Int, sinkId: Int) = propertyPrefix(tag, sinkId) + ".key"

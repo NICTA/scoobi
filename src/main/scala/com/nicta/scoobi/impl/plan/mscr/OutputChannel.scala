@@ -152,7 +152,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
    * move the files of a given sink to its output directory.
    */
   private def moveOutputFiles(sink: Sink, outDir: Path, outputFiles: Seq[Path])(implicit sc: ScoobiConfiguration, fileSystems: FileSystems) = {
-    val outputs = outputFiles.filter(isResultDirectory(tag, sink.id))
+    val outputs = outputFiles.filter(sink.isSinkResult(tag))
     outer.logger.debug("outputs result files for tag "+tag+" and sink id "+sink.id+" are "+outputs.map(_.getName).mkString("\n"))
 
     // move the directory containing the output files for a given tag and sink

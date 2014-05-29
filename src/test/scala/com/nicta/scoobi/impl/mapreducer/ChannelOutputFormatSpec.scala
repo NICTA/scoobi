@@ -21,11 +21,13 @@ import org.apache.hadoop.fs.Path
 
 import ChannelOutputFormat._
 import testing.mutable.UnitSpecification
+import com.nicta.scoobi.io.text.TextFileSink
 
 class ChannelOutputFormatSpec extends UnitSpecification {
   "Channels determine result files for a given job run" >> {
     "ch1-2/ is a result directory for a sink with tag 1 and sink id 2" >> {
-      isResultDirectory(1, 2)(new Path("ch1-2/"))
+      val sink = TextFileSink(".")
+      sink.isSinkResult(1)(new Path(s"ch1-${sink.id}/"))
     }
   }
 

@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.permission.FsAction
 import FsAction._
 import com.nicta.scoobi.impl.control.Exceptions._
+import com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat
+import ChannelOutputFormat._
 
 /**
  * An output store from a MapReduce job
@@ -135,6 +137,12 @@ trait Sink { outer =>
   private [scoobi]
   def write(values: Traversable[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration)
 
+  /** @return true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file */
+  def isSinkResult(tag: Int) =
+    (f: Path) => f.getName match {
+      case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == id
+      case _                           => false
+    }
 }
 
 object Sink {
