@@ -127,8 +127,9 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
       (s"===== START OF MAP REDUCE JOB $step (mscr id = ${mscr.id}) ======\n").info
       val configured = configureMscr(mscr, mscrNumber, totalMscrs)
-      sc.updateCounters(configured.job.getCounters)
-      configured.report
+      val executed = configured.execute
+      sc.updateCounters(executed.job.getCounters)
+      executed.report
 
       mscr.sinks.info("Map reduce job sinks: ").foreach(markSinkAsFilled)
       (s"===== END OF MAP REDUCE JOB $step (mscr id = ${mscr.id}, Scoobi job = ${sc.jobId}) ======\n").info
