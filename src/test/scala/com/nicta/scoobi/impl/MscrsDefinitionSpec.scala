@@ -209,7 +209,7 @@ Robustness
     aRoot(gbk1, gbk2, gbk3)
 
     eg := "there is one mscr with 3 input channels" ==> {
-      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1).mscrs.map(_.inputChannels.size) === Seq(3)
+      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3), graph1).map(_.inputChannels.size) === Seq(3)
     }
   }
 
@@ -217,11 +217,11 @@ Robustness
 
     eg := prop { (l1: DList[String]) =>
       val start = optimise(l1.getComp)
-      val mscrLayers = createMapReduceLayers(start)
+      val mscrs = createMscrs(start)
 
       // for each process node in the graph count how many times it is represented in a channel
       processNodes(start) must contain { n: CompNode =>
-        val nodeCountInChannels = count(mscrLayers, start, n)
+        val nodeCountInChannels = count(mscrs, start, n)
 
         if (isFlatten(n)) nodeCountInChannels must be_>=(1) ^^ ((_: Seq[_]).size)
         else              nodeCountInChannels must haveSize(1)
@@ -239,7 +239,7 @@ Robustness
       super.processLayers(Seq(optimise(list.getComp)), visited = Seq())
 
     def createMapReduceLayers(list: DList[_]) =
-      super.createMapReduceLayers(optimise(list.getComp))
+      super.createMscrs(optimise(list.getComp))
 
     lazy val processNodes: CompNode => Seq[CompNode] = attr {
       case node: ProcessNode => Seq(node) ++ children(node).flatMap(processNodes)
@@ -251,12 +251,12 @@ Robustness
       case other                            => false
     }
 
-    def count(layers: Seq[Layer], start: CompNode, n: CompNode) = {
-      val channels = layers.flatMap(_.mscrs).flatMap(_.channels).distinct
+    def count(mscrs: Seq[Mscr], start: CompNode, n: CompNode) = {
+      val channels = mscrs.flatMap(_.channels).distinct
 
       def print =
         (Seq("OPTIMISED", pretty(start)) ++
-         Seq("LAYERS")   ++ layers ++
+         Seq("MSCRS")   ++ mscrs ++
          Seq("CHANNELS") ++ channels).mkString("\n\n")
 
       channels.filter(_.processNodes.contains(n)) aka (print+"\nFOR NODE\n"+n)

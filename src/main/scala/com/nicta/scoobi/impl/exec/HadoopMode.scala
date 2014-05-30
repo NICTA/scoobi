@@ -39,8 +39,8 @@ import com.nicta.scoobi.impl.io.FileSystems
  *
  *  - optimising the computation graph
  *  - defining "layers" of independent processing nodes
- *  - defining optimal Mscrs in each layer
- *  - executing each layer in sequence
+ *  - creating an optimal map reduce job for each layer
+ *  - executing each map reduce job in sequence
  */
 private[scoobi]
 case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with ExecutionMode {
@@ -71,7 +71,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       s"===== START OF SCOOBI JOB '${sc.jobId}' ========".info
       (banner+"\n").info
 
-      executeLayers(node)
+      executeMscrs(node)
       val result =
         if (!showPlanOnly(sc)) {
           val value = getValue(node)
@@ -88,17 +88,12 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
   }
 
-  /** create "execution layers" from a given node and execute them one by one */
-  private def executeLayers(node: CompNode) {
-    val layers = createMapReduceLayers(node).info("Executing layers", showLayers)
+  /** create independent Map Reduce jobs from a given node and execute them one by one */
+  private def executeMscrs(node: CompNode) {
+    val mscrs = createMscrs(node).info("Executing map reduce jobs", (_:Seq[Mscr]).mkString("\n"))
     if (!showPlanOnly(sc)) {
-      val perLayerJobs = layers.map { _.mscrs.size }
-      val totalJobs = perLayerJobs.sum
-      val prevLayerJobs = (0 until perLayerJobs.size).map { i => perLayerJobs.slice(0, i).sum }
-      assert(prevLayerJobs.size == layers.size)
-
-      layers.zip(prevLayerJobs).foreach { case (layer, prevJobs) => executeLayer(prevJobs, totalJobs)(layer) }
-      setJobSuccess(layers)
+      mscrs.zipWithIndex.foreach { case (mscr, i) => executeMscr(mscr, i, mscrs.size) }
+      setJobSuccess(mscrs)
     }
   }
 
@@ -106,10 +101,10 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
    * if each hadoop job executed successfully, change the _SUCCESS_JOB file into _SUCCESS
    * in each output directory
    */
-  private def setJobSuccess(layers: Seq[Layer]) = {
+  private def setJobSuccess(mscrs: Seq[Mscr]) = {
     import FileSystems._; implicit val configuration = sc.configuration
 
-    val outputDirectories = layers.flatMap(_.sinks.flatMap(_.outputPath(sc)))
+    val outputDirectories = mscrs.flatMap(_.sinks.flatMap(_.outputPath(sc)))
     val scoobiJobIsSuccessful = outputDirectories.forall(dir => listDirectPaths(dir)(sc).exists(_.getName == "_SUCCESS_JOB"))
 
     if (scoobiJobIsSuccessful)
@@ -119,48 +114,28 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       }
   }
 
-  private def executeLayer(prevLayersMscrs: Int, totalMscrsNumber: Int): Layer => Unit =
-    attr { case layer =>
-      Execution(layer, prevLayersMscrs, totalMscrsNumber).execute
-    }
+  private def executeMscr(mscr: Mscr, currentMscrNumber: Int, totalMscrsNumber: Int) =
+    Execution(mscr, currentMscrNumber, totalMscrsNumber).execute
 
   /**
-   * Execution of a "layer" of Mscrs
+   * Execution of a Mscr
    */
-  private case class Execution(layer: Layer, prevLayersMscrs: Int, totalMscrsNumber: Int) {
+  private case class Execution(mscr: Mscr, mscrNumber: Int, totalMscrs: Int) {
 
     def execute {
-      (s"Executing layer ${layer.id}\n"+layer).info
-      runMscrs(layer.mscrs, prevLayersMscrs, totalMscrsNumber)
+      val step = s"$mscrNumber of $totalMscrs"
 
-      layer.sinks.info("Layer sinks: ").foreach(markSinkAsFilled)
-      ("===== END OF LAYER "+layer.id+" ======\n").info
-    }
+      (s"===== START OF MAP REDUCE JOB $step (mscr id = ${mscr.id}) ======\n").info
+      val configured = configureMscr(mscr, mscrNumber, totalMscrs)
+      sc.updateCounters(configured.job.getCounters)
+      configured.report
 
-    /**
-     * run mscrs concurrently if there are more than one.
-     *
-     * Only the execution part is done concurrently, not the configuration.
-     * This is to make sure that there is not undesirable race condition during the setting up of variables
-     */
-    private def runMscrs(mscrs: Seq[Mscr], prevLayersMscrs: Int, totalMscrsNumber: Int) {
-      ("executing map reduce jobs"+mscrs.mkString("\n", "\n", "\n")).info
-
-      val configured = mscrs.toList.zipWithIndex.map { case (mscr, i) =>
-        configureMscr(prevLayersMscrs + i + 1, totalMscrsNumber)(mscr)
-      }
-
-      if (sc.concurrentJobs) {
-        "executing the map reduce jobs concurrently".debug
-        configured.map(executeMscr).sequence.get.map(reportMscr)
-      } else {
-        "executing the map reduce jobs sequentially".debug
-        configured.map { case (job, step) => reportMscr(job.execute, step) }
-      }
+      mscr.sinks.info("Map reduce job sinks: ").foreach(markSinkAsFilled)
+      (s"===== END OF MAP REDUCE JOB $step (mscr id = ${mscr.id}, Scoobi job = ${sc.jobId}) ======\n").info
     }
 
     /** configure a Mscr */
-    private def configureMscr(mscrNumber: Int, totalMscrsNumber: Int) = (mscr: Mscr) => {
+    private def configureMscr(mscr: Mscr, mscrNumber: Int, totalMscrsNumber: Int) = {
       implicit val mscrConfiguration = sc.duplicate
       val step = s"$mscrNumber of $totalMscrsNumber"
 
@@ -168,21 +143,8 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       mscr.inputNodes.foreach(load)
 
       s"Configuring map reduce job $step".debug
-      (MapReduceJob(mscr, layer.id, mscrNumber, totalMscrsNumber).configure, step)
+      MapReduceJob(mscr, mscrNumber, totalMscrsNumber).configure
     }
-
-    /** execute a Mscr */
-    protected def executeMscr = ((job: MapReduceJob, step: String) => {
-      Promise(tryOr((job.execute, step))((e: Exception) => { e.printStackTrace; (job, step) }))
-    }).tupled
-
-    /** report the execution of a Mscr */
-    protected def reportMscr = ((job: MapReduceJob, step: String) => {
-        // update the original configuration with the job counters for each job
-        sc.updateCounters(job.job.getCounters)
-      job.report
-      (s"===== END OF MAP-REDUCE JOB $step (for the Scoobi job '${sc.jobId}') ======\n").info
-    }).tupled
   }
 
   protected def sinksToSave(node: CompNode): Seq[Sink] =
@@ -218,8 +180,6 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     usesAsEnvironment(node).map(_.pushEnv(result))
     result
   }
-
-  private def showLayers = (layers: Seq[Layer]) => mkStrings(layers.flatMap(l => l +: l.mscrs))
 
   private def getValue(node: CompNode): Any =
     node match {

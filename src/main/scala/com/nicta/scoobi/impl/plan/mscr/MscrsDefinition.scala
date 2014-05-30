@@ -41,21 +41,21 @@ import CollectFunctions._
  */
 trait MscrsDefinition extends Layering with Optimiser { outer =>
   /**
-   * create layers of MapReduce jobs from the computation graph defined by the start node
-   * where each layer contains independent map reduce jobs
+   * create MapReduce jobs from the computation graph defined by the start node
+   * where each map reduce job is independent for the next map reduce jobs in the list
    */
-  def createMapReduceLayers(start: CompNode): Seq[Layer] =
-    createLayers(Vector(start), Graph(start)).filterNot(_.isEmpty)
+  def createMscrs(start: CompNode): Seq[Mscr] =
+    createMscrs(Vector(start), Graph(start)).filterNot(_.isEmpty)
 
   /**
-   * From start nodes in the graph and the list of already visited nodes, create new layers of MapReduce jobs
+   * From start nodes in the graph and the list of already visited nodes, create new MapReduce jobs
    */
-  private def createLayers(startNodes: Seq[CompNode], graph: Graph, visited: Seq[CompNode] = Vector()): Seq[Layer] =
+  def createMscrs(startNodes: Seq[CompNode], graph: Graph, visited: Seq[CompNode] = Vector()): Seq[Mscr] =
     processLayers(startNodes.distinct, visited) match {
-      case firstLayer +: rest => {
-        val mscrLayer = createMscrs(inputNodes(firstLayer), visited, graph)
-        mscrLayer +: createLayers(startNodes, graph, (visited ++ firstLayer ++ mscrLayer.nodes).distinct)
-      }
+      case firstLayer +: rest => 
+        val mscr = createMscr(inputNodes(firstLayer), visited, graph)
+        mscr +: createMscrs(startNodes, graph, (visited ++ firstLayer ++ mscr.nodes).distinct)
+      
       case _ => Vector()
     }
 
@@ -68,17 +68,16 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
       .map(_.distinct)
 
   /**
-   * create a layer of Mscrs from input nodes, making sure not to use already visited nodes
+   * create a Mscr from input nodes, making sure not to use already visited nodes
    */
-  protected def createMscrs(inputNodes: Seq[CompNode], visited: Seq[CompNode], graph: Graph): Layer =
-    createMscrs(createInputOutputLayer(inputNodes, visited), graph)
+  protected def createMscr(inputNodes: Seq[CompNode], visited: Seq[CompNode], graph: Graph): Mscr =
+    createMscr(createInputOutputLayer(inputNodes, visited), graph)
 
   /**
-   * find the input and output channels on the layer, assemble them into Mscrs when they have common tags
+   * find the input and output channels on the layer and create a Mscr from those channels
    */
-  protected def createMscrs(inputOutputLayer: Seq[CompNode], graph: Graph): Layer = {
-    Layer(Seq(Mscr.create(inputChannels(inputOutputLayer, graph), outputChannels(inputOutputLayer, graph))).filterNot(_.isEmpty))
-  }
+  protected def createMscr(inputOutputLayer: Seq[CompNode], graph: Graph): Mscr = 
+    Mscr.create(inputChannels(inputOutputLayer, graph), outputChannels(inputOutputLayer, graph))
 
   /**
    * get all the non-visited nodes going from an input nodes to an output
