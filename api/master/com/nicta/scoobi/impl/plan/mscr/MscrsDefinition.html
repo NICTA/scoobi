@@ -1206,51 +1206,65 @@ as a tree. This is a way to avoid conflicts if we have 2 processes trying to ini
       <p class="shortcomment cmt">get all the non-visited nodes going from an input nodes to an output
 </p><div class="fullcomment"><div class="comment cmt"><p>get all the non-visited nodes going from an input nodes to an output
 </p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#createMapReduceLayers" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="createMapReduceLayers(start:com.nicta.scoobi.core.CompNode):Seq[MscrsDefinition.this.Layer]"></a>
-      <a id="createMapReduceLayers(CompNode):Seq[Layer]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#createMscr" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createMscr(inputOutputLayer:Seq[com.nicta.scoobi.core.CompNode],graph:com.nicta.scoobi.impl.plan.mscr.Graph):com.nicta.scoobi.impl.plan.mscr.Mscr"></a>
+      <a id="createMscr(Seq[CompNode],Graph):Mscr"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">createMapReduceLayers</span><span class="params">(<span name="start">start: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>)</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#LayerextendsProductwithSerializable" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer">Layer</a>]</span>
+        <span class="name">createMscr</span><span class="params">(<span name="inputOutputLayer">inputOutputLayer: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="graph">graph: <a href="Graph.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Graph">Graph</a></span>)</span><span class="result">: <a href="Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">create layers of MapReduce jobs from the computation graph defined by the start node
-where each layer contains independent map reduce jobs
+      <p class="shortcomment cmt">find the input and output channels on the layer and create a Mscr from those channels
+</p><div class="fullcomment"><div class="comment cmt"><p>find the input and output channels on the layer and create a Mscr from those channels
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#createMscr" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createMscr(inputNodes:Seq[com.nicta.scoobi.core.CompNode],visited:Seq[com.nicta.scoobi.core.CompNode],graph:com.nicta.scoobi.impl.plan.mscr.Graph):com.nicta.scoobi.impl.plan.mscr.Mscr"></a>
+      <a id="createMscr(Seq[CompNode],Seq[CompNode],Graph):Mscr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createMscr</span><span class="params">(<span name="inputNodes">inputNodes: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="visited">visited: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="graph">graph: <a href="Graph.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Graph">Graph</a></span>)</span><span class="result">: <a href="Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">create a Mscr from input nodes, making sure not to use already visited nodes
+</p><div class="fullcomment"><div class="comment cmt"><p>create a Mscr from input nodes, making sure not to use already visited nodes
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#createMscrs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="createMscrs(startNodes:Seq[com.nicta.scoobi.core.CompNode],graph:com.nicta.scoobi.impl.plan.mscr.Graph,visited:Seq[com.nicta.scoobi.core.CompNode]):Seq[com.nicta.scoobi.impl.plan.mscr.Mscr]"></a>
+      <a id="createMscrs(Seq[CompNode],Graph,Seq[CompNode]):Seq[Mscr]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createMscrs</span><span class="params">(<span name="startNodes">startNodes: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="graph">graph: <a href="Graph.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Graph">Graph</a></span>, <span name="visited">visited: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">Vector()</a></span></span></span>)</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">From start nodes in the graph and the list of already visited nodes, create new MapReduce jobs
 </p>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#createMscrs" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="createMscrs(inputOutputLayer:Seq[com.nicta.scoobi.core.CompNode],graph:com.nicta.scoobi.impl.plan.mscr.Graph):MscrsDefinition.this.Layer"></a>
-      <a id="createMscrs(Seq[CompNode],Graph):Layer"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#createMscrs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="createMscrs(start:com.nicta.scoobi.core.CompNode):Seq[com.nicta.scoobi.impl.plan.mscr.Mscr]"></a>
+      <a id="createMscrs(CompNode):Seq[Mscr]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">createMscrs</span><span class="params">(<span name="inputOutputLayer">inputOutputLayer: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="graph">graph: <a href="Graph.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Graph">Graph</a></span>)</span><span class="result">: <a href="#LayerextendsProductwithSerializable" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer">Layer</a></span>
+        <span class="name">createMscrs</span><span class="params">(<span name="start">start: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>)</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">find the input and output channels on the layer, assemble them into Mscrs when they have common tags
-</p><div class="fullcomment"><div class="comment cmt"><p>find the input and output channels on the layer, assemble them into Mscrs when they have common tags
-</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#createMscrs" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="createMscrs(inputNodes:Seq[com.nicta.scoobi.core.CompNode],visited:Seq[com.nicta.scoobi.core.CompNode],graph:com.nicta.scoobi.impl.plan.mscr.Graph):MscrsDefinition.this.Layer"></a>
-      <a id="createMscrs(Seq[CompNode],Seq[CompNode],Graph):Layer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">createMscrs</span><span class="params">(<span name="inputNodes">inputNodes: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="visited">visited: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="graph">graph: <a href="Graph.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Graph">Graph</a></span>)</span><span class="result">: <a href="#LayerextendsProductwithSerializable" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer">Layer</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">create a layer of Mscrs from input nodes, making sure not to use already visited nodes
-</p><div class="fullcomment"><div class="comment cmt"><p>create a layer of Mscrs from input nodes, making sure not to use already visited nodes
-</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      <p class="shortcomment cmt">create MapReduce jobs from the computation graph defined by the start node
+where each map reduce job is independent for the next map reduce jobs in the list
+</p>
     </li><li name="org.kiama.rewriting.RewriterCore#debug" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="debug(name:&lt;?&gt;,msg:&lt;?&gt;,emitter:&lt;?&gt;):org.kiama.rewriting.Strategy"></a>
       <a id="debug(String,String,Emitter):Strategy"></a>
