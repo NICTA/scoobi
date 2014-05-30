@@ -153,6 +153,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles with NoTimeConvers
     list2.run(configuration)
   }
 
+  override def isInMemory = false
   override def isCluster = false
 }
 
