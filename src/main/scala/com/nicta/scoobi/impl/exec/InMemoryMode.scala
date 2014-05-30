@@ -57,7 +57,7 @@ case class InMemoryMode() extends ExecutionMode {
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     val toExecute = prepare(node)
-    val result = toExecute -> computeValue(sc)
+    val result = computeValue(toExecute)
     allSinks(toExecute).debug("sinks: ").foreach(markSinkAsFilled)
     result
   }
@@ -69,35 +69,31 @@ case class InMemoryMode() extends ExecutionMode {
   }
 
   private
-  lazy val computeValue: ScoobiConfiguration => CompNode => Any =
-    paramAttr { sc: ScoobiConfiguration => node: CompNode =>
-      (node -> compute(sc)).headOption.getOrElse(Seq())
-    }
+  def computeValue(node: CompNode)(implicit sc: ScoobiConfiguration) =
+    compute(node).headOption.getOrElse(Seq())
 
   private
-  lazy val compute: ScoobiConfiguration => CompNode => Seq[_] =
-    paramAttr { sc: ScoobiConfiguration => node: CompNode =>
-      implicit val c = sc
-      val result = node match {
-        case n: Load                                => computeLoad(n)
-        case n: Root                                => Vector(n.ins.map(_ -> computeValue(c)):_*)
-        case n: Return                              => Vector(n.in)
-        case n: ReturnSC                            => Vector(n.in(sc))
-        case n: Op                                  => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
-        case n: Materialise                         => Vector(n.in -> compute(c))
-        case n: ProcessNode if nodeHasBeenFilled(n) => loadSource(n.bridgeStore.toSource, n.wf)
-        case n: GroupByKey                          => computeGroupByKey(n)
-        case n: Combine                             => computeCombine(n)
-        case n: ParallelDo                          => computeParallelDo(n)
-      }
-
-      if (isExpectedResult(node))
-        node match {
-          case Materialise1(_) | Op1(_) | GroupByKey1(_) | ParallelDo1(_) | Combine1(_) | Return1(_) => saveSinks(result, node)
-          case _                                                                                     => ()
-        }
-      result
+  def compute(node: CompNode)(implicit sc: ScoobiConfiguration): Seq[_] = {
+    val result = node match {
+      case n: Load                                => computeLoad(n)
+      case n: Root                                => Vector(n.ins.map(computeValue):_*)
+      case n: Return                              => Vector(n.in)
+      case n: ReturnSC                            => Vector(n.in(sc))
+      case n: Op                                  => Vector(n.execute(computeValue(n.in1), computeValue(n.in2)))
+      case n: Materialise                         => Vector(compute(n.in))
+      case n: ProcessNode if nodeHasBeenFilled(n) => loadSource(n.bridgeStore.toSource, n.wf)
+      case n: GroupByKey                          => computeGroupByKey(n)
+      case n: Combine                             => computeCombine(n)
+      case n: ParallelDo                          => computeParallelDo(n)
     }
+
+    if (isExpectedResult(node))
+      node match {
+        case Materialise1(_) | Op1(_) | GroupByKey1(_) | ParallelDo1(_) | Combine1(_) | Return1(_) => saveSinks(result, node)
+        case _                                                                                     => ()
+      }
+    result
+  }
 
   protected def sinksToSave(node: CompNode): Seq[Sink] = {
     node match {
@@ -133,15 +129,15 @@ case class InMemoryMode() extends ExecutionMode {
       def context = new InputOutputContext(taskContext)
     }
 
-    val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).headOption.getOrElse(()))
+    val (dofn, env) = (pd.dofn, compute(pd.env).headOption.getOrElse(()))
     dofn.setupFunction(env)
-    (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
+    pd.ins.flatMap(compute).foreach { v => dofn.processFunction(env, v, emitter) }
     dofn.cleanupFunction(env, emitter)
     vb.result.debug(_ => "computeParallelDo")
   }
 
   private def computeGroupByKey(gbk: GroupByKey)(implicit sc: ScoobiConfiguration): Seq[_] = {
-    val in = gbk.in -> compute(sc)
+    val in  = compute(gbk.in)
     val gpk = gbk.gpk
 
     /* Partitioning */
@@ -192,7 +188,7 @@ case class InMemoryMode() extends ExecutionMode {
 
 
   private def computeCombine(combine: Combine)(implicit sc: ScoobiConfiguration): Seq[_] =
-    (combine.in -> compute(sc)).map { case (k, vs: Iterable[_]) =>
+    (compute(combine.in)).map { case (k, vs: Iterable[_]) =>
       (k, combine.combine(vs))
     }.debug("computeCombine")
 
