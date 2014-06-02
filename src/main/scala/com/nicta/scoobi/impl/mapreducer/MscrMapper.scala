@@ -42,6 +42,7 @@ import org.apache.hadoop.mapred.JobConf
 class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
 
   lazy implicit val logger = LogFactory.getLog("scoobi.MapTask")
+  private var allInputChannels: InputChannels = _
   private var allOutputChannels: OutputChannels = _
   private var channelOutputFormat: ChannelOutputFormat = _
   private var compositeContext: CompositeInputOutputContext = _
@@ -57,23 +58,15 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     ClasspathDiagnostics.logInfo
     val jobStep = ScoobiConfiguration(context.getConfiguration).jobStep
 
-    val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
-    val mapContext = context.asInstanceOf[MapContext[Any,Any,Any,Any]]
-    val configuration = context.getConfiguration
-
-    /** only get the channels which are connected the input split source to avoid memory issues */
-    val inputChannelIds = DistCache.allCacheFiles(configuration).collect { case file if file.toString.contains(s"scoobi.inputchannel-$jobStep-sourceid-${inputSplit.channel}") =>
-      file.toString.split("channelid-")(1)
-    }.distinct
-
-    taggedInputChannels = inputChannelIds.flatMap { case id =>
-      DistCache.pullObject[InputChannel](context.getConfiguration, s"scoobi.inputchannel-$jobStep-sourceid-${inputSplit.channel}-channelid-$id")
-    }
+    allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, s"scoobi.mappers-$jobStep").getOrElse(InputChannels(Seq()))
     tk = ReflectionUtils.newInstance(context.getMapOutputKeyClass  , context.getConfiguration).asInstanceOf[TaggedKey]
     tv = ReflectionUtils.newInstance(context.getMapOutputValueClass, context.getConfiguration).asInstanceOf[TaggedValue]
 
+    val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
+    val mapContext = context.asInstanceOf[MapContext[Any,Any,Any,Any]]
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
     logger.info("Input is " + inputSplit)
+    taggedInputChannels = allInputChannels.channelsForSource(inputSplit.channel)
 
     // if there are bypass nodes in the channels, use a composite context
     if (taggedInputChannels.exists(_.bypassOutputNodes.nonEmpty)) {

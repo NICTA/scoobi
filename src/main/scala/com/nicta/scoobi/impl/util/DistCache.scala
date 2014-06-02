@@ -111,10 +111,6 @@ object DistCache {
   def cacheFiles(configuration: Configuration) =
     Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))
 
-  /** @return all the cache files */
-  def allCacheFiles(configuration: Configuration) =
-    localCacheFiles(configuration) ++ cacheFiles(configuration)
-
   def pullPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration, memoise: Boolean = false)(f: FSDataInputStream => T): Option[T] = {
 
     lazy val deserialiseObject: Option[T] = {

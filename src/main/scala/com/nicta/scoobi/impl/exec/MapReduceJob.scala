@@ -137,9 +137,7 @@ case class MapReduceJob(mscr: Mscr, mscrNumber: Int, mscrsNumber: Int)(implicit 
   private def configureMappers(jar: JarBuilder) {
     ChannelsInputFormat.configureSources(job, jar, mscr.sources)
 
-    mscr.inputChannels.foreach { inputChannel =>
-      DistCache.pushObject(job.getConfiguration, inputChannel, s"scoobi.inputchannel-${configuration.jobStep}-sourceid-${inputChannel.source.id}-channelid-${inputChannel.id}")
-    }
+    DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), s"scoobi.mappers-${configuration.jobStep}")
     job.setMapperClass(classOf[MscrMapper].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
   }
 
