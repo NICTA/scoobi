@@ -67,7 +67,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html">QuickStart</a></div><div class="colmask threecol">
             <div class="colmid">
               <div class="colleft">
-                <div class="col1"><div id="central"><html><title>Quick Start</title><a name="Quick+Start"><h2 specId="1565773915">Quick Start</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Prerequisites"><h3>Prerequisites</h3></a><p>Before starting, you will need:</p>
+                <div class="col1"><div id="central"><html><title>Quick Start</title><a name="Quick+Start"><h2 specId="1386559816">Quick Start</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Prerequisites"><h3>Prerequisites</h3></a><p>Before starting, you will need:</p>
 <ul>
   <li><a href="http://bit.ly/1k20IIs">Hadoop 2.2.0</a> (see the <a href="http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html">Deployment</a> page for CDH3 and CDH4 configurations)</li>
   <li><a href="http://www.scala-sbt.org/">Sbt 0.13.1</a></li>
@@ -82,7 +82,7 @@ version := &quot;1.0&quot;
 
 scalaVersion := &quot;2.10.3&quot;
 
-libraryDependencies += &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.9.0-SNAPSHOT&quot;
+libraryDependencies += &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.9.0-cdh4-SNAPSHOT&quot;
 
 resolvers ++= Seq(Resolver.sonatypeRepo(&quot;releases&quot;),
                   Resolver.sonatypeRepo(&quot;snaspshots&quot;))
@@ -106,8 +106,8 @@ object WordCount extends ScoobiApp {
 &gt; sbt &quot;run-main mypackage.myapp.WordCount input-files output&quot;
 </code></pre><p>Your Hadoop configuration will automatically get picked up, and all relevant JARs will be made available.</p><p>If you had any trouble following along, take a look at <a href="https://github.com/NICTA/scoobi/tree/master/examples/wordCount">Word Count</a> for a self contained example.</p></div></status></html></div></div>
                 <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="854380519"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1565773915"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="1728182942"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="1386559816"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -331,7 +331,7 @@ object WordCount extends ScoobiApp {
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['854380519','1565773915'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1728182942','1386559816'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                 <div class="col3"><div id="rightcolumn"></div></div>
               </div>
