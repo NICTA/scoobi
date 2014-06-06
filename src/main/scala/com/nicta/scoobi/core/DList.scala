@@ -73,18 +73,18 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**
    * Low-level combine to be able to emit arbitrary reduced values when the combiner is called
    */
-  def combineDo[K, V, U](dofn: DoFn[Iterable[V], U])(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U]): DList[(K, U)]
-  def combineDo[K, V, U](fn: (Iterable[V], Emitter[U]) => Unit)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter1): DList[(K, U)] =
+  def combineDo[K, V, U](dofn: DoFn[Iterable[V], U])(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wfv: WireFormat[V], wu: WireFormat[U]): DList[(K, U)]
+  def combineDo[K, V, U](fn: (Iterable[V], Emitter[U]) => Unit)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wfv: WireFormat[V], wu: WireFormat[U], p: ImplicitParameter1): DList[(K, U)] =
     combineDo(DoFn(fn))
-  def combineDo[K, V, U](fn: (Iterable[V], Counters) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter2): DList[(K, U)] =
+  def combineDo[K, V, U](fn: (Iterable[V], Counters) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wfv: WireFormat[V], wu: WireFormat[U], p: ImplicitParameter2): DList[(K, U)] =
     combineDo(DoFn.fromFunctionWithCounters(fn))
-  def combineDo[K, V, U](fn: (Iterable[V], Heartbeat) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter3): DList[(K, U)] =
+  def combineDo[K, V, U](fn: (Iterable[V], Heartbeat) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wfv: WireFormat[V], wu: WireFormat[U], p: ImplicitParameter3): DList[(K, U)] =
     combineDo(DoFn.fromFunctionWithHeartbeat(fn))
-  def combineDo[K, V, U](fn: (Iterable[V], ScoobiJobContext) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter4): DList[(K, U)] =
+  def combineDo[K, V, U](fn: (Iterable[V], ScoobiJobContext) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wfv: WireFormat[V], wu: WireFormat[U], p: ImplicitParameter4): DList[(K, U)] =
     combineDo(DoFn.fromFunctionWithScoobiJobContext(fn))
-  def combineDo[K, V, U](fn: (Iterable[V], Configuration) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter5): DList[(K, U)] =
+  def combineDo[K, V, U](fn: (Iterable[V], Configuration) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wfv: WireFormat[V], wu: WireFormat[U], p: ImplicitParameter5): DList[(K, U)] =
     combineDo(DoFn.fromFunctionWithConfiguration(fn))
-  def combineDo[K, V, U](fn: (Iterable[V], InputOutputContext) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter6): DList[(K, U)] =
+  def combineDo[K, V, U](fn: (Iterable[V], InputOutputContext) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wfv: WireFormat[V], wu: WireFormat[U], p: ImplicitParameter6): DList[(K, U)] =
     combineDo(DoFn.fromFunctionWithContext(fn))
 
   /**

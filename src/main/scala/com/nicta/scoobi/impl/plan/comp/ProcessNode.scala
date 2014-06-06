@@ -197,11 +197,12 @@ object ParallelDo1 {
 case class Combine(in: CompNode, dofn: DoFunction,
                    wfk:   WireReaderWriter,
                    wfv:   WireReaderWriter,
+                   wfu:   WireReaderWriter,
                    nodeSinks:     Seq[Sink] = Seq(),
                    bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
 
-  def wf = pair(wfk, wfv)
-  override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString+" "+nodeSinksString
+  def wf = pair(wfk, wfu)
+  override val toString = "Combine ("+id+")["+Seq(wfk, wfu).mkString(",")+"] "+bridgeToString+" "+nodeSinksString
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 
@@ -227,7 +228,7 @@ case class Combine(in: CompNode, dofn: DoFunction,
       case (key, values: Iterable[_]) => reduce(values, emitter.context).foreach(reduced => emitter.write((key, reduced)))
     })
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo.create(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), nodeSinks, bridgeStoreId)
+    ParallelDo.create(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfu), nodeSinks, bridgeStoreId)
   }
 }
 object Combine {

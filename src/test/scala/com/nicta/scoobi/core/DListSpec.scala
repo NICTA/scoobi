@@ -286,10 +286,10 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   }
 
   "Combine can access the Emitter to do a custom reduction" >> { implicit sc: SC =>
-    val list = DList(1, 2, 3).map((i: Int) => (i, Seq(i, i+1, i+2))).combineDo((values: Iterable[Int], emitter: Emitter[String]) => {
+    val list = DList(1, 2, 3).map((i: Int) => (i.toDouble, Seq(i, i+1, i+2))).combineDo((values: Iterable[Int], emitter: Emitter[String]) => {
       emitter.write(values.mkString)
     })
-    list.run.normalise === "Vector((1,123), (2,234), (3,345))"
+    list.run.normalise === "Vector((1.0,123), (2.0,234), (3.0,345))"
   }
 
 }

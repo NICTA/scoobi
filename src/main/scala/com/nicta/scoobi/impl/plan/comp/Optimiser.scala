@@ -43,8 +43,8 @@ trait Optimiser extends CompNodes with MemoRewriter {
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
   def combineToParDo = traverseSomebu(strategy[Any] {
-    case c @ Combine(GroupByKey1(_),_,_,_,_,_) => None
-    case c: Combine                            => Some(c.toParallelDo.debug(p => "combineToParDo "+c.id+" to "+p.id))
+    case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => None
+    case c: Combine                              => Some(c.toParallelDo.debug(p => "combineToParDo "+c.id+" to "+p.id))
   })
 
   /**
