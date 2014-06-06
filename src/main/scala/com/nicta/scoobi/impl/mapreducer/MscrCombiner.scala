@@ -17,14 +17,16 @@ package com.nicta.scoobi
 package impl
 package mapreducer
 
-import org.apache.hadoop.mapreduce.{Reducer => HReducer}
+import com.nicta.scoobi.impl.ScoobiConfiguration
+import com.nicta.scoobi.impl.plan.comp.Combine
+import org.apache.hadoop.mapreduce.{Reducer => HReducer, TaskInputOutputContext}
 import scala.collection.JavaConversions._
 
 import rtt._
 import util.DistCache
 import plan.mscr.{OutputChannel, OutputChannels}
 import plan.comp.Combine
-import core.InputOutputContext
+import com.nicta.scoobi.core._
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.conf.Configuration
 import com.nicta.scoobi.impl.exec.ConfiguredWritableComparator
@@ -47,26 +49,29 @@ class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedVal
   }
 
   override def reduce(key: TaggedKey, values: java.lang.Iterable[TaggedValue], context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
-
+    val outerContext = context
     val tag = key.tag
 
     if (combiners.contains(tag)) {
       /* Only perform combining if one is available for this tag. */
-      val combiner = combiners(tag).asInstanceOf[Combine]
+      val combiner = combiners(tag)
 
       /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
       val untaggedValues = new Iterable[Any] { def iterator = values.iterator map (_.get(tag)) }
 
       /* Do the combining. */
-      val reduction = combiner.combine(untaggedValues)
-      tv.setTag(tag)
-      tv.set(reduction)
-
-      context.write(key, tv)
-    } else {
+      val emitter = new EmitterWriter with InputOutputContextScoobiJobContext {
+        def write(value: Any): Unit = {
+          tv.setTag(tag)
+          tv.set(value)
+          context.write(key, tv)
+        }
+        def context: InputOutputContext = new InputOutputContext(outerContext.asInstanceOf[TaskInputOutputContext[Any,Any,Any,Any]])
+      }
+      combiner.combine(untaggedValues, emitter)
+    } else
       /* If no combiner for this tag, TK-TV passes through. */
       values.foreach { value => context.write(key, value) }
-    }
   }
 
   override def cleanup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) { }

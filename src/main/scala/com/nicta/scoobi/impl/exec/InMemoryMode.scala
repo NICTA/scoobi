@@ -193,7 +193,7 @@ case class InMemoryMode() extends ExecutionMode {
 
   private def computeCombine(combine: Combine)(implicit sc: ScoobiConfiguration): Seq[_] =
     (combine.in -> compute(sc)).map { case (k, vs: Iterable[_]) =>
-      (k, combine.combine(vs))
+      (k, combine.reduce(vs, new InputOutputContext(taskContext(sc))).head)
     }.debug("computeCombine")
 
 

@@ -232,10 +232,8 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
    * The key and values are untagged. The emitter is in charge of writing them to the proper tag, which is the channel's tag
    */
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    val combinedValues = combiner.map(c => c.combine(values)).getOrElse(values)
-    reducer.map(_.reduce(environment, key, combinedValues, emitter)).getOrElse {
-      emitter.write((key, combinedValues))
-    }
+    val combinedValues = combiner.flatMap(_.reduce(values, emitter.context)).getOrElse(values)
+    reducer.fold(emitter.write((key, combinedValues)))(_.reduce(environment, key, combinedValues, emitter))
   }
 
   /** invoke the reducer cleanup if there is one */

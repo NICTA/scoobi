@@ -58,15 +58,34 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    */
   def parallelDo[B : WireFormat, E: WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B]
 
-  /**Concatenate one or more distributed lists to this distributed list. */
+  /** Concatenate one or more distributed lists to this distributed list. */
   def ++(ins: DList[A]*): DList[A]
 
-  /**Group the values of a distributed list with key-value elements by key. */
+  /** Group the values of a distributed list with key-value elements by key. */
   def groupByKey[K, V](implicit ev: A <:< (K, V), wk: WireFormat[K], gpk: Grouping[K], wv: WireFormat[V]): DList[(K, Iterable[V])]
 
-  /**Apply an associative function to reduce the collection of values to a single value in a
-   * key-value-collection distributed list. */
+  /**
+   * Apply an associative function to reduce the collection of values to a single value in a
+   *  key-value-collection distributed list
+   */
   def combine[K, V](f: Reduction[V])(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wv: WireFormat[V]): DList[(K, V)]
+
+  /**
+   * Low-level combine to be able to emit arbitrary reduced values when the combiner is called
+   */
+  def combineDo[K, V, U](dofn: DoFn[Iterable[V], U])(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U]): DList[(K, U)]
+  def combineDo[K, V, U](fn: (Iterable[V], Emitter[U]) => Unit)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter1): DList[(K, U)] =
+    combineDo(DoFn(fn))
+  def combineDo[K, V, U](fn: (Iterable[V], Counters) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter2): DList[(K, U)] =
+    combineDo(DoFn.fromFunctionWithCounters(fn))
+  def combineDo[K, V, U](fn: (Iterable[V], Heartbeat) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter3): DList[(K, U)] =
+    combineDo(DoFn.fromFunctionWithHeartbeat(fn))
+  def combineDo[K, V, U](fn: (Iterable[V], ScoobiJobContext) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter4): DList[(K, U)] =
+    combineDo(DoFn.fromFunctionWithScoobiJobContext(fn))
+  def combineDo[K, V, U](fn: (Iterable[V], Configuration) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter5): DList[(K, U)] =
+    combineDo(DoFn.fromFunctionWithConfiguration(fn))
+  def combineDo[K, V, U](fn: (Iterable[V], InputOutputContext) => U)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wu: WireFormat[U], p: ImplicitParameter6): DList[(K, U)] =
+    combineDo(DoFn.fromFunctionWithContext(fn))
 
   /**
    * Turn a distributed list into a normal, non-distributed collection that can be accessed

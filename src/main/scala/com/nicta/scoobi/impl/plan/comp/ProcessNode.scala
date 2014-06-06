@@ -194,7 +194,7 @@ object ParallelDo1 {
  * The Combine node type specifies the building of a CompNode as a result of applying an associative
  * function to the values of an existing key-values CompNode
  */
-case class Combine(in: CompNode, f: (Any, Any) => Any,
+case class Combine(in: CompNode, dofn: DoFunction,
                    wfk:   WireReaderWriter,
                    wfv:   WireReaderWriter,
                    nodeSinks:     Seq[Sink] = Seq(),
@@ -205,19 +205,34 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 
-  /** combine values: this is used in a Reducer */
-  def combine(values: Iterable[Any]) = values.reduce(f)
+  def reduce(values: Iterable[_], context: InputOutputContext): Option[Any] = {
+    val vectorWriter = new VectorEmitterWriter(context)
+    combine(values, vectorWriter)
+    vectorWriter.result.headOption
+  }
+
+  private def asEmitter(emitter: EmitterWriter) = new Emitter[Any] with DelegatedScoobiJobContext {
+    def emit(x: Any) { emitter.write(x) }
+    def delegate = emitter
+  }
+
+  def combine(values: Iterable[Any], emitter: EmitterWriter) =
+    dofn.processFunction((), values, asEmitter(emitter))
 
   /**
    * @return a ParallelDo node where the mapping uses the combine function to combine the Iterable[V] values
    */
   def toParallelDo = {
     val dofn = BasicDoFunction((env: Any, input: Any, emitter: EmitterWriter) => input match {
-      case (key, values: Iterable[_]) => emitter.write((key, values.reduce(f)))
+      case (key, values: Iterable[_]) => reduce(values, emitter.context).foreach(reduced => emitter.write((key, reduced)))
     })
     // Return(()) is used as the Environment because there's no need for a specific value here
     ParallelDo.create(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), nodeSinks, bridgeStoreId)
   }
+}
+object Combine {
+  def reducer[A](f: (A, A) => A) = DoFn((vs: Iterable[A], emitter: Emitter[A]) =>
+    emitter.write(vs.reduce(f)))
 }
 object Combine1 {
   def unapply(node: Combine): Option[CompNode] = Some(node.in)

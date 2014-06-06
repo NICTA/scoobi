@@ -124,7 +124,7 @@ trait CompNodeFactory extends Scope {
   def load                             = loadWith("start")
   def aRoot(nodes: CompNode*)          = Root(nodes)
   def rt                               = Return("", wireFormat[String])
-  def cb(in: CompNode)                 = Combine(in, (s1: Any, s2: Any) => s1.toString + s2.toString, wireFormat[String], wireFormat[String])
+  def cb(in: CompNode)                 = Combine(in, Combine.reducer((s1: Any, s2: Any) => s1.toString + s2.toString), wireFormat[String], wireFormat[String])
   def gbk(in: CompNode): GroupByKey    = GroupByKey(in, wireFormat[String], grouping[String], wireFormat[String])
   def gbk(sink: Sink): GroupByKey      = gbk(load).addSink(sink).asInstanceOf[GroupByKey]
   def mt(in: ProcessNode)              = Materialise(in, wireFormat[Iterable[String]])

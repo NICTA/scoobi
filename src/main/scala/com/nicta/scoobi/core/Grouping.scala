@@ -35,7 +35,8 @@ trait Grouping[K] extends KeyGrouping {
 
   /** Specifies the order in which grouped values are presented to a Reducer
    * task, for a given partition. */
-  def sortCompare(x: K, y: K): SOrdering = groupCompare(x, y)
+  def sortCompare(x: K, y: K): SOrdering =
+    groupCompare(x, y)
 
   /** Specifies how values, for a given partition, are grouped together in
    * a given partition. */
@@ -230,8 +231,8 @@ trait KeyGrouping {
 
   private[scoobi] def isEqualWithSort(k1: Any, k2: Any): Boolean  = sortKey(k1, k2) == EQ
   private[scoobi] def isEqualWithGroup(k1: Any, k2: Any): Boolean = groupKey(k1, k2) == EQ
-  private[scoobi] def toSortOrder: Order[Any] = Order.order(sortKey(_, _))
-  private[scoobi] def toGroupOrder: Order[Any] = Order.order(groupKey(_, _))
+  private[scoobi] def toSortOrder: Order[Any] = Order.order(sortKey)
+  private[scoobi] def toGroupOrder: Order[Any] = Order.order(groupKey)
   private[scoobi] def toSortOrdering: Ordering[Any]  = new Ordering[Any] { def compare(x: Any, y: Any): Int = sortKey(x, y).toInt }
   private[scoobi] def toGroupOrdering: Ordering[Any] = new Ordering[Any] { def compare(x: Any, y: Any): Int = groupKey(x, y).toInt  }
 }
