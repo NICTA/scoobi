@@ -92,7 +92,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   private def executeMscrs(node: CompNode) {
     val mscrs = createMscrs(node).info("Executing map reduce jobs", (_:Seq[Mscr]).mkString("\n"))
     if (!showPlanOnly(sc)) {
-      mscrs.zipWithIndex.foreach { case (mscr, i) => executeMscr(mscr, i, mscrs.size) }
+      mscrs.zipWithIndex.foreach { case (mscr, i) => executeMscr(mscr, i+1, mscrs.size) }
       setJobSuccess(mscrs)
     }
   }
