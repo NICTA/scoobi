@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../../../lib/class_big.png" />
+        <a href="Combine$.html" title="Go to companion"><img src="../../../../../../lib/class_to_object_big.png" /></a>
         <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.plan.comp">comp</a></p>
-        <h1>Combine</h1>
+        <h1><a href="Combine$.html" title="Go to companion">Combine</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Combine</span><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="f">f: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span><span class="result"> extends <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Combine</span><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="dofn">dofn: <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span><span class="result"> extends <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -82,7 +82,7 @@ function to the values of an existing key-values CompNode
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.plan.comp.Combine#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(in:com.nicta.scoobi.core.CompNode,f:(Any,Any)=&gt;Any,wfk:com.nicta.scoobi.core.WireReaderWriter,wfv:com.nicta.scoobi.core.WireReaderWriter,nodeSinks:Seq[com.nicta.scoobi.core.Sink],bridgeStoreId:String):com.nicta.scoobi.impl.plan.comp.Combine"></a>
+      <a id="&lt;init&gt;(in:com.nicta.scoobi.core.CompNode,dofn:com.nicta.scoobi.core.DoFunction,wfk:com.nicta.scoobi.core.WireReaderWriter,wfv:com.nicta.scoobi.core.WireReaderWriter,nodeSinks:Seq[com.nicta.scoobi.core.Sink],bridgeStoreId:String):com.nicta.scoobi.impl.plan.comp.Combine"></a>
       <a id="&lt;init&gt;:Combine"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@ function to the values of an existing key-values CompNode
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Combine</span><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="f">f: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span>
+        <span class="name">Combine</span><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="dofn">dofn: <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span>
       </span>
       </h4>
       
@@ -310,18 +310,31 @@ function to the values of an existing key-values CompNode
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable → AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.Combine#combine" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="combine(values:Iterable[Any]):Any"></a>
-      <a id="combine(Iterable[Any]):Any"></a>
+      <a id="combine(values:Iterable[Any],emitter:com.nicta.scoobi.core.EmitterWriter):Unit"></a>
+      <a id="combine(Iterable[Any],EmitterWriter):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">combine</span><span class="params">(<span name="values">values: <a href="../../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+        <span class="name">combine</span><span class="params">(<span name="values">values: <a href="../../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="emitter">emitter: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">combine values: this is used in a Reducer</p>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Combine#dofn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="dofn:com.nicta.scoobi.core.DoFunction"></a>
+      <a id="dofn:DoFunction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dofn</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -348,19 +361,6 @@ function to the values of an existing key-values CompNode
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a> → Equals → AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.comp.Combine#f" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="f:(Any,Any)=&gt;Any"></a>
-      <a id="f:(Any,Any)⇒Any"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">f</span><span class="result">: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="scala.Any">Any</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -705,6 +705,19 @@ function to the values of an existing key-values CompNode
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Combine#reduce" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reduce(values:Iterable[_],context:com.nicta.scoobi.core.InputOutputContext):Option[Any]"></a>
+      <a id="reduce(Iterable[_],InputOutputContext):Option[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduce</span><span class="params">(<span name="values">values: <a href="../../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[_]</span>, <span name="context">context: <a href="../../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Any">Any</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl#sinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sinks:Seq[com.nicta.scoobi.core.Sink]"></a>
       <a id="sinks:Seq[Sink]"></a>

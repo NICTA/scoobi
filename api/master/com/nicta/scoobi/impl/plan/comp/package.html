@@ -81,7 +81,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Combine.html"><span class="name">Combine</span></a><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="f">f: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span><span class="result"> extends <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="Combine.html"><span class="name">Combine</span></a><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="dofn">dofn: <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span><span class="result"> extends <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">The Combine node type specifies the building of a CompNode as a result of applying an associative
@@ -324,6 +324,19 @@ because they are effectively files which are distributed via the distributed cac
       </span>
       <span class="symbol">
         <a href="CollectFunctions$.html"><span class="name">CollectFunctions</span></a><span class="result"> extends <a href="CollectFunctions.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions">CollectFunctions</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Combine" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Combine"></a>
+      <a id="Combine:Combine"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Combine$.html"><span class="name">Combine</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
