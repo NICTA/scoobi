@@ -260,7 +260,7 @@ object GroupByKey1 {
  * A DataSource object specifies how the loading is performed
  */
 case class Load(source: Source, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
-  override val toString = "Load ("+id+")["+wf+"] ("+source+") "+sinksString
+  override val toString = "Load ("+id+")["+wf+"] (source "+source.id+") "+sinksString
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Load1 {
