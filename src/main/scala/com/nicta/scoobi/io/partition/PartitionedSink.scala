@@ -146,7 +146,7 @@ abstract class PartitionedOutputFormat[P, K, V] extends FileOutputFormat[P, (K, 
   }
 
   protected def generatePathForKeyValue(sinkId: String, partition: P, workDir: Path, partitionFunction: Option[P => String])(configuration: Configuration): Path = {
-    new Path(workDir, new Path(sinkId, partitionFunction.map(_(partition)).getOrElse(partition.toString)))
+    new Path(workDir, new Path(sinkId, partitionFunction.fold(partition.toString)(_(partition))))
   }
 
   protected def getBaseRecordWriter(context: TaskAttemptContext, path: Path): RecordWriter[K, V]

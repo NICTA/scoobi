@@ -57,7 +57,7 @@ trait ProcessNodeImpl extends ProcessNode {
   def nodeSinks : Seq[Sink]
 
   /** display the bridge id */
-  def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.checkpointPath.map(" "+_).getOrElse("")+")"
+  def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.checkpointPath.fold("")(" " + _)+")"
   /** display the sinks if any */
   def nodeSinksString = if (nodeSinks.nonEmpty) nodeSinks.map(s => s.outputPath(ScoobiConfiguration())).mkString("[sinks: ", ",", "]") else ""
 }
@@ -69,7 +69,7 @@ trait ValueNodeImpl extends ValueNode with WithEnvironment {
   lazy val id: Int = UniqueId.get
 
   /** display the sinks if any */
-  def sinksString = if (sinks.nonEmpty) sinks.mkString("[sinks: ", ",", "]") else ""
+  def sinksString = if (sinks.nonEmpty) sinks.map(_.stringId).mkString("[sinks: ", ",", "]") else ""
 }
 
 /**
