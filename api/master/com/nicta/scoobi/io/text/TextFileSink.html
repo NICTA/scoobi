@@ -42,6 +42,9 @@
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="OverwritableTextSink.html" class="extype" name="com.nicta.scoobi.io.text.OverwritableTextSink">OverwritableTextSink</a></div>
         </div></div>
         
 
@@ -439,15 +442,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextFileSink#outputFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputFormat(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[org.apache.hadoop.mapreduce.lib.output.TextOutputFormat[org.apache.hadoop.io.NullWritable,A]]"></a>
-      <a id="outputFormat(ScoobiConfiguration):Class[TextOutputFormat[NullWritable,A]]"></a>
+      <a id="outputFormat(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[_&lt;:org.apache.hadoop.mapreduce.OutputFormat[org.apache.hadoop.io.NullWritable,A]]"></a>
+      <a id="outputFormat(ScoobiConfiguration):Class[_&lt;:OutputFormat[NullWritable,A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputFormat</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.output.TextOutputFormat">TextOutputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]]</span>
+        <span class="name">outputFormat</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Class">Class</span>[_ &lt;: <span class="extype" name="org.apache.hadoop.mapreduce.OutputFormat">OutputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextFileSink.A">A</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The OutputFormat specifying the type of output for this DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>The OutputFormat specifying the type of output for this DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
