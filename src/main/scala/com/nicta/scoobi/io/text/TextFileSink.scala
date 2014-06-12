@@ -19,17 +19,20 @@ package io
 package text
 
 import core._
+import org.apache.hadoop.mapred.InvalidJobConfException
 import partition._
 import org.apache.hadoop.io.NullWritable
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat, FileOutputCommitter}
-import org.apache.hadoop.mapreduce.{OutputFormat, Job, RecordWriter, TaskAttemptContext}
+import org.apache.hadoop.mapreduce._
 import impl.io.Files
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress.CompressionCodec
 import org.apache.hadoop.io.SequenceFile.CompressionType
 import impl.ScoobiConfigurationImpl
+
+import scala.Some
 
 
 case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, compression: Option[Compression] = None) extends DataSink[NullWritable, A, A] {
@@ -38,7 +41,8 @@ case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, 
   private val output = new Path(path)
 
   def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[NullWritable, A]] =
-    classOf[TextOutputFormat[NullWritable, A]]
+    if (overwrite) classOf[OverwritableTextOutputFormat[NullWritable, A]]
+    else           classOf[TextOutputFormat[NullWritable, A]]
 
   def outputKeyClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
   def outputValueClass(implicit sc: ScoobiConfiguration) = TextFileSink.runtimeClass[A]
@@ -111,3 +115,13 @@ class PartitionedTextOutputFormat[P, K, V] extends PartitionedOutputFormat[P, K,
       }
     }.getRecordWriter(context)
 }
+
+class OverwritableTextOutputFormat[K, V] extends TextOutputFormat[K, V] {
+  override def checkOutputSpecs(job: JobContext) {
+    val outDir: Path = FileOutputFormat.getOutputPath(job)
+    if (outDir == null) {
+      throw new InvalidJobConfException("Output directory not set.")
+    }
+  }
+}
+

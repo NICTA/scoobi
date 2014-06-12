@@ -35,9 +35,7 @@ import com.nicta.scoobi.core.Compression
  * The downloaded files will be collected from the working directory of the map task and go to "target/test" based on their path
  */
 class DownloadSink(target: String, isDownloadedFile: Path => Boolean, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) extends DataSink[NullWritable, NullWritable, NullWritable] {
-  private val delegate =
-    if (overwrite) new OverwritableTextSink[NullWritable](target, overwrite, check)
-    else           new TextFileSink[NullWritable](target, overwrite, check)
+  private val delegate = new TextFileSink[NullWritable](target, overwrite, check)
 
   override def isSinkResult(tag: Int) = isDownloadedFile
 
@@ -50,19 +48,4 @@ class DownloadSink(target: String, isDownloadedFile: Path => Boolean, overwrite:
   override def outputValueClass(implicit sc: core.ScoobiConfiguration) = delegate.outputValueClass
   override def outputKeyClass(implicit sc: core.ScoobiConfiguration) = delegate.outputKeyClass
   override def outputFormat(implicit sc: core.ScoobiConfiguration) = delegate.outputFormat
-}
-
-class OverwritableTextSink[A : Manifest](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, compression: Option[Compression] = None) extends
-  TextFileSink[A](path, overwrite, check, compression)  {
-  override def outputFormat(implicit sc: ScoobiConfiguration) =
-    classOf[OverwritableTextOutputFormat[NullWritable, A]]
-}
-
-class OverwritableTextOutputFormat[K, V] extends TextOutputFormat[K, V] {
-  override def checkOutputSpecs(job: JobContext) {
-    val outDir: Path = FileOutputFormat.getOutputPath(job)
-    if (outDir == null) {
-      throw new InvalidJobConfException("Output directory not set.")
-    }
-  }
 }
