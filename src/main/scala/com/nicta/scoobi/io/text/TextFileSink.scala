@@ -24,7 +24,7 @@ import org.apache.hadoop.io.NullWritable
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat, FileOutputCommitter}
-import org.apache.hadoop.mapreduce.{Job, RecordWriter, TaskAttemptContext}
+import org.apache.hadoop.mapreduce.{OutputFormat, Job, RecordWriter, TaskAttemptContext}
 import impl.io.Files
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress.CompressionCodec
@@ -37,7 +37,9 @@ case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, 
 
   private val output = new Path(path)
 
-  def outputFormat(implicit sc: ScoobiConfiguration) = classOf[TextOutputFormat[NullWritable, A]]
+  def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[NullWritable, A]] =
+    classOf[TextOutputFormat[NullWritable, A]]
+
   def outputKeyClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
   def outputValueClass(implicit sc: ScoobiConfiguration) = TextFileSink.runtimeClass[A]
   def outputCheck(implicit sc: ScoobiConfiguration) {
