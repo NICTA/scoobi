@@ -229,7 +229,8 @@ case class MapReduceJob(mscr: Mscr, mscrNumber: Int, mscrsNumber: Int)(implicit 
     val (successFiles, outputFiles) = fileSystems.listDirectPaths(configuration.temporaryOutputDirectory).partition(_.getName == "_SUCCESS")
     mscr.outputChannels.foreach(_.collectOutputs(outputFiles))
     mscr.outputChannels.foreach(_.collectSuccessFile(successFiles.headOption))
-    configuration.deleteTemporaryOutputDirectory
+    if (configuration.getBoolean("scoobi.deletetempdir", true))
+        configuration.deleteTemporaryOutputDirectory
     this
   }
 }

@@ -368,9 +368,13 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def defaultScoobiDir                    = dirPath("/tmp/scoobi-"+sys.props.get("user.name").getOrElse("user"))
   lazy val scoobiDir                      = configuration.getOrSet("scoobi.dir", defaultScoobiDir)
   lazy val workingDir                     = configuration.getOrSet("scoobi.workingdir", dirPath(scoobiDir + jobId))
+  lazy val tempDirName                    = configuration.getOrSet("scoobi.tempdirname", dirPath("tmp-out-"+hadoopConfiguration.get(JOB_STEP)+"/"))
+  lazy val temporaryDir                   = configuration.getOrSet("scoobi.tempdir", workingDir+tempDirName)
+
   lazy val scoobiDirectory: Path          = fileSystem.makeQualified(new Path(scoobiDir))
   lazy val workingDirectory: Path         = fileSystem.makeQualified(new Path(workingDir))
-  def temporaryOutputDirectory            = fileSystem.makeQualified(new Path(workingDirectory, "tmp-out-"+hadoopConfiguration.get(JOB_STEP)+"/"))
+  def temporaryOutputDirectory            = fileSystem.makeQualified(new Path(temporaryDir))
+
   lazy val temporaryJarFile: File         = File.createTempFile("scoobi-job-"+jobId, ".jar")
 
   def deleteScoobiDirectory          = fileSystem.delete(scoobiDirectory, true)

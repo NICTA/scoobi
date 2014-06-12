@@ -77,8 +77,11 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
       ClasspathDiagnostics.logInfo
       // uploading the jars must only be done when the configuration is fully setup with "onHadoop"
       if (!locally) uploadLibJarsFiles(deleteLibJarsFirst = deleteLibJars)
-      try { run }
-      finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
+      try     run
+      finally {
+        if (!keepFiles && configuration.configuration.getBoolean("scoobi.deleteworkingdir", true))
+          configuration.deleteWorkingDirectory
+      }
     }
   }
 
