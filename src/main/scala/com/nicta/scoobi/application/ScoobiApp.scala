@@ -74,7 +74,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     parseHadoopArguments(arguments)
     onHadoop {
       // print out the urls of the most important jars for Java, Hadoop, Avro, Scoobi
-      ClasspathDiagnostics.logInfo
+      ClasspathDiagnostics.logDebug
       // uploading the jars must only be done when the configuration is fully setup with "onHadoop"
       if (!locally) uploadLibJarsFiles(deleteLibJarsFirst = deleteLibJars)
       try     run
