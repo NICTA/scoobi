@@ -348,6 +348,20 @@ distributed cache. Two APIs are provided for pushing and pulling objects.
       </h4>
       <p class="shortcomment cmt">pull an object from the cache by passing the cache paths directly</p>
     </li><li name="com.nicta.scoobi.impl.util.DistCache#pullObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pullObject[T](configuration:org.apache.hadoop.conf.Configuration,tag:String,deserialiser:java.io.DataInputStream=&gt;T,memoise:Boolean):Option[T]"></a>
+      <a id="pullObject[T](Configuration,String,(DataInputStream)⇒T,Boolean):Option[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pullObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="deserialiser">deserialiser: (<span class="extype" name="java.io.DataInputStream">DataInputStream</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullObject.T">T</span></span>, <span name="memoise">memoise: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullObject.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
+the current job.</p>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#pullObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="pullObject[T](configuration:org.apache.hadoop.conf.Configuration,tag:String,memoise:Boolean):Option[T]"></a>
       <a id="pullObject[T](Configuration,String,Boolean):Option[T]"></a>
       <h4 class="signature">
@@ -400,8 +414,22 @@ the current job.</p>
         <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="obj">obj: <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pushObject.T">T</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="check">check: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job</p><div class="fullcomment"><div class="comment cmt"><p>Distribute an object to be available for tasks in the current job</p><p>By default check right away if the object can be deserialised
+      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job using xstream</p><div class="fullcomment"><div class="comment cmt"><p>Distribute an object to be available for tasks in the current job using xstream</p><p>By default check right away if the object can be deserialised
 </p></div></div>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#pushObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pushObject[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,serialiser:(T,java.io.DataOutputStream)=&gt;Unit,tag:String):org.apache.hadoop.fs.Path"></a>
+      <a id="pushObject[T](Configuration,T,(T,DataOutputStream)⇒Unit,String):Path"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="obj">obj: <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pushObject.T">T</span></span>, <span name="serialiser">serialiser: (<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pushObject.T">T</span>, <span class="extype" name="java.io.DataOutputStream">DataOutputStream</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job
+</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
