@@ -479,6 +479,32 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     override def toString = "Date"
   }
 
+  /**
+   * Java's Map
+   */
+  implicit def wf[A : WireFormat, B : WireFormat]: WireFormat[java.util.Map[A, B]] = new WireFormat[java.util.Map[A, B]] {
+    val wfa = implicitly[WireFormat[A]]
+    val wfb = implicitly[WireFormat[B]]
+
+    def toWire(x: java.util.Map[A, B], out: DataOutput) = {
+      val size = x.size
+      out.writeInt(size)
+      val iterator = x.entrySet.iterator
+      while(iterator.hasNext) {
+        val entry = iterator.next
+        wfa.toWire(entry.getKey, out)
+        wfb.toWire(entry.getValue, out)
+      }
+    }
+    def fromWire(in: DataInput): java.util.Map[A, B] = {
+      val size = in.readInt
+      val map = new java.util.HashMap[A, B](size)
+      (1 to size).foreach { i =>
+        map.put(wfa.fromWire(in), wfb.fromWire(in))
+      }
+      map
+    }
+  }
   /**  Shapeless tagged types */
   import scalaz.@@
   implicit def taggedTypeWireFormat[T : WireFormat, U]: WireFormat[T @@ U] =
