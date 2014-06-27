@@ -23,7 +23,7 @@ import org.apache.hadoop.conf.Configuration
 import Configurations._
 import ScoobiConfiguration._
 import java.net.URI
-import java.io.IOException
+import java.io._
 import org.apache.commons.logging.LogFactory
 import control.Exceptions._
 
@@ -46,13 +46,17 @@ object DistCache {
 
   /**
    * Distribute an object to be available for tasks in the current job
+   */
+  def pushObject[T](configuration: Configuration, obj: T, serialiser: (T, DataOutputStream) => Unit, tag: String): Path =
+    serialise[T](configuration, obj, tag)(serialiser)
+
+  /**
+   * Distribute an object to be available for tasks in the current job using xstream
    *
    * By default check right away if the object can be deserialised
    */
   def pushObject[T](configuration: Configuration, obj: T, tag: String, check: Boolean = true): Path = {
-    val path = serialise[T](configuration, obj, tag) { path =>
-      cache.addCacheFile(path.toUri, configuration)
-    }
+    val path = pushObject[T](configuration, obj, (t: T, out: DataOutputStream) => Serialiser.serialise(t, out), tag)
 
     if (check)
       try Serialiser.deserialise(path.getFileSystem(configuration).open(path))
@@ -64,21 +68,25 @@ object DistCache {
   /**
    * serialise an object to a path
    */
-  private def serialise[T](configuration: Configuration, obj: T, tag: String)(action: Path => Unit): Path = {
+  private def serialise[T](configuration: Configuration, obj: T, tag: String)(serialiser: (T, DataOutputStream) => Unit): Path = {
     /* Serialise */
     val path = tagToPath(configuration, tag)
     val dos = path.getFileSystem(configuration).create(path)
-    Serialiser.serialise(obj, dos)
-    action(path)
+    try serialiser(obj, dos)
+    finally dos.close
+    cache.addCacheFile(path.toUri, configuration)
     path
   }
 
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
   def pullObject[T](configuration: Configuration, tag: String, memoise: Boolean = false): Option[T] =
-    pullPath(configuration, tagToPath(configuration, tag), memoise) { dis =>
-      Serialiser.deserialise(dis).asInstanceOf[T]
-    }
+    pullPath(configuration, tagToPath(configuration, tag), memoise)(in => Serialiser.deserialise(in).asInstanceOf[T])
+
+  /** Get an object that has been distributed so as to be available for tasks in
+    * the current job. */
+  def pullObject[T](configuration: Configuration, tag: String, deserialiser: DataInputStream => T, memoise: Boolean = false): Option[T] =
+    pullPath(configuration, tagToPath(configuration, tag), memoise)(deserialiser)
 
   /** pull an object from the cache by passing the cache paths directly */
   def pullObject[T](cacheFiles: Array[Path], path: Path): Option[T] =

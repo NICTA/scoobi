@@ -42,7 +42,7 @@ trait Serialiser {
     xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
   }
 
-  def serialise(obj: Any, out: OutputStream) = synchronized {
+  def serialise(obj: Any, out: OutputStream): Unit = synchronized {
     try { xstream.toXML(obj, out) }
     finally { out.close()  }
   }

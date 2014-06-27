@@ -18,12 +18,7 @@ package impl
 package plan
 package source
 
-import java.io.DataInput
-import java.io.DataOutput
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io._
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.NullWritable
@@ -54,7 +49,9 @@ import com.nicta.scoobi.impl.rtt.Configured
 trait SeqInput {
   lazy val logger = LogFactory.getLog("scoobi.SeqInput")
 
-  /** Create a distributed list of a specified length whose elements are coming from a scala collection */
+  /**
+   * Create a distributed list of a specified length whose elements are coming from a scala collection
+   */
   def fromSeq[A : WireFormat](seq: Seq[A]): DList[A] = {
 
     val source = new DataSource[NullWritable, A, A] {
@@ -67,7 +64,12 @@ trait SeqInput {
       def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
         job.getConfiguration.setInt(LengthProperty, seq.size)
         job.getConfiguration.set(IdProperty, id.toString)
-        DistCache.pushObject(job.getConfiguration, seq, seqProperty(id))
+
+        val serialiser = (sequence: Seq[A], stream: DataOutputStream) =>
+          implicitly[WireFormat[Seq[A]]].toWire(sequence, stream)
+
+        job.getConfiguration.set(IdProperty, id.toString)
+        DistCache.pushObject(job.getConfiguration, seq, serialiser, seqProperty(id))
         DistCache.pushObject(job.getConfiguration, implicitly[WireFormat[A]], wireFormatProperty(id))
       }
 
@@ -122,8 +124,9 @@ class SeqInputFormat[A] extends InputFormat[NullWritable, A] {
     val n    = conf.getInt(LengthProperty, 0)
     val id   = conf.getInt(IdProperty, 0)
 
-    val seq = DistCache.pullObject[Seq[A]](conf, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
-    val wf  = DistCache.pullObject[WireFormat[A]](conf, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
+    implicit val wf  = DistCache.pullObject[WireFormat[A]](conf, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
+    val deserialiser = (stream: DataInputStream) => implicitly[WireFormat[Seq[A]]].fromWire(stream)
+    val seq = DistCache.pullObject[Seq[A]](conf, seqProperty(id), deserialiser).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
     val splitSize = {

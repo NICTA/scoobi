@@ -16,6 +16,8 @@
 package com.nicta.scoobi
 package core
 
+import java.io.{DataInput, DataOutput}
+
 import com.nicta.scoobi.testing.{TempFiles, InputStringTestFile, TestFiles}
 import testing.mutable.NictaSimpleJobs
 import Scoobi._
@@ -23,6 +25,7 @@ import impl.plan.comp.CompNodeData
 import impl.io._
 import CompNodeData._
 import org.specs2.matcher.{FileMatchers, TerminationMatchers}
+import scala.collection.JavaConversions._
 
 class DObjectSpec extends NictaSimpleJobs with TerminationMatchers with FileMatchers {
 
@@ -64,5 +67,14 @@ class DObjectSpec extends NictaSimpleJobs with TerminationMatchers with FileMatc
     val path = TestFiles.path(TestFiles.createTempFile("test"))
     DObject(1).toTextFile(path, overwrite = true).persist
     Files.pathExists(path)(sc.configuration) must beTrue
+  }
+
+  "A DObject zipped with a DList must only create 1 job" >> { implicit sc: ScoobiConfiguration =>
+    lazy val value = mutableMapAsJavaMap(scala.collection.mutable.Map("a" -> 1, "b" -> 2, "c" -> 3)) // create an outside reference for the test
+    val o = DObject(value)
+    val list = DList("a", "b", "c")
+
+    val joined = (o join list).map { case (o1, l1) => (o1(l1), l1) }.groupByKey.combine(Reduction((_:String) + (_:String)))
+    joined.run must_== Seq((1, "a"), (2, "b"), (3, "c"))
   }
 }
