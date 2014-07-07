@@ -1,0 +1,25 @@
+Maintenance version
+
+### Improvements
+
+* using wire formats to serialise `DObjects`
+* added a WireFormat for `java.util.Map[A, B]`
+* set the classpath diagnostics as debug info on the client by default
+* simplified the use of overwritable text file output format
+* added an overwritable text file sink
+* added the possibility to fully specify the temp directory with `scoobi.workingdir` and `scoobi.tempdir`
+* display only the sink id when pretty printing the graph
+* added methods to use an Emitter in the combine phase
+* added the possibility to use the task input output context in a `parallelDo`
+* added the possibility to access the configuration from a map operation
+* throw an exception if the compression codec is not available added a method to check the availability of a codec
+* added a "download" sink to collect downloaded files in map tasks
+
+### Fixes
+
+* fixed the passing of `WireFormat` when transforming a `Combine` node in a `ParallelDo`
+* fixed the numbering of steps
+* set the configuration if possible on the codec before getting its compressor
+* fix for checkpoints when one job fails In that case the `_SUCCESS_JOB` file for the other job is not changed into `_SUCCESS` but we should still use the checkpoint if there is one
+  
+------ 
