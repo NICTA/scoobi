@@ -87,6 +87,6 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
     conf
   }
 
-  private val configurationFiles = Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml", "yarn-site.xml")
+  private val configurationFiles = Seq("core-default.xml", "core-site.xml", "mapred-site.xml", "hdfs-site.xml", "yarn-site.xml")
 }
 
