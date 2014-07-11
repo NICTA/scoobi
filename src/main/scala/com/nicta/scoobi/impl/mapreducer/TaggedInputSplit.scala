@@ -49,6 +49,7 @@ class TaggedInputSplit(private var conf: Configuration,
     val deserializer: Deserializer[InputSplit] = factory.getDeserializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
     deserializer.open(in.asInstanceOf[DataInputStream])
     inputSplit = deserializer.deserialize(inputSplit)
+    ReflectionUtils.setConf(inputSplit, conf)
   }
 
   def write(out: DataOutput) {

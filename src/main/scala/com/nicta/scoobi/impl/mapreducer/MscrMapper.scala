@@ -63,6 +63,8 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     tv = ReflectionUtils.newInstance(context.getMapOutputValueClass, context.getConfiguration).asInstanceOf[TaggedValue]
 
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
+    inputSplit.setConf(context.getConfiguration)
+
     val mapContext = context.asInstanceOf[MapContext[Any,Any,Any,Any]]
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
     logger.info("Input is " + inputSplit)
