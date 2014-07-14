@@ -112,7 +112,7 @@ object PartitionedSink {
 abstract class PartitionedOutputFormat[P, K, V] extends FileOutputFormat[P, (K, V)] {
 
   private val recordWriters =
-    new collection.mutable.HashMap[Path, RecordWriter[K, V]]
+    new collection.mutable.HashMap[String, RecordWriter[K, V]]
 
 
   def getRecordWriter(context: TaskAttemptContext): RecordWriter[P, (K, V)] = {
@@ -132,7 +132,7 @@ abstract class PartitionedOutputFormat[P, K, V] extends FileOutputFormat[P, (K, 
         val (key, value) = kv
         val finalPath = generatePathForKeyValue(sinkId, partition, workDir, partitionFunction)(context.getConfiguration)
         val rw = recordWriters.get(finalPath) match {
-          case None    => val newWriter = getBaseRecordWriter(context, finalPath); recordWriters.put(finalPath, newWriter); newWriter
+          case None    => val newWriter = getBaseRecordWriter(context, new Path(finalPath)); recordWriters.put(finalPath, newWriter); newWriter
           case Some(x) => x
         }
         rw.write(key, value)
@@ -145,8 +145,14 @@ abstract class PartitionedOutputFormat[P, K, V] extends FileOutputFormat[P, (K, 
     }
   }
 
-  protected def generatePathForKeyValue(sinkId: String, partition: P, workDir: Path, partitionFunction: Option[P => String])(configuration: Configuration): Path = {
-    new Path(workDir, new Path(sinkId, partitionFunction.fold(partition.toString)(_(partition))))
+  protected def generatePathForKeyValue(sinkId: String, partition: P, workDir: Path, partitionFunction: Option[P => String])(configuration: Configuration): String = {
+    val sb = new StringBuilder
+    sb.append(workDir)
+    sb.append("/")
+    sb.append(sinkId)
+    sb.append("/")
+    sb.append(partitionFunction.fold(partition.toString)(_(partition)))
+    sb.toString
   }
 
   protected def getBaseRecordWriter(context: TaskAttemptContext, path: Path): RecordWriter[K, V]
