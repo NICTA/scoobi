@@ -26,6 +26,7 @@ import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, Speci
 import org.apache.avro.generic._
 import org.apache.avro.io.DecoderFactory
 import annotation.implicitNotFound
+import scalaz.{\/-, -\/, \/}
 
 /** Typeclass for sending types across the Hadoop wire */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
@@ -468,6 +469,25 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       }
     }
     override def toString = "Either["+wt1+","+wt2+"]"
+  }
+
+  implicit def DisjunctionFmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new DisjunctionWireFormat[T1, T2]
+  class DisjunctionWireFormat[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) extends WireFormat[T1 \/ T2] {
+    def toWire(x: T1 \/ T2, out: DataOutput) = x match {
+      case -\/(x) => { out.writeBoolean(true); wt1.toWire(x, out) }
+      case \/-(x) => { out.writeBoolean(false); wt2.toWire(x, out) }
+    }
+    def fromWire(in: DataInput): T1 \/ T2 = {
+      val isLeft = in.readBoolean()
+      if (isLeft) {
+        val x: T1 = wt1.fromWire(in)
+        -\/(x)
+      } else {
+        val x: T2 = wt2.fromWire(in)
+        \/-(x)
+      }
+    }
+    override def toString = "\\/["+wt1+","+wt2+"]"
   }
 
   /**
