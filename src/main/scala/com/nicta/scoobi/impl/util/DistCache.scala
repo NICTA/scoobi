@@ -90,7 +90,7 @@ object DistCache {
 
   /** pull an object from the cache by passing the cache paths directly */
   def pullObject[T](cacheFiles: Array[Path], path: Path): Option[T] =
-    pullPath(cacheFiles.toSeq, path, new Configuration) { dis =>
+    pullFromPath(cacheFiles.toSeq, path, new Configuration) { dis =>
       Serialiser.deserialise(dis).asInstanceOf[T]
     }
 
@@ -109,7 +109,7 @@ object DistCache {
    *  - use a WireFormat to deserialise the object
    */
   def pullPath[T](configuration: Configuration, path: Path, memoise: Boolean = false)(f: FSDataInputStream => T): Option[T] =
-    pullPath(localCacheFiles(configuration) ++ cacheFiles(configuration), path, configuration, memoise)(f)
+    pullFromPath(localCacheFiles(configuration) ++ cacheFiles(configuration), path, configuration, memoise)(f)
 
   /** @return the list of local cache files */
   def localCacheFiles(configuration: Configuration) =
@@ -119,7 +119,7 @@ object DistCache {
   def cacheFiles(configuration: Configuration) =
     Option(cache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))
 
-  def pullPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration, memoise: Boolean = false)(f: FSDataInputStream => T): Option[T] = {
+  def pullFromPath[T](cacheFiles: Seq[Path], path: Path, configuration: Configuration = new Configuration, memoise: Boolean = false)(f: FSDataInputStream => T): Option[T] = {
 
     lazy val deserialiseObject: Option[T] = {
       val allFiles = (cacheFiles :+ path).distinct.toStream
