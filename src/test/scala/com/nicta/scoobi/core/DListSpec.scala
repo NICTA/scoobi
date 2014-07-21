@@ -104,8 +104,6 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
 
   tag("issue 319")
   "Sum and maps" >> { implicit sc: ScoobiConfiguration =>
-    implicit val wf = WireFormat.EitherFmt[String, Int]
-
     val dlist = DList[Either[String, Int]](Left("test"), Right(1))
 
     val lefts = dlist.collect { case Left(l) => l+"2" }
