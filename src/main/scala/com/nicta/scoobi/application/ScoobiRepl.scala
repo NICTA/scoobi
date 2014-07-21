@@ -18,7 +18,7 @@ package application
 
 import org.apache.hadoop.fs._
 import scala.tools.nsc.Settings
-import tools.nsc.interpreter.{ReplReporter, AbstractFileClassLoader, ILoop}
+import scala.tools.nsc.interpreter.{ReplReporter, AbstractFileClassLoader, ILoop}
 import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter
@@ -45,6 +45,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
   override def main(arguments: Array[String]) {
     parseHadoopArguments(arguments)
     try { run }
+    catch { case e: Throwable => e.printStackTrace }
     finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
   }
 
@@ -117,7 +118,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 /**
  * definition of the interpreter loop
  */
-class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
+class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop {
   val configuration = scoobiInterpreter.configuration
 
   def imports: Seq[String] = Seq(
@@ -136,30 +137,32 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
     else result
   }
 
-  addThunk {
+  override def createInterpreter() {
+    if (addedClasspath != "")
+      settings.classpath append addedClasspath
     // create a new interpreter which will strip the output with a special function
     intp = new ILoopInterpreter {
-      def strippingWriter = new ReplStrippingWriter(outer) {
-        override def truncate(str: String): String = {
-          val truncated =
-            if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
-            else str
-          truncateResult(truncated)
-        }
-      }
-      override lazy val reporter = new ReplReporter(outer) {
-        val realReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
-        override def printMessage(message: String) { realReporter.printMessage(message) }
-        override def displayPrompt() { realReporter.displayPrompt() }
-        override def flush() { realReporter.flush() }
-      }
+//      def strippingWriter = new ReplStrippingWriter(intp) {
+//        override def truncate(str: String): String = {
+//          val truncated =
+//            if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
+//            else str
+//          truncateResult(truncated)
+//        }
+//      }
+//      override lazy val reporter = new ReplReporter(intp) {
+//        val realReporter = new ConsoleReporter(intp.settings, null, strippingWriter)
+//        override def printMessage(message: String) { realReporter.printMessage(message) }
+//        override def displayPrompt() { realReporter.displayPrompt() }
+//        override def flush() { realReporter.flush() }
+//      }
     }
-    intp.beQuietDuring {
-      imports.foreach(i => intp.addImports(i))
+    intp.initialize {
       configuration.addClassLoader(intp.classLoader)
       if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
       else                                      scoobiInterpreter.local
       scoobiInterpreter.initialise
+      if (imports.nonEmpty) intp.interpret(imports.mkString("import ", "; import ", "\n"))
       woof()
     }
   }

@@ -27,7 +27,7 @@ class SerialiserSpec extends UnitSpecification {
   }
 
   "a serialised object must not failed to be serialised even with unicode characters" >> {
-    deserialise(serialise("abc\001")) === "abc\001"
+    deserialise(serialise("abc\\u001")) === "abc\\u001"
   }
 
   def serialise(a: Any): ByteArrayOutputStream = {

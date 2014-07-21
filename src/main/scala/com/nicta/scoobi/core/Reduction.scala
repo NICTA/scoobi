@@ -303,7 +303,7 @@ trait Reduction[A] {
    */
   def pointwiseC[Q[+_], B]: Reduction[Cokleisli[Q, B, A]] =
     Reduction((g, h) => Cokleisli(
-      b => reduce(g run b, h run b)
+      (b: Q[B]) => reduce(g run b, h run b)
     ))
 
   /**
@@ -311,7 +311,7 @@ trait Reduction[A] {
    */
   def pointwise2C[Q[+_], B, C]: Reduction[Cokleisli[Q, (B, C), A]] =
     Reduction((g, h) => Cokleisli(
-      b => reduce(g run b, h run b)
+      (b: Q[(B, C)]) => reduce(g run b, h run b)
     ))
 
   /**
@@ -319,7 +319,7 @@ trait Reduction[A] {
    */
   def pointwise3C[Q[+_], B, C, D]: Reduction[Cokleisli[Q, (B, C, D), A]] =
     Reduction((g, h) => Cokleisli(
-      b => reduce(g run b, h run b)
+      (b: Q[(B, C, D)]) => reduce(g run b, h run b)
     ))
 
   /**
@@ -327,7 +327,7 @@ trait Reduction[A] {
    */
   def pointwise4C[Q[+_], B, C, D, E]: Reduction[Cokleisli[Q, (B, C, D, E), A]] =
     Reduction((g, h) => Cokleisli(
-      b => reduce(g run b, h run b)
+      (b: Q[(B, C, D, E)]) => reduce(g run b, h run b)
     ))
 
   /**
@@ -335,7 +335,7 @@ trait Reduction[A] {
    */
   def pointwise5C[Q[+_], B, C, D, E, F]: Reduction[Cokleisli[Q, (B, C, D, E, F), A]] =
     Reduction((g, h) => Cokleisli(
-      b => reduce(g run b, h run b)
+      (b: Q[(B, C, D, E, F)]) => reduce(g run b, h run b)
     ))
 
   /**
@@ -757,12 +757,6 @@ trait Reductions {
      * A reduction on queues by appending.
      */
     def queue[A]: Reduction[collection.immutable.Queue[A]] =
-      Reduction(_ ++ _)
-
-    /**
-     * A reduction on stacks by appending.
-     */
-    def stack[A]: Reduction[collection.immutable.Stack[A]] =
       Reduction(_ ++ _)
 
     /**

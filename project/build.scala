@@ -71,7 +71,7 @@ object build extends Build {
     name := "scoobi",
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
-    scalaVersion := "2.10.3")
+    scalaVersion := "2.11.0")
 
   lazy val buildSettings: Seq[Settings] =
     buildInfoSettings ++
