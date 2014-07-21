@@ -18,6 +18,7 @@ package io
 package sequence
 
 import java.io.IOException
+import com.nicta.scoobi.impl.control.Exceptions
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{NullWritable, Writable, SequenceFile}
@@ -240,14 +241,25 @@ class CheckedSeqSource[K : Manifest, V : Manifest, A](paths: Seq[String],
                                                       override val check: Source.InputCheck = Source.defaultInputCheck) extends
    SeqSource[K, V, A](paths, inputFormat, inputConverter, checkFileTypes, check) {
 
+  private val logger = LogFactory.getLog("scoobi.seqsource")
+
   override protected def checkInputPathType(p: Path)(implicit sc: ScoobiConfiguration) {
     if (checkFileTypes)
       Files.getSingleFilePerDir(p)(sc) foreach { filePath =>
-        val seqReader: SequenceFile.Reader = Compatibility.newSequenceFileReader(sc.configuration, filePath)
-        checkType(seqReader.getKeyClass, manifest[K].runtimeClass, "KEY")
-        checkType(seqReader.getValueClass, manifest[V].runtimeClass, "VALUE")
-        seqReader.close
+      val seqReader =
+        try   { Some(Compatibility.newSequenceFileReader(sc.configuration, filePath)) }
+        catch {
+          case t: Throwable =>
+            logger.error(s"Cannot read path $filePath to check its key and value type", t)
+            None
+        }
+
+      seqReader.foreach { reader =>
+        checkType(reader.getKeyClass, manifest[K].runtimeClass, "KEY")
+        checkType(reader.getValueClass, manifest[V].runtimeClass, "VALUE")
+        reader.close
       }
+    }
   }
 
   private def checkType(actual: Class[_], expected: Class[_], typeStr: String) {
