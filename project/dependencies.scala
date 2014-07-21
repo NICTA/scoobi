@@ -32,6 +32,9 @@ object dependencies {
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
     "com.googlecode.kiama"              %% "kiama"                     % "1.6.0",
+  if (scalaVersion.contains("2.10"))
+    "com.chuusai"                       %  s"shapeless_$scalaVersion"  % "2.0.0"
+  else
     "com.chuusai"                       %% "shapeless"                 % "2.0.0",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
     "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test")
@@ -59,8 +62,11 @@ object dependencies {
     "org.specs2"                        %% "specs2-html"               % specs2Version      ,
     "org.specs2"                        %% "specs2-analysis"           % specs2Version      ).map(_ % "test")
 
-  def repl = Seq(
-    "org.scala-lang"                    %  "jline"                     % "2.10.3"
+  def repl(scalaVersion: String) = Seq(
+    if (scalaVersion.contains("2.10"))
+    "org.scala-lang"                    %  "jline"                     % scalaVersion
+    else
+    "jline"                             %  "jline"                     % scalaVersion.split("\\.").take(2).mkString(".")
   )
 
   lazy val resolversSettings = resolvers ++= Seq(
