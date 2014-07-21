@@ -141,21 +141,21 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop {
     if (addedClasspath != "")
       settings.classpath append addedClasspath
     // create a new interpreter which will strip the output with a special function
-    intp = new ILoopInterpreter {
-//      def strippingWriter = new ReplStrippingWriter(intp) {
-//        override def truncate(str: String): String = {
-//          val truncated =
-//            if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
-//            else str
-//          truncateResult(truncated)
-//        }
-//      }
-//      override lazy val reporter = new ReplReporter(intp) {
-//        val realReporter = new ConsoleReporter(intp.settings, null, strippingWriter)
-//        override def printMessage(message: String) { realReporter.printMessage(message) }
-//        override def displayPrompt() { realReporter.displayPrompt() }
-//        override def flush() { realReporter.flush() }
-//      }
+    intp = new ILoopInterpreter { inner =>
+      def strippingWriter = new ReplStrippingWriter(inner) {
+        override def truncate(str: String): String = {
+          val truncated =
+            if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
+            else str
+          truncateResult(truncated)
+        }
+      }
+      override lazy val reporter = new ReplReporter(inner) {
+        val realReporter = new ConsoleReporter(inner.settings, null, strippingWriter)
+        override def printMessage(message: String) { realReporter.printMessage(message) }
+        override def displayPrompt() { realReporter.displayPrompt() }
+        override def flush() { realReporter.flush() }
+      }
     }
     intp.initialize {
       configuration.addClassLoader(intp.classLoader)
