@@ -126,7 +126,7 @@ class SeqInputFormat[A] extends InputFormat[NullWritable, A] {
 
     implicit val wf  = DistCache.pullObject[WireFormat[A]](conf, wireFormatProperty(id)).getOrElse({sys.error("no wireformat found in the distributed cache for: "+wireFormatProperty(id)); null})
     val deserialiser = (stream: DataInputStream) => implicitly[WireFormat[Seq[A]]].fromWire(stream)
-    val seq = DistCache.pullObject[Seq[A]](conf, seqProperty(id), deserialiser).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
+    val seq = DistCache.pullObjectDeserialise[Seq[A]](conf, seqProperty(id), deserialiser).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
     val splitSize = {
