@@ -72,7 +72,7 @@ object build extends Build {
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
     scalaVersion := "2.11.1",
-    crossScalaVersions := Seq("2.10.3", "2.11.1"),
+    crossScalaVersions := Seq("2.10.4", "2.11.1"),
     // https://gist.github.com/djspiewak/976cd8ac65e20e136f05
     unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-${scalaBinaryVersion.value}"
   )
