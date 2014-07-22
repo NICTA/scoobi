@@ -45,7 +45,6 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
   override def main(arguments: Array[String]) {
     parseHadoopArguments(arguments)
     try { run }
-    catch { case e: Throwable => e.printStackTrace }
     finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
   }
 
