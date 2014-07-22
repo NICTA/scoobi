@@ -160,9 +160,16 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoopCompat {
       intp.beQuietDuring {
         if (imports.nonEmpty) intp.interpret(imports.mkString("import ", "; import ", "\n"))
         configuration.addClassLoader(intp.classLoader)
-        if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
-        else                                      scoobiInterpreter.local
-        scoobiInterpreter.initialise
+        // It's important that the LogFactories are initialized with the _same_ ContextClassLoader to ensure we setup
+        // the correct commons-logging LogFactory, otherwise we use the default 'quiet' configuration of 'true'.
+        // This happened previously with Scala 2.10, due to the real 'addThunk', but not in 2.11+.
+        val oldClassLoader = Thread.currentThread.getContextClassLoader
+        try {
+          Thread.currentThread.setContextClassLoader(intp.classLoader)
+          if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
+          else scoobiInterpreter.local
+          scoobiInterpreter.initialise
+        } finally Thread.currentThread.setContextClassLoader(oldClassLoader)
         woof()
       }
     }
