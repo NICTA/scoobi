@@ -18,7 +18,7 @@ package application
 
 import org.apache.hadoop.fs._
 import scala.tools.nsc.Settings
-import scala.tools.nsc.interpreter.{ReplReporter, AbstractFileClassLoader, ILoop}
+import scala.tools.nsc.interpreter.{ReplReporter, ILoop}
 import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter

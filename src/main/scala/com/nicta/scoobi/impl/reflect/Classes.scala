@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package impl
 package reflect
 
+import com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader
 import java.util.jar.{JarEntry, JarInputStream}
 import java.io.{File, FileInputStream}
 import java.net.{URL, URLDecoder}
@@ -27,7 +28,6 @@ import monitor.Loggable._
 import org.apache.commons.logging.LogFactory
 
 import control.Exceptions._
-import scala.reflect.internal.util.AbstractFileClassLoader
 import scala.reflect.io.AbstractFile
 
 /**
