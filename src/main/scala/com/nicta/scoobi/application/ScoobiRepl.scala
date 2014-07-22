@@ -117,7 +117,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 /**
  * definition of the interpreter loop
  */
-class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop {
+class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoopCompat {
   val configuration = scoobiInterpreter.configuration
 
   def imports: Seq[String] = Seq(
@@ -156,13 +156,15 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop {
         override def flush() { realReporter.flush() }
       }
     }
-    intp.initialize {
-      configuration.addClassLoader(intp.classLoader)
-      if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
-      else                                      scoobiInterpreter.local
-      scoobiInterpreter.initialise
-      if (imports.nonEmpty) intp.interpret(imports.mkString("import ", "; import ", "\n"))
-      woof()
+    addThunk {
+      intp.beQuietDuring {
+        if (imports.nonEmpty) intp.interpret(imports.mkString("import ", "; import ", "\n"))
+        configuration.addClassLoader(intp.classLoader)
+        if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
+        else                                      scoobiInterpreter.local
+        scoobiInterpreter.initialise
+        woof()
+      }
     }
   }
 
