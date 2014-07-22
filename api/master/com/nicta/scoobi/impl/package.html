@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>impl - com.nicta.scoobi.impl</title>
@@ -9,6 +8,11 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../lib/package_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a></p>
-        <h1>impl</h1>
+        <h1>impl</h1> <span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -69,8 +77,12 @@
       <span class="symbol">
         <a href="Configurations.html"><span class="name">Configurations</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">This trait adds functionalities to Hadoop's Configuration object
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@ConfigurationsextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This trait adds functionalities to Hadoop's Configuration object
 </p>
     </li><li name="com.nicta.scoobi.impl.Persister" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PersisterextendsAnyRef"></a>
@@ -83,7 +95,11 @@
       <span class="symbol">
         <a href="Persister.html"><span class="name">Persister</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@PersisterextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ScoobiConfigurationImplextendsScoobiConfigurationwithProductwithSerializable"></a>
@@ -94,9 +110,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiConfigurationImpl.html"><span class="name">ScoobiConfigurationImpl</span></a><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>, <span name="counters">counters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span> = <span class="defval" name="new org.apache.hadoop.mapreduce.Counters()">...</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="ScoobiConfigurationImpl.html"><span class="name">ScoobiConfigurationImpl</span></a><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="symbol">new Configuration</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Set()</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Set()</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<a href="../reflect/internal/util$.html#AbstractFileClassLoader=scala.reflect.internal.util.AbstractFileClassLoader" class="extmbr" name="com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader">AbstractFileClassLoader</a>] = <span class="symbol"><span class="name"><a href="../../../../scala/package.html">None</a></span></span></span>, <span name="counters">counters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span> = <span class="symbol">new HadoopCounters</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@ScoobiConfigurationImplextendsScoobiConfigurationwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurations" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ScoobiConfigurationsextendsAnyRef"></a>
@@ -109,7 +129,11 @@
       <span class="symbol">
         <a href="ScoobiConfigurations.html"><span class="name">ScoobiConfigurations</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@ScoobiConfigurationsextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -129,7 +153,11 @@
       <span class="symbol">
         <a href="Configurations$.html"><span class="name">Configurations</span></a><span class="result"> extends <a href="Configurations.html" class="extype" name="com.nicta.scoobi.impl.Configurations">Configurations</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@Configurations" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.ScoobiConfiguration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ScoobiConfiguration"></a>
@@ -142,7 +170,11 @@
       <span class="symbol">
         <a href="ScoobiConfiguration$.html"><span class="name">ScoobiConfiguration</span></a><span class="result"> extends <a href="ScoobiConfigurations.html" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurations">ScoobiConfigurations</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ScoobiConfigurationImpl"></a>
@@ -155,7 +187,11 @@
       <span class="symbol">
         <a href="ScoobiConfigurationImpl$.html"><span class="name">ScoobiConfigurationImpl</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@ScoobiConfigurationImpl" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.collection" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="collection"></a>
@@ -168,7 +204,11 @@
       <span class="symbol">
         <a href="collection/package.html"><span class="name">collection</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@collection" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.control" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="control"></a>
@@ -181,7 +221,11 @@
       <span class="symbol">
         <a href="control/package.html"><span class="name">control</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@control" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.exec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="exec"></a>
@@ -194,7 +238,11 @@
       <span class="symbol">
         <a href="exec/package.html"><span class="name">exec</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@exec" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.io" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="io"></a>
@@ -207,7 +255,11 @@
       <span class="symbol">
         <a href="io/package.html"><span class="name">io</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@io" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.mapreducer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="mapreducer"></a>
@@ -220,7 +272,11 @@
       <span class="symbol">
         <a href="mapreducer/package.html"><span class="name">mapreducer</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@mapreducer" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.monitor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="monitor"></a>
@@ -233,7 +289,11 @@
       <span class="symbol">
         <a href="monitor/package.html"><span class="name">monitor</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@monitor" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.plan" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="plan"></a>
@@ -246,7 +306,11 @@
       <span class="symbol">
         <a href="plan/package.html"><span class="name">plan</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@plan" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.reflect" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="reflect"></a>
@@ -259,7 +323,11 @@
       <span class="symbol">
         <a href="reflect/package.html"><span class="name">reflect</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@reflect" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.rtt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="rtt"></a>
@@ -272,7 +340,11 @@
       <span class="symbol">
         <a href="rtt/package.html"><span class="name">rtt</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@rtt" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.text" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="text"></a>
@@ -285,7 +357,11 @@
       <span class="symbol">
         <a href="text/package.html"><span class="name">text</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@text" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.util" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="util"></a>
@@ -298,7 +374,11 @@
       <span class="symbol">
         <a href="util/package.html"><span class="name">util</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.impl.package@util" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -325,6 +405,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+
+
     </body>
       </html>

@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>HadoopExamples - com.nicta.scoobi.testing.HadoopExamples</title>
@@ -9,6 +8,11 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../lib/trait_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.testing">testing</a></p>
-        <h1>HadoopExamples</h1>
+        <h1>HadoopExamples</h1> <span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -43,9 +51,9 @@
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../application/HadoopLogFactoryInitialisation.html" class="extype" name="com.nicta.scoobi.application.HadoopLogFactoryInitialisation">HadoopLogFactoryInitialisation</a>, <a href="../application/CommandLineScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs">CommandLineScoobiUserArgs</a>, <span class="extype" name="org.specs2.main.CommandLineArguments">CommandLineArguments</span>, <span class="extype" name="scala.DelayedInit">DelayedInit</span>, <a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a>, <a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a>, <a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a>, <a href="../application/LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a>, <a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a>, <a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a>, <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="mutable/HadoopSpecification.html" class="extype" name="com.nicta.scoobi.testing.mutable.HadoopSpecification">HadoopSpecification</a>, <a href="HadoopSpecification.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecification">HadoopSpecification</a>, <a href="mutable/HadoopSpecificationLike.html" class="extype" name="com.nicta.scoobi.testing.mutable.HadoopSpecificationLike">HadoopSpecificationLike</a>, <a href="HadoopSpecificationLike.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationLike">HadoopSpecificationLike</a>, <a href="HadoopSpecificationStructure.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationStructure">HadoopSpecificationStructure</a>, <a href="UploadedLibJars.html" class="extype" name="com.nicta.scoobi.testing.UploadedLibJars">UploadedLibJars</a></div>
-        </div></div>
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="HadoopSpecification.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecification">HadoopSpecification</a>, <a href="mutable/HadoopSpecification.html" class="extype" name="com.nicta.scoobi.testing.mutable.HadoopSpecification">HadoopSpecification</a>, <a href="HadoopSpecificationLike.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationLike">HadoopSpecificationLike</a>, <a href="mutable/HadoopSpecificationLike.html" class="extype" name="com.nicta.scoobi.testing.mutable.HadoopSpecificationLike">HadoopSpecificationLike</a>, <a href="HadoopSpecificationStructure.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationStructure">HadoopSpecificationStructure</a>, <a href="UploadedLibJars.html" class="extype" name="com.nicta.scoobi.testing.UploadedLibJars">UploadedLibJars</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -95,10 +103,14 @@
       <span class="symbol">
         <a href="HadoopExamples$ClusterHadoopContext.html"><span class="name">ClusterHadoopContext</span></a><span class="result"> extends <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Context for running examples on the cluster
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@ClusterHadoopContextextendsHadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Context for running examples on the cluster
 </p>
-    </li><li name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="HadoopContextextendsFixture[com.nicta.scoobi.core.ScoobiConfiguration]"></a>
       <a id="HadoopContext:HadoopContext"></a>
       <h4 class="signature">
@@ -109,8 +121,14 @@
       <span class="symbol">
         <a href="HadoopExamples$HadoopContext.html"><span class="name">HadoopContext</span></a><span class="result"> extends <span class="extype" name="org.specs2.specification.Fixture">Fixture</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
       </span>
-      </h4>
-      <p class="comment cmt">trait for creating contexts having ScoobiConfigurations</p>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@HadoopContextextendsFixture[com.nicta.scoobi.core.ScoobiConfiguration]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">trait for creating contexts having ScoobiConfigurations</p><div class="fullcomment"><div class="comment cmt"><p>trait for creating contexts having ScoobiConfigurations</p><p>the isLocalOnly method provides a hint to speed-up the execution (because there's no need to upload jars if a run
+is local)
+</p></div></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples.InMemoryHadoopContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="InMemoryHadoopContextextendsHadoopExamples.this.HadoopContext"></a>
       <a id="InMemoryHadoopContext:InMemoryHadoopContext"></a>
@@ -122,8 +140,12 @@
       <span class="symbol">
         <a href="HadoopExamples$InMemoryHadoopContext.html"><span class="name">InMemoryHadoopContext</span></a><span class="result"> extends <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Context for running examples in memory
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@InMemoryHadoopContextextendsHadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Context for running examples in memory
 </p>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples.LocalHadoopContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="LocalHadoopContextextendsHadoopExamples.this.HadoopContext"></a>
@@ -136,8 +158,12 @@
       <span class="symbol">
         <a href="HadoopExamples$LocalHadoopContext.html"><span class="name">LocalHadoopContext</span></a><span class="result"> extends <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Context for running examples locally
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@LocalHadoopContextextendsHadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Context for running examples locally
 </p>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples.SkippedHadoopContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="SkippedHadoopContextextendsHadoopExamples.this.HadoopContext"></a>
@@ -150,8 +176,12 @@
       <span class="symbol">
         <a href="HadoopExamples$SkippedHadoopContext.html"><span class="name">SkippedHadoopContext</span></a><span class="result"> extends <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Context for showing that an execution is skipped
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@SkippedHadoopContextextendsHadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Context for showing that an execution is skipped
 </p>
     </li></ol>
             </div>
@@ -169,7 +199,11 @@
       <span class="symbol">
         <span class="name">frameworkName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@frameworkName:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the framework name: yarn, classic or local. This is only relevant for CDH5</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Cluster#fs" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="fs:String"></a>
@@ -182,7 +216,11 @@
       <span class="symbol">
         <span class="name">fs</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@fs:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the filesystem address</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Cluster#jobTracker" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="jobTracker:String"></a>
@@ -195,7 +233,11 @@
       <span class="symbol">
         <span class="name">jobTracker</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@jobTracker:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the jobtracker address</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></dd></dl></div>
     </li></ol>
             </div>
@@ -203,19 +245,6 @@
         <div id="values" class="values members">
               <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -226,8 +255,12 @@
       <span class="symbol">
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -239,22 +272,13 @@
       <span class="symbol">
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@##():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -265,8 +289,12 @@
       <span class="symbol">
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.specs2.main.CommandLineArguments#arguments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="arguments:org.specs2.main.Arguments"></a>
       <a id="arguments:Arguments"></a>
@@ -278,7 +306,11 @@
       <span class="symbol">
         <span class="name">arguments</span><span class="result">: <span class="extype" name="org.specs2.main.Arguments">Arguments</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@arguments:org.specs2.main.Arguments" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -291,7 +323,11 @@
       <span class="symbol">
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#categories" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="categories:String"></a>
@@ -304,7 +340,11 @@
       <span class="symbol">
         <span class="name">categories</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@categories:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the categories to show when logging, as a regular expression</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#chain" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="chain(contexts:Seq[HadoopExamples.this.HadoopContext]):HadoopExamples.this.HadoopContext{valconfiguration:com.nicta.scoobi.core.ScoobiConfiguration}"></a>
@@ -317,7 +357,11 @@
       <span class="symbol">
         <span class="name">chain</span><span class="params">(<span name="contexts">contexts: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>)</span><span class="result">: <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a> { val configuration: com.nicta.scoobi.core.ScoobiConfiguration }</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@chain(contexts:Seq[HadoopExamples.this.HadoopContext]):HadoopExamples.this.HadoopContext{valconfiguration:com.nicta.scoobi.core.ScoobiConfiguration}" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a context chaining a sequence of contexts</p></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Hadoop#classDirs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="classDirs:Seq[String]"></a>
@@ -330,7 +374,11 @@
       <span class="symbol">
         <span class="name">classDirs</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@classDirs:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the classes directories to include on a job classpath</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#cleanup" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="cleanup(c:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
@@ -343,7 +391,11 @@
       <span class="symbol">
         <span class="name">cleanup</span><span class="params">(<span name="c">c: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@cleanup(c:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">cleanup temporary files after job execution</p>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
@@ -356,7 +408,11 @@
       <span class="symbol">
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -375,7 +431,11 @@
       <span class="symbol">
         <span class="name">cluster</span><span class="result">: <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@cluster:HadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">context for cluster execution</p>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#configureArguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configureArguments(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
@@ -388,7 +448,11 @@
       <span class="symbol">
         <span class="name">configureArguments</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@configureArguments(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">set command-line arguments on the configuration object</p><div class="fullcomment"><div class="comment cmt"><p>set command-line arguments on the configuration object</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Hadoop#configureForCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configureForCluster(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -401,7 +465,11 @@
       <span class="symbol">
         <span class="name">configureForCluster</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@configureForCluster(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with cluster setup
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#configureForInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -415,7 +483,11 @@
       <span class="symbol">
         <span class="name">configureForInMemory</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@configureForInMemory(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with memory setup
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LocalHadoop#configureForLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -429,7 +501,11 @@
       <span class="symbol">
         <span class="name">configureForLocal</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@configureForLocal(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with local setup
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#configureJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -443,7 +519,11 @@
       <span class="symbol">
         <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@configureJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#context" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -457,7 +537,11 @@
       <span class="symbol">
         <span class="name">context</span><span class="result">: <span class="extype" name="org.specs2.specification.Fixture">Fixture</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@context:org.specs2.specification.Fixture[com.nicta.scoobi.core.ScoobiConfiguration]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">define the context to use: local, cluster, localThenCluster</p>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#contexts" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="contexts:Seq[HadoopExamples.this.HadoopContext]"></a>
@@ -470,7 +554,11 @@
       <span class="symbol">
         <span class="name">contexts</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@contexts:Seq[HadoopExamples.this.HadoopContext]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">all contexts to run</p>
     </li><li name="org.specs2.main.CommandLineArguments#delayedInit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="delayedInit(x:=&gt;Unit):Unit"></a>
@@ -483,7 +571,11 @@
       <span class="symbol">
         <span class="name">delayedInit</span><span class="params">(<span name="x">x: ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@delayedInit(x:=&gt;Unit):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments → DelayedInit</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#deleteJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="deleteJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
@@ -496,7 +588,11 @@
       <span class="symbol">
         <span class="name">deleteJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@deleteJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>delete the remote jars currently on the cluster
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#deleteLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -510,7 +606,11 @@
       <span class="symbol">
         <span class="name">deleteLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@deleteLibJars:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the libjars must be deleted before the Scoobi job runs</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#displayTime" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="displayTime(prefix:String):com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit"></a>
@@ -523,7 +623,11 @@
       <span class="symbol">
         <span class="name">displayTime</span><span class="params">(<span name="prefix">prefix: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.impl.time.SimpleTimer">SimpleTimer</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@displayTime(prefix:String):com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">the execution time will not be displayed with this function, but by adding more information to the execution Result</p><div class="fullcomment"><div class="comment cmt"><p>the execution time will not be displayed with this function, but by adding more information to the execution Result</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a function to display execution times. The default uses log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a> → <a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
@@ -536,7 +640,11 @@
       <span class="symbol">
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a>
@@ -549,7 +657,11 @@
       <span class="symbol">
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#executeInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="executeInMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
@@ -562,7 +674,11 @@
       <span class="symbol">
         <span class="name">executeInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.executeInMemory.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.executeInMemory.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@executeInMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute some code locally</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Hadoop#executeOnCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="executeOnCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
@@ -575,7 +691,11 @@
       <span class="symbol">
         <span class="name">executeOnCluster</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.executeOnCluster.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.executeOnCluster.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@executeOnCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute some code on the cluster, setting the filesystem / jobtracker addresses and setting up the classpath
 </p><div class="fullcomment"><div class="comment cmt"><p>execute some code on the cluster, setting the filesystem / jobtracker addresses and setting up the classpath
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
@@ -590,7 +710,11 @@
       <span class="symbol">
         <span class="name">executeOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.executeOnLocal.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.executeOnLocal.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@executeOnLocal[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute some code locally</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
@@ -603,7 +727,11 @@
       <span class="symbol">
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -622,7 +750,11 @@
       <span class="symbol">
         <span class="name">fixtureContext</span><span class="result">: <span class="extype" name="org.specs2.specification.Fixture">Fixture</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@fixtureContext:org.specs2.specification.Fixture[com.nicta.scoobi.core.ScoobiConfiguration]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">make the context available implicitly as an Fixture[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p><div class="fullcomment"><div class="comment cmt"><p>make the context available implicitly as an Fixture[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#fss" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fss:com.nicta.scoobi.impl.io.FileSystems"></a>
@@ -635,7 +767,11 @@
       <span class="symbol">
         <span class="name">fss</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.io.FileSystems">FileSystems</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@fss:com.nicta.scoobi.impl.io.FileSystems" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
@@ -648,7 +784,11 @@
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#hadoopArgs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hadoopArgs:Array[String]"></a>
@@ -661,7 +801,11 @@
       <span class="symbol">
         <span class="name">hadoopArgs</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@hadoopArgs:Array[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
@@ -674,7 +818,11 @@
       <span class="symbol">
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#inMemory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="inMemory[R](r:=&gt;R)(implicitevidence$4:org.specs2.execute.AsResult[R]):org.specs2.execute.Result"></a>
@@ -687,7 +835,11 @@
       <span class="symbol">
         <span class="name">inMemory</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="r">r: ⇒ <span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.inMemory.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.inMemory.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@inMemory[R](r:=&gt;R)(implicitevidence$4:org.specs2.execute.AsResult[R]):org.specs2.execute.Result" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute an example body locally</p>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#inMemory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="inMemory:HadoopExamples.this.HadoopContext"></a>
@@ -700,7 +852,11 @@
       <span class="symbol">
         <span class="name">inMemory</span><span class="result">: <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@inMemory:HadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">context for in memory execution</p>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#inMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="inMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
@@ -713,7 +869,11 @@
       <span class="symbol">
         <span class="name">inMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.inMemory.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.inMemory.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@inMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute some code in memory, using a collection backend, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code in memory, using a collection backend, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Hadoop#includeLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="includeLibJars:Boolean"></a>
@@ -726,7 +886,11 @@
       <span class="symbol">
         <span class="name">includeLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@includeLibJars:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if you want to include the library jars in the jar that is sent to the cluster for each job</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isCluster:Boolean"></a>
@@ -739,7 +903,11 @@
       <span class="symbol">
         <span class="name">isCluster</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@isCluster:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isClusterOnly" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isClusterOnly:Boolean"></a>
@@ -752,7 +920,11 @@
       <span class="symbol">
         <span class="name">isClusterOnly</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@isClusterOnly:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the cluster argument is specified and the local argument is not</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#isInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInMemory:Boolean"></a>
@@ -765,7 +937,11 @@
       <span class="symbol">
         <span class="name">isInMemory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@isInMemory:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">tests are always in memory by default, unless !inmemory is passed</p><div class="fullcomment"><div class="comment cmt"><p>tests are always in memory by default, unless !inmemory is passed</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a> → <a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -778,7 +954,11 @@
       <span class="symbol">
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#isLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isLocal:Boolean"></a>
@@ -791,7 +971,11 @@
       <span class="symbol">
         <span class="name">isLocal</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@isLocal:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">tests are always local by default, unless !local is passed</p><div class="fullcomment"><div class="comment cmt"><p>tests are always local by default, unless !local is passed</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a> → <a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isLocalOnly" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isLocalOnly:Boolean"></a>
@@ -804,7 +988,11 @@
       <span class="symbol">
         <span class="name">isLocalOnly</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@isLocalOnly:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">alias for locally</p><div class="fullcomment"><div class="comment cmt"><p>alias for locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#jars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="jars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[java.net.URL]"></a>
@@ -817,7 +1005,11 @@
       <span class="symbol">
         <span class="name">jars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="java.net.URL">URL</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@jars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[java.net.URL]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of library jars to upload
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#keepFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -831,7 +1023,11 @@
       <span class="symbol">
         <span class="name">keepFiles</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@keepFiles:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false if temporary files and working directory must be cleaned-up after job execution</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#level" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="level:com.nicta.scoobi.application.Levels.Level"></a>
@@ -844,7 +1040,11 @@
       <span class="symbol">
         <span class="name">level</span><span class="result">: <a href="../application/Levels$.html#Level=scalaz.@@[String,com.nicta.scoobi.application.Levels.AsLevel]" class="extmbr" name="com.nicta.scoobi.application.Levels.Level">Level</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@level:com.nicta.scoobi.application.Levels.Level" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the log level to use when logging</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#libjarsDirectory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="libjarsDirectory(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):String"></a>
@@ -857,7 +1057,11 @@
       <span class="symbol">
         <span class="name">libjarsDirectory</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@libjarsDirectory(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path of the directory to use when loading jars to the filesystem.
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#local" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -871,7 +1075,11 @@
       <span class="symbol">
         <span class="name">local</span><span class="result">: <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@local:HadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">context for local execution</p>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#locally" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="locally[R](r:=&gt;R)(implicitevidence$3:org.specs2.execute.AsResult[R]):org.specs2.execute.Result"></a>
@@ -884,7 +1092,11 @@
       <span class="symbol">
         <span class="name">locally</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="r">r: ⇒ <span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.locally.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.locally.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@locally[R](r:=&gt;R)(implicitevidence$3:org.specs2.execute.AsResult[R]):org.specs2.execute.Result" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute an example body locally</p>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#locally" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="locally:Boolean"></a>
@@ -897,7 +1109,11 @@
       <span class="symbol">
         <span class="name">locally</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@locally:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the Scoobi job must be run locally</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
@@ -910,7 +1126,11 @@
       <span class="symbol">
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#noLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="noLibJars:Boolean"></a>
@@ -923,7 +1143,11 @@
       <span class="symbol">
         <span class="name">noLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@noLibJars:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false if libjars are used</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
@@ -936,7 +1160,11 @@
       <span class="symbol">
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
@@ -949,7 +1177,11 @@
       <span class="symbol">
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Hadoop#onCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
@@ -962,7 +1194,11 @@
       <span class="symbol">
         <span class="name">onCluster</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.onCluster.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.onCluster.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@onCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute some code on the cluster, possibly showing the execution time</p><div class="fullcomment"><div class="comment cmt"><p>execute some code on the cluster, possibly showing the execution time</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Hadoop#onHadoop" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onHadoop[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
@@ -975,7 +1211,11 @@
       <span class="symbol">
         <span class="name">onHadoop</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.onHadoop.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.onHadoop.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@onHadoop[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute some code, either locally or on the cluster, depending on the local argument being passed on the commandline</p><div class="fullcomment"><div class="comment cmt"><p>execute some code, either locally or on the cluster, depending on the local argument being passed on the commandline</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LocalHadoop#onLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onLocal[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
@@ -988,7 +1228,11 @@
       <span class="symbol">
         <span class="name">onLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.onLocal.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.onLocal.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@onLocal[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute some code locally, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#quiet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="quiet:Boolean"></a>
@@ -1001,7 +1245,11 @@
       <span class="symbol">
         <span class="name">quiet</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@quiet:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to suppress log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#remotely" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="remotely[R](r:=&gt;R)(implicitevidence$2:org.specs2.execute.AsResult[R]):org.specs2.execute.Result"></a>
@@ -1014,7 +1262,11 @@
       <span class="symbol">
         <span class="name">remotely</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="r">r: ⇒ <span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.remotely.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.remotely.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@remotely[R](r:=&gt;R)(implicitevidence$2:org.specs2.execute.AsResult[R]):org.specs2.execute.Result" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">execute an example body on the cluster</p>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#runInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="runInMemory[T](t:=&gt;T):T"></a>
@@ -1027,7 +1279,11 @@
       <span class="symbol">
         <span class="name">runInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.runInMemory.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.runInMemory.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@runInMemory[T](t:=&gt;T):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the result of the in-memory run
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Hadoop#runOnCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1041,7 +1297,11 @@
       <span class="symbol">
         <span class="name">runOnCluster</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.runOnCluster.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.runOnCluster.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@runOnCluster[T](t:=&gt;T):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the cluster evaluation of t
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LocalHadoop#runOnLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1055,7 +1315,11 @@
       <span class="symbol">
         <span class="name">runOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.runOnLocal.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.runOnLocal.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@runOnLocal[T](t:=&gt;T):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the result of the local run
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.CommandLineScoobiUserArgs#scoobiArgs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1069,7 +1333,11 @@
       <span class="symbol">
         <span class="name">scoobiArgs</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="java.lang.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@scoobiArgs:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">the scoobi arguments passed on the command line</p><div class="fullcomment"><div class="comment cmt"><p>the scoobi arguments passed on the command line</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/CommandLineScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs">CommandLineScoobiUserArgs</a> → <a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="org.specs2.main.CommandLineArguments#set" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="set(args:org.specs2.main.Arguments):Unit"></a>
@@ -1082,7 +1350,11 @@
       <span class="symbol">
         <span class="name">set</span><span class="params">(<span name="args">args: <span class="extype" name="org.specs2.main.Arguments">Arguments</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@set(args:org.specs2.main.Arguments):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#setLogFactory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setLogFactory(name:String):Unit"></a>
@@ -1095,7 +1367,11 @@
       <span class="symbol">
         <span class="name">setLogFactory</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">classOf[HadoopLogFactory].getName</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@setLogFactory(name:String):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Static setup to use a testing log factory
 </p><div class="fullcomment"><div class="comment cmt"><p>Static setup to use a testing log factory
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
@@ -1110,7 +1386,11 @@
       <span class="symbol">
         <span class="name">showPlanOnly</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@showPlanOnly:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the debug logs must show the computation graph and not evaluate it</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InMemoryHadoop#showTime" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="showTime[T](t:=&gt;T)(display:com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit):T"></a>
@@ -1123,7 +1403,11 @@
       <span class="symbol">
         <span class="name">showTime</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.showTime.T">T</span></span>)</span><span class="params">(<span name="display">display: (<span class="extype" name="com.nicta.scoobi.impl.time.SimpleTimer">SimpleTimer</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.showTime.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@showTime[T](t:=&gt;T)(display:com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">measure the time taken by some executed code and display the time with a specific display function
 </p><div class="fullcomment"><div class="comment cmt"><p>measure the time taken by some executed code and display the time with a specific display function
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
@@ -1138,7 +1422,11 @@
       <span class="symbol">
         <span class="name">showTimes</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@showTimes:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to display execution times for each job</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#skippedContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="skippedContext(name:String):HadoopExamples.this.HadoopContext"></a>
@@ -1151,7 +1439,11 @@
       <span class="symbol">
         <span class="name">skippedContext</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@skippedContext(name:String):HadoopExamples.this.HadoopContext" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">context for showing a skipped execution</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
@@ -1164,7 +1456,11 @@
       <span class="symbol">
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#sysProps" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sysProps:com.nicta.scoobi.impl.control.SystemProperties"></a>
@@ -1177,7 +1473,11 @@
       <span class="symbol">
         <span class="name">sysProps</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.control.SystemProperties">SystemProperties</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@sysProps:com.nicta.scoobi.impl.control.SystemProperties" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
@@ -1190,7 +1490,11 @@
       <span class="symbol">
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@toString():String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#upload" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="upload:Boolean"></a>
@@ -1203,7 +1507,11 @@
       <span class="symbol">
         <span class="name">upload</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@upload:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">this variable controls if the upload must be done at all</p><div class="fullcomment"><div class="comment cmt"><p>this variable controls if the upload must be done at all</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#uploadLibJarsFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="uploadLibJarsFiles(deleteLibJarsFirst:Boolean)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
@@ -1216,7 +1524,11 @@
       <span class="symbol">
         <span class="name">uploadLibJarsFiles</span><span class="params">(<span name="deleteLibJarsFirst">deleteLibJarsFirst: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@uploadLibJarsFiles(deleteLibJarsFirst:Boolean)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">upload the jars which don't exist yet in the library directory on the cluster
 </p><div class="fullcomment"><div class="comment cmt"><p>upload the jars which don't exist yet in the library directory on the cluster
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
@@ -1231,7 +1543,11 @@
       <span class="symbol">
         <span class="name">uploadedJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@uploadedJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[org.apache.hadoop.fs.Path]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the remote jars currently on the cluster
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#useHadoopConfDir" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1245,7 +1561,11 @@
       <span class="symbol">
         <span class="name">useHadoopConfDir</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@useHadoopConfDir:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if cluster configuration must be loaded from Hadoop's configuration directory</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
@@ -1258,7 +1578,11 @@
       <span class="symbol">
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1277,7 +1601,11 @@
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1296,7 +1624,11 @@
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1315,7 +1647,11 @@
       <span class="symbol">
         <span class="name">withTimer</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.withTimer.T">T</span></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.withTimer.T">T</span>, <span class="extype" name="com.nicta.scoobi.impl.time.SimpleTimer">SimpleTimer</span>)</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.testing.HadoopExamples@withTimer[T](t:=&gt;T):(T,com.nicta.scoobi.impl.time.SimpleTimer)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the time for the execution of a piece of code
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
     </li></ol>
@@ -1369,6 +1705,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+
+
     </body>
       </html>

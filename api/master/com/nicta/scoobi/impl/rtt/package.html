@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>rtt - com.nicta.scoobi.impl.rtt</title>
@@ -9,6 +8,11 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../../lib/package_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a></p>
-        <h1>rtt</h1>
+        <h1>rtt</h1> <span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -69,7 +77,11 @@
       <span class="symbol">
         <a href="Configured.html"><span class="name">Configured</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.conf.Configurable">Configurable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@ConfiguredextendsConfigurable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.rtt.JarBuilder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="JarBuilderextendsAnyRef"></a>
@@ -82,9 +94,13 @@
       <span class="symbol">
         <a href="JarBuilder.html"><span class="name">JarBuilder</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Class to manage the creation of a new JAR file.</p>
-    </li><li name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@JarBuilderextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Class to manage the creation of a new JAR file.</p>
+    </li><li name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="MetadataClassBuilder[T]extendsProductwithSerializable"></a>
       <a id="MetadataClassBuilder[T]:MetadataClassBuilder[T]"></a>
       <h4 class="signature">
@@ -95,8 +111,16 @@
       <span class="symbol">
         <a href="MetadataClassBuilder.html"><span class="name">MetadataClassBuilder</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="className">className: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="metaData">metaData: <span class="extype" name="scala.Any">Any</span></span>, <span name="scoobiClassLoader">scoobiClassLoader: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>, <span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mf">mf: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A class for building a class extending T at run-time.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataClassBuilder[T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A class for building a class extending T at run-time.</p><div class="fullcomment"><div class="comment cmt"><p>A class for building a class extending T at run-time.</p><p>The purpose is to create a unique class which, when instantiated, will be able to perform the operations described in
+T, while using some metadata object serialised to the distributed cache</p><p>It takes:</p><ul><li>a type T which is going to be the parent of the generated class</li><li>the className (which must be unique for the class to build)</li><li>some metadata for the class (like a Map from tags to WireFormats, if it's a TaggedValue)</li></ul><p> The metadata is distributed to the cache and a &quot;metadataTag&quot; method is added to the built class so that it can be retrieved.</p><p> For example, a TaggedValue is a class, defined for several tags, which is able to read/write values of different types (described by their WireFormats),
+ with one type per tag. A concrete instance of that class will have a unique name, TV92, and will provide a method returning the
+ path of the distributed cache file containing all WireFormats per tags.</p><p> The TaggedKey class then retrieves the map with the help of the ScoobiMetadata class and can use the wireformats to
+ serialise/deserialise values</p></div></div>
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataGroupings" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="MetadataGroupingsextendsTaggedMetadata"></a>
       <a id="MetadataGroupings:MetadataGroupings"></a>
@@ -108,8 +132,12 @@
       <span class="symbol">
         <a href="MetadataGroupings.html"><span class="name">MetadataGroupings</span></a><span class="result"> extends <a href="TaggedMetadata.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedMetadata">TaggedMetadata</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Set of Groupings accessible by tag
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataGroupingsextendsTaggedMetadata" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Set of Groupings accessible by tag
 </p>
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataScoobiWritable" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="MetadataScoobiWritableextendsScoobiWritable[Any]"></a>
@@ -122,7 +150,11 @@
       <span class="symbol">
         <a href="MetadataScoobiWritable.html"><span class="name">MetadataScoobiWritable</span></a><span class="result"> extends <a href="ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="scala.Any">Any</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataScoobiWritableextendsScoobiWritable[Any]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedGroupingComparator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="MetadataTaggedGroupingComparatorextendsTaggedGroupingComparatorwithMetadataWireFormatswithMetadataGroupings"></a>
@@ -135,9 +167,13 @@
       <span class="symbol">
         <a href="MetadataTaggedGroupingComparator.html"><span class="name">MetadataTaggedGroupingComparator</span></a><span class="result"> extends <a href="TaggedGroupingComparator.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator">TaggedGroupingComparator</a> with <a href="MetadataWireFormats.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataWireFormats">MetadataWireFormats</a> with <a href="MetadataGroupings.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataGroupings">MetadataGroupings</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataTaggedGroupingComparatorextendsTaggedGroupingComparatorwithMetadataWireFormatswithMetadataGroupings" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
-    </li><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedKey" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedKey" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="MetadataTaggedKeyextendsTaggedKeywithMetadataTaggedWritablewithMetadataGroupings"></a>
       <a id="MetadataTaggedKey:MetadataTaggedKey"></a>
       <h4 class="signature">
@@ -148,8 +184,13 @@
       <span class="symbol">
         <a href="MetadataTaggedKey.html"><span class="name">MetadataTaggedKey</span></a><span class="result"> extends <a href="TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a> with <a href="MetadataTaggedWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataTaggedWritable">MetadataTaggedWritable</a> with <a href="MetadataGroupings.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataGroupings">MetadataGroupings</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Tagged key with some metadata describing each channel.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataTaggedKeyextendsTaggedKeywithMetadataTaggedWritablewithMetadataGroupings" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Tagged key with some metadata describing each channel.</p><div class="fullcomment"><div class="comment cmt"><p>Tagged key with some metadata describing each channel. It has WireFormats and Groupings
+</p></div></div>
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedPartitioner" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="MetadataTaggedPartitionerextendsPartitioner[com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]withTaggedPartitionerwithMetadataWireFormatswithMetadataGroupings"></a>
       <a id="MetadataTaggedPartitioner:MetadataTaggedPartitioner"></a>
@@ -161,8 +202,12 @@
       <span class="symbol">
         <a href="MetadataTaggedPartitioner.html"><span class="name">MetadataTaggedPartitioner</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.Partitioner">Partitioner</span>[<a href="TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a>, <a href="TaggedValue.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedValue">TaggedValue</a>] with <a href="TaggedPartitioner.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedPartitioner">TaggedPartitioner</a> with <a href="MetadataWireFormats.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataWireFormats">MetadataWireFormats</a> with <a href="MetadataGroupings.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataGroupings">MetadataGroupings</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">This partitioner uses the grouping of the current key tag and partitions based on the key value
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataTaggedPartitionerextendsPartitioner[com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]withTaggedPartitionerwithMetadataWireFormatswithMetadataGroupings" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This partitioner uses the grouping of the current key tag and partitions based on the key value
 </p>
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedValue" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="MetadataTaggedValueextendsTaggedValuewithMetadataTaggedWritable"></a>
@@ -175,7 +220,11 @@
       <span class="symbol">
         <a href="MetadataTaggedValue.html"><span class="name">MetadataTaggedValue</span></a><span class="result"> extends <a href="TaggedValue.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedValue">TaggedValue</a> with <a href="MetadataTaggedWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataTaggedWritable">MetadataTaggedWritable</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataTaggedValueextendsTaggedValuewithMetadataTaggedWritable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedWritable" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="MetadataTaggedWritableextendsMetadataWireFormats"></a>
@@ -188,8 +237,12 @@
       <span class="symbol">
         <a href="MetadataTaggedWritable.html"><span class="name">MetadataTaggedWritable</span></a><span class="result"> extends <a href="MetadataWireFormats.html" class="extype" name="com.nicta.scoobi.impl.rtt.MetadataWireFormats">MetadataWireFormats</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">This trait represents a Writable capable of reading/writing different type of data depending on a tag
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataTaggedWritableextendsMetadataWireFormats" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This trait represents a Writable capable of reading/writing different type of data depending on a tag
 and having WireFormats accessible for each tag
 </p>
     </li><li name="com.nicta.scoobi.impl.rtt.MetadataWireFormats" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
@@ -203,8 +256,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="MetadataWireFormats.html"><span class="name">MetadataWireFormats</span></a><span class="result"> extends <a href="TaggedMetadata.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedMetadata">TaggedMetadata</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">WireFormats accessible by tags
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@MetadataWireFormatsextendsTaggedMetadata" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">WireFormats accessible by tags
 </p>
     </li><li name="com.nicta.scoobi.impl.rtt.RuntimeClass" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="RuntimeClassextendsProductwithSerializable"></a>
@@ -217,8 +274,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="RuntimeClass.html"><span class="name">RuntimeClass</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="clazz">clazz: <span class="extype" name="scala.Predef.Class">Class</span>[_]</span>, <span name="bytecode">bytecode: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A class representing a class that has been generated at run-time.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@RuntimeClassextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A class representing a class that has been generated at run-time.</p>
     </li><li name="com.nicta.scoobi.impl.rtt.ScoobiWritable" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ScoobiWritable[A]extendsWritablewithConfigured"></a>
       <a id="ScoobiWritable[A]:ScoobiWritable[A]"></a>
@@ -230,8 +291,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="ScoobiWritable.html"><span class="name">ScoobiWritable</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span> with <a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">The super-class of all &quot;value&quot; types used in Hadoop jobs.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@ScoobiWritable[A]extendsWritablewithConfigured" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The super-class of all &quot;value&quot; types used in Hadoop jobs.</p>
     </li><li name="com.nicta.scoobi.impl.rtt.Tagged" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="TaggedextendsConfigured"></a>
       <a id="Tagged:Tagged"></a>
@@ -243,8 +308,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="Tagged.html"><span class="name">Tagged</span></a><span class="result"> extends <a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">A collection of types indexed by a tag</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedextendsConfigured" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A collection of types indexed by a tag</p>
     </li><li name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="TaggedGroupingComparatorextendsRawComparator[com.nicta.scoobi.impl.rtt.TaggedKey]"></a>
       <a id="TaggedGroupingComparator:TaggedGroupingComparator"></a>
@@ -256,9 +325,13 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedGroupingComparator.html"><span class="name">TaggedGroupingComparator</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.io.RawComparator">RawComparator</span>[<a href="TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a>]</span>
       </span>
-      </h4>
-      <p class="comment cmt">Custom GroupingComparator for tagged keys.</p>
-    </li><li name="com.nicta.scoobi.impl.rtt.TaggedKey" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedGroupingComparatorextendsRawComparator[com.nicta.scoobi.impl.rtt.TaggedKey]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Custom GroupingComparator for tagged keys.</p>
+    </li><li name="com.nicta.scoobi.impl.rtt.TaggedKey" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="TaggedKeyextendsTaggedwithWritableComparable[com.nicta.scoobi.impl.rtt.TaggedKey]"></a>
       <a id="TaggedKey:TaggedKey"></a>
       <h4 class="signature">
@@ -269,8 +342,14 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedKey.html"><span class="name">TaggedKey</span></a><span class="result"> extends <a href="Tagged.html" class="extype" name="com.nicta.scoobi.impl.rtt.Tagged">Tagged</a> with <span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[<a href="TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a>]</span>
       </span>
-      </h4>
-      <p class="comment cmt">A tagged value for Hadoop keys.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedKeyextendsTaggedwithWritableComparable[com.nicta.scoobi.impl.rtt.TaggedKey]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A tagged value for Hadoop keys.</p><div class="fullcomment"><div class="comment cmt"><p>A tagged value for Hadoop keys. Specifically this will be a K2 type so must
+implement the WritableComparable interface
+</p></div></div>
     </li><li name="com.nicta.scoobi.impl.rtt.TaggedMetadata" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="TaggedMetadataextendsConfigured"></a>
       <a id="TaggedMetadata:TaggedMetadata"></a>
@@ -282,8 +361,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedMetadata.html"><span class="name">TaggedMetadata</span></a><span class="result"> extends <a href="Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">Set of metadata, which can be a different tuple for each tag (and all tuples don't have to have the same size)
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedMetadataextendsConfigured" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Set of metadata, which can be a different tuple for each tag (and all tuples don't have to have the same size)
 </p>
     </li><li name="com.nicta.scoobi.impl.rtt.TaggedPartitioner" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="TaggedPartitionerextendsPartitioner[com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]"></a>
@@ -296,9 +379,13 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedPartitioner.html"><span class="name">TaggedPartitioner</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.Partitioner">Partitioner</span>[<a href="TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a>, <a href="TaggedValue.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedValue">TaggedValue</a>]</span>
       </span>
-      </h4>
-      <p class="comment cmt">Custom partitioner for tagged key-values.</p>
-    </li><li name="com.nicta.scoobi.impl.rtt.TaggedValue" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedPartitionerextendsPartitioner[com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Custom partitioner for tagged key-values.</p>
+    </li><li name="com.nicta.scoobi.impl.rtt.TaggedValue" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="TaggedValueextendsTaggedwithWritable"></a>
       <a id="TaggedValue:TaggedValue"></a>
       <h4 class="signature">
@@ -309,8 +396,14 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedValue.html"><span class="name">TaggedValue</span></a><span class="result"> extends <a href="Tagged.html" class="extype" name="com.nicta.scoobi.impl.rtt.Tagged">Tagged</a> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A tagged value for Hadoop values.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedValueextendsTaggedwithWritable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A tagged value for Hadoop values.</p><div class="fullcomment"><div class="comment cmt"><p>A tagged value for Hadoop values. Specifically this will be a V2 type so must
+implement the Writable interface.</p><p>Before using a TaggedValue the appropriate tag must be set. By default, it is 0
+</p></div></div>
     </li></ol>
             </div>
 
@@ -318,7 +411,7 @@ and having WireFormats accessible for each tag
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="com.nicta.scoobi.impl.rtt.ScoobiMetadata" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.impl.rtt.ScoobiMetadata" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ScoobiMetadata"></a>
       <a id="ScoobiMetadata:ScoobiMetadata"></a>
       <h4 class="signature">
@@ -329,8 +422,13 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="ScoobiMetadata$.html"><span class="name">ScoobiMetadata</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">This object stores and retrieves metadata from the Distributed cache.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@ScoobiMetadata" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This object stores and retrieves metadata from the Distributed cache.</p><div class="fullcomment"><div class="comment cmt"><p>This object stores and retrieves metadata from the Distributed cache.</p><p>When storing the metadata, it returns a path identifying the stored information in order to retrieve it later
+</p></div></div>
     </li><li name="com.nicta.scoobi.impl.rtt.ScoobiWritable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ScoobiWritable"></a>
       <a id="ScoobiWritable:ScoobiWritable"></a>
@@ -342,8 +440,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="ScoobiWritable$.html"><span class="name">ScoobiWritable</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">Constructs a ScoobiWritable, with some metadata (a WireFormat) retrieved from the distributed cache</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@ScoobiWritable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Constructs a ScoobiWritable, with some metadata (a WireFormat) retrieved from the distributed cache</p>
     </li><li name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TaggedGroupingComparator"></a>
       <a id="TaggedGroupingComparator:TaggedGroupingComparator"></a>
@@ -355,8 +457,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedGroupingComparator$.html"><span class="name">TaggedGroupingComparator</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">Companion object for dynamically constructing a subclass of TaggedGroupingComparator.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedGroupingComparator" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Companion object for dynamically constructing a subclass of TaggedGroupingComparator.</p>
     </li><li name="com.nicta.scoobi.impl.rtt.TaggedKey" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TaggedKey"></a>
       <a id="TaggedKey:TaggedKey"></a>
@@ -368,8 +474,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedKey$.html"><span class="name">TaggedKey</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">Companion object for dynamically constructing a subclass of TaggedKey.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedKey" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Companion object for dynamically constructing a subclass of TaggedKey.</p>
     </li><li name="com.nicta.scoobi.impl.rtt.TaggedPartitioner" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TaggedPartitioner"></a>
       <a id="TaggedPartitioner:TaggedPartitioner"></a>
@@ -381,8 +491,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedPartitioner$.html"><span class="name">TaggedPartitioner</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">Companion object for dynamically constructing a subclass of TaggedPartitioner.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedPartitioner" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Companion object for dynamically constructing a subclass of TaggedPartitioner.</p>
     </li><li name="com.nicta.scoobi.impl.rtt.TaggedValue" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TaggedValue"></a>
       <a id="TaggedValue:TaggedValue"></a>
@@ -394,8 +508,12 @@ and having WireFormats accessible for each tag
       <span class="symbol">
         <a href="TaggedValue$.html"><span class="name">TaggedValue</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">Companion object for dynamically constructing a subclass of TaggedValue.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.rtt.package@TaggedValue" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Companion object for dynamically constructing a subclass of TaggedValue.</p>
     </li></ol>
             </div>
 
@@ -421,6 +539,7 @@ and having WireFormats accessible for each tag
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+
+
     </body>
       </html>

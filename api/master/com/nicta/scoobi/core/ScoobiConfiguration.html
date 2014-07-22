@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>ScoobiConfiguration - com.nicta.scoobi.core.ScoobiConfiguration</title>
@@ -9,6 +8,11 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../lib/trait_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
-        <h1>ScoobiConfiguration</h1>
+        <h1>ScoobiConfiguration</h1> <span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -45,9 +53,9 @@ added to the classpath.
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="../impl/ScoobiConfigurationImpl.html" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></div>
-        </div></div>
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="../impl/ScoobiConfigurationImpl.html" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -89,7 +97,7 @@ added to the classpath.
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="com.nicta.scoobi.core.ScoobiConfiguration#addClassLoader" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="addClassLoader(classLoader:scala.tools.nsc.interpreter.AbstractFileClassLoader):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="addClassLoader(classLoader:com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="addClassLoader(AbstractFileClassLoader):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -97,9 +105,13 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addClassLoader</span><span class="params">(<span name="classLoader">classLoader: <span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
+        <span class="name">addClassLoader</span><span class="params">(<span name="classLoader">classLoader: <a href="../reflect/internal/util$.html#AbstractFileClassLoader=scala.reflect.internal.util.AbstractFileClassLoader" class="extmbr" name="com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader">AbstractFileClassLoader</a></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@addClassLoader(classLoader:com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addJar" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="addJar(jar:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -112,7 +124,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">addJar</span><span class="params">(<span name="jar">jar: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@addJar(jar:String):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addJarByClass" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="addJarByClass(clazz:Class[_]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -125,7 +141,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">addJarByClass</span><span class="params">(<span name="clazz">clazz: <span class="extype" name="scala.Predef.Class">Class</span>[_]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@addJarByClass(clazz:Class[_]):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="addJars(jars:Seq[String]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -138,7 +158,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">addJars</span><span class="params">(<span name="jars">jars: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@addJars(jars:Seq[String]):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addUserDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="addUserDir(dir:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -151,7 +175,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">addUserDir</span><span class="params">(<span name="dir">dir: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@addUserDir(dir:String):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addUserDirs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="addUserDirs(dirs:Seq[String]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -164,7 +192,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">addUserDirs</span><span class="params">(<span name="dirs">dirs: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@addUserDirs(dirs:Seq[String]):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#concurrentJobs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="concurrentJobs:Boolean"></a>
@@ -177,7 +209,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">concurrentJobs</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@concurrentJobs:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#configuration" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="configuration:org.apache.hadoop.conf.Configuration"></a>
@@ -190,7 +226,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">configuration</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@configuration:org.apache.hadoop.conf.Configuration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#countValuesPerMapper" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="countValuesPerMapper:Boolean"></a>
@@ -203,7 +243,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">countValuesPerMapper</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@countValuesPerMapper:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#countValuesPerReducer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="countValuesPerReducer:Boolean"></a>
@@ -216,7 +260,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">countValuesPerReducer</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@countValuesPerReducer:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#counters" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="counters:org.apache.hadoop.mapreduce.Counters"></a>
@@ -229,7 +277,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">counters</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">org.apache.hadoop.mapreduce.Counters</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@counters:org.apache.hadoop.mapreduce.Counters" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#deleteScoobiDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="deleteScoobiDirectory:Boolean"></a>
@@ -242,7 +294,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">deleteScoobiDirectory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@deleteScoobiDirectory:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#deleteTemporaryOutputDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="deleteTemporaryOutputDirectory:Boolean"></a>
@@ -255,7 +311,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">deleteTemporaryOutputDirectory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@deleteTemporaryOutputDirectory:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#deleteWorkingDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="deleteWorkingDirectory:Boolean"></a>
@@ -268,7 +328,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">deleteWorkingDirectory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@deleteWorkingDirectory:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#disableCombiners" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="disableCombiners:com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -281,7 +345,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">disableCombiners</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@disableCombiners:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#disabledCombiners" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="disabledCombiners:Boolean"></a>
@@ -294,7 +362,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">disabledCombiners</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@disabledCombiners:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#duplicate" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="duplicate:com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -307,7 +379,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">duplicate</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@duplicate:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#enableCombiners" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="enableCombiners:com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -320,7 +396,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">enableCombiners</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@enableCombiners:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#fileSystem" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="fileSystem:org.apache.hadoop.fs.FileSystem"></a>
@@ -333,7 +413,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">fileSystem</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.FileSystem">FileSystem</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@fileSystem:org.apache.hadoop.fs.FileSystem" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#getBytesPerReducer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="getBytesPerReducer:Long"></a>
@@ -346,7 +430,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">getBytesPerReducer</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@getBytesPerReducer:Long" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#getMaxReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="getMaxReducers:Int"></a>
@@ -359,7 +447,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">getMaxReducers</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@getMaxReducers:Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#getMinReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="getMinReducers:Int"></a>
@@ -372,7 +464,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">getMinReducers</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@getMinReducers:Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#includeLibJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="includeLibJars(jars:Seq[java.net.URL]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -385,7 +481,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">includeLibJars</span><span class="params">(<span name="jars">jars: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="java.net.URL">URL</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@includeLibJars(jars:Seq[java.net.URL]):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#isInMemory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="isInMemory:Boolean"></a>
@@ -398,7 +498,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">isInMemory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@isInMemory:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#isLocal" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="isLocal:Boolean"></a>
@@ -411,7 +515,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">isLocal</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@isLocal:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#isRemote" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="isRemote:Boolean"></a>
@@ -424,7 +532,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">isRemote</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@isRemote:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobId" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="jobId:String"></a>
@@ -437,7 +549,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">jobId</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@jobId:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobName" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="jobName:Option[String]"></a>
@@ -450,7 +566,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">jobName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@jobName:Option[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobNameIs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="jobNameIs(name:String):Unit"></a>
@@ -463,7 +583,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">jobNameIs</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@jobNameIs(name:String):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobStep" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="jobStep:String"></a>
@@ -476,7 +600,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">jobStep</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@jobStep:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobStepIs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="jobStepIs(stepId:Int,stepsNumber:Int):String"></a>
@@ -489,7 +617,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">jobStepIs</span><span class="params">(<span name="stepId">stepId: <span class="extype" name="scala.Int">Int</span></span>, <span name="stepsNumber">stepsNumber: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@jobStepIs(stepId:Int,stepsNumber:Int):String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#loadDefaults" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="loadDefaults:com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -502,7 +634,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">loadDefaults</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@loadDefaults:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#mode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="mode:com.nicta.scoobi.core.Mode"></a>
@@ -515,7 +651,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">mode</span><span class="result">: <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@mode:com.nicta.scoobi.core.Mode" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#modeIs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="modeIs(mode:com.nicta.scoobi.core.Mode):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -528,7 +668,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@modeIs(mode:com.nicta.scoobi.core.Mode):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#newEnv" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="newEnv(wf:com.nicta.scoobi.core.WireReaderWriter):com.nicta.scoobi.core.Environment"></a>
@@ -541,7 +685,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">newEnv</span><span class="params">(<span name="wf">wf: <a href="WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>)</span><span class="result">: <a href="Environment.html" class="extype" name="com.nicta.scoobi.core.Environment">Environment</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@newEnv(wf:com.nicta.scoobi.core.WireReaderWriter):com.nicta.scoobi.core.Environment" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#parse" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="parse(commandLineArg:String,value:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -554,7 +702,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">parse</span><span class="params">(<span name="commandLineArg">commandLineArg: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@parse(commandLineArg:String,value:String):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#persist" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="persist[A](o:com.nicta.scoobi.core.DObject[A]):A"></a>
@@ -567,7 +719,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="o">o: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@persist[A](o:com.nicta.scoobi.core.DObject[A]):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#persist" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="persist[A](list:com.nicta.scoobi.core.DList[A]):com.nicta.scoobi.core.DList[A]"></a>
@@ -580,7 +736,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a href="DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span>]</span>)</span><span class="result">: <a href="DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@persist[A](list:com.nicta.scoobi.core.DList[A]):com.nicta.scoobi.core.DList[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#persist" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="persist[A](ps:Seq[com.nicta.scoobi.core.Persistent[_]]):Seq[com.nicta.scoobi.core.Persistent[_]]"></a>
@@ -593,7 +753,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ps">ps: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@persist[A](ps:Seq[com.nicta.scoobi.core.Persistent[_]]):Seq[com.nicta.scoobi.core.Persistent[_]]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#scoobiClassLoader" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="scoobiClassLoader:ClassLoader"></a>
@@ -606,7 +770,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">scoobiClassLoader</span><span class="result">: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@scoobiClassLoader:ClassLoader" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#scoobiDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="scoobiDir:String"></a>
@@ -619,7 +787,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">scoobiDir</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@scoobiDir:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#set" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="set(key:String,value:Any):Unit"></a>
@@ -632,7 +804,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">set</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@set(key:String,value:Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setAsInMemory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setAsInMemory:com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -645,7 +821,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setAsInMemory</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setAsInMemory:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setAsLocal" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setAsLocal:com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -658,7 +838,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setAsLocal</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setAsLocal:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setBytesPerReducer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setBytesPerReducer(sizeInBytes:Long):Unit"></a>
@@ -671,7 +855,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setBytesPerReducer</span><span class="params">(<span name="sizeInBytes">sizeInBytes: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setBytesPerReducer(sizeInBytes:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setCountValuesPerMapper" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setCountValuesPerMapper(b:Boolean):Unit"></a>
@@ -684,7 +872,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setCountValuesPerMapper</span><span class="params">(<span name="b">b: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setCountValuesPerMapper(b:Boolean):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setCountValuesPerReducer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setCountValuesPerReducer(b:Boolean):Unit"></a>
@@ -697,7 +889,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setCountValuesPerReducer</span><span class="params">(<span name="b">b: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setCountValuesPerReducer(b:Boolean):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setDirectories" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setDirectories:com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -710,7 +906,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setDirectories</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setDirectories:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setMaxReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setMaxReducers(maxReducers:Int):Unit"></a>
@@ -723,7 +923,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setMaxReducers</span><span class="params">(<span name="maxReducers">maxReducers: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setMaxReducers(maxReducers:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setMinReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setMinReducers(minReducers:Int):Unit"></a>
@@ -736,7 +940,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setMinReducers</span><span class="params">(<span name="minReducers">minReducers: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setMinReducers(minReducers:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setScoobiDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setScoobiDir(dir:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -749,7 +957,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setScoobiDir</span><span class="params">(<span name="dir">dir: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setScoobiDir(dir:String):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setUploadedLibJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setUploadedLibJars(uploaded:Boolean):Unit"></a>
@@ -762,7 +974,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">setUploadedLibJars</span><span class="params">(<span name="uploaded">uploaded: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@setUploadedLibJars(uploaded:Boolean):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#temporaryJarFile" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="temporaryJarFile:java.io.File"></a>
@@ -775,7 +991,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">temporaryJarFile</span><span class="result">: <span class="extype" name="java.io.File">File</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@temporaryJarFile:java.io.File" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#temporaryOutputDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="temporaryOutputDirectory:org.apache.hadoop.fs.Path"></a>
@@ -788,7 +1008,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">temporaryOutputDirectory</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@temporaryOutputDirectory:org.apache.hadoop.fs.Path" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#updateCounters" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="updateCounters(counters:org.apache.hadoop.mapreduce.Counters):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -801,7 +1025,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">updateCounters</span><span class="params">(<span name="counters">counters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">org.apache.hadoop.mapreduce.Counters</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@updateCounters(counters:org.apache.hadoop.mapreduce.Counters):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#uploadedLibJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="uploadedLibJars:Boolean"></a>
@@ -814,7 +1042,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">uploadedLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@uploadedLibJars:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#userClasses" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="userClasses:Map[String,Array[Byte]]"></a>
@@ -827,7 +1059,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">userClasses</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@userClasses:Map[String,Array[Byte]]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#userDirs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="userDirs:Set[String]"></a>
@@ -840,7 +1076,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">userDirs</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@userDirs:Set[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#userJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="userJars:Set[String]"></a>
@@ -853,7 +1093,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">userJars</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@userJars:Set[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#withHadoopArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="withHadoopArgs(args:Array[String])(f:Array[String]=&gt;Unit):com.nicta.scoobi.core.ScoobiConfiguration"></a>
@@ -866,7 +1110,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">withHadoopArgs</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@withHadoopArgs(args:Array[String])(f:Array[String]=&gt;Unit):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#workingDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="workingDir:String"></a>
@@ -879,7 +1127,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">workingDir</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@workingDir:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#workingDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="workingDirectory:org.apache.hadoop.fs.Path"></a>
@@ -892,7 +1144,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">workingDirectory</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@workingDirectory:org.apache.hadoop.fs.Path" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -900,19 +1156,6 @@ added to the classpath.
         <div id="values" class="values members">
               <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -923,8 +1166,12 @@ added to the classpath.
       <span class="symbol">
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -936,22 +1183,13 @@ added to the classpath.
       <span class="symbol">
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@##():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -962,8 +1200,12 @@ added to the classpath.
       <span class="symbol">
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -975,7 +1217,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
@@ -988,7 +1234,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1007,7 +1257,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a>
@@ -1020,7 +1274,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
@@ -1033,7 +1291,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1052,7 +1314,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
@@ -1065,7 +1331,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -1078,7 +1348,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
@@ -1091,7 +1365,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
@@ -1104,7 +1382,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
@@ -1117,7 +1399,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
@@ -1130,7 +1416,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
@@ -1143,7 +1433,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@toString():String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
@@ -1156,7 +1450,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1175,7 +1473,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1194,7 +1496,11 @@ added to the classpath.
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.ScoobiConfiguration@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1231,6 +1537,7 @@ added to the classpath.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+
+
     </body>
       </html>

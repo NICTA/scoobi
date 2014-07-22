@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>lib - com.nicta.scoobi.lib</title>
@@ -9,6 +8,11 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../lib/package_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a></p>
-        <h1>lib</h1>
+        <h1>lib</h1> <span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -58,7 +66,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.nicta.scoobi.lib.DColWiseMatrix" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.lib.DColWiseMatrix" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="DColWiseMatrix[Elem,T]extendsProductwithSerializable"></a>
       <a id="DColWiseMatrix[Elem,T]:DColWiseMatrix[Elem,T]"></a>
       <h4 class="signature">
@@ -69,9 +77,15 @@
       <span class="symbol">
         <a href="DColWiseMatrix.html"><span class="name">DColWiseMatrix</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: <a href="../Scoobi$.html#DList[A]=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.Scoobi.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.DColWiseMatrix.Elem">Elem</span>, <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="com.nicta.scoobi.lib.DColWiseMatrix.Elem">Elem</span>, <span class="extype" name="com.nicta.scoobi.lib.DColWiseMatrix.T">T</span>)])]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A col-wise matrix.</p>
-    </li><li name="com.nicta.scoobi.lib.DMatrix" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@DColWiseMatrix[Elem,T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A col-wise matrix.</p><div class="fullcomment"><div class="comment cmt"><p>A col-wise matrix. This is an efficient representation for multiplying by an in-memory vector. The contents of each column
+must be small enough to fit in memory
+</p></div></div>
+    </li><li name="com.nicta.scoobi.lib.DMatrix" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="DMatrix[Elem,Value]extendsProductwithSerializable"></a>
       <a id="DMatrix[Elem,Value]:DMatrix[Elem,Value]"></a>
       <h4 class="signature">
@@ -82,9 +96,15 @@
       <span class="symbol">
         <a href="DMatrix.html"><span class="name">DMatrix</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="Value">Value</span>]</span><span class="params">(<span name="data">data: <a href="../Scoobi$.html#DList[A]=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.Scoobi.DList">DList</a>[((<span class="extype" name="com.nicta.scoobi.lib.DMatrix.Elem">Elem</span>, <span class="extype" name="com.nicta.scoobi.lib.DMatrix.Elem">Elem</span>), <span class="extype" name="com.nicta.scoobi.lib.DMatrix.Value">Value</span>)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$24">evidence$24: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.DMatrix.Elem">Elem</span>]</span>, <span name="evidence$25">evidence$25: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.nicta.scoobi.lib.DMatrix.Elem">Elem</span>]</span>, <span name="evidence$26">evidence$26: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.DMatrix.Value">Value</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A distributed Matrix, stored in coordinate format.</p>
-    </li><li name="com.nicta.scoobi.lib.DRowWiseMatrix" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@DMatrix[Elem,Value]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A distributed Matrix, stored in coordinate format.</p><div class="fullcomment"><div class="comment cmt"><p>A distributed Matrix, stored in coordinate format.
+Operations are optimised assuming the matrix is both large and sparse, but shouldn't be too terrible for large dense matrixes.
+</p></div></div>
+    </li><li name="com.nicta.scoobi.lib.DRowWiseMatrix" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="DRowWiseMatrix[Elem,T]extendsProductwithSerializable"></a>
       <a id="DRowWiseMatrix[Elem,T]:DRowWiseMatrix[Elem,T]"></a>
       <h4 class="signature">
@@ -95,9 +115,15 @@
       <span class="symbol">
         <a href="DRowWiseMatrix.html"><span class="name">DRowWiseMatrix</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: <a href="../Scoobi$.html#DList[A]=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.Scoobi.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.DRowWiseMatrix.Elem">Elem</span>, <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="com.nicta.scoobi.lib.DRowWiseMatrix.Elem">Elem</span>, <span class="extype" name="com.nicta.scoobi.lib.DRowWiseMatrix.T">T</span>)])]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$19">evidence$19: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.DRowWiseMatrix.Elem">Elem</span>]</span>, <span name="evidence$20">evidence$20: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.nicta.scoobi.lib.DRowWiseMatrix.Elem">Elem</span>]</span>, <span name="evidence$21">evidence$21: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.DRowWiseMatrix.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A distributed row-wise matrix.</p>
-    </li><li name="com.nicta.scoobi.lib.DVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@DRowWiseMatrix[Elem,T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A distributed row-wise matrix.</p><div class="fullcomment"><div class="comment cmt"><p>A distributed row-wise matrix. This is an efficient representation for multiplying by an in-memory vector. The contents of each row
+must be small enough to fit in memory
+</p></div></div>
+    </li><li name="com.nicta.scoobi.lib.DVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="DVector[Elem,T]extendsProductwithSerializable"></a>
       <a id="DVector[Elem,T]:DVector[Elem,T]"></a>
       <h4 class="signature">
@@ -108,9 +134,17 @@
       <span class="symbol">
         <a href="DVector.html"><span class="name">DVector</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: <a href="../Scoobi$.html#DList[A]=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.Scoobi.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.DVector.Elem">Elem</span>, <span class="extype" name="com.nicta.scoobi.lib.DVector.T">T</span>)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.DVector.Elem">Elem</span>]</span>, <span name="evidence$2">evidence$2: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.nicta.scoobi.lib.DVector.Elem">Elem</span>]</span>, <span name="evidence$3">evidence$3: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.DVector.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A distributed vector, stored in coordinate form.</p>
-    </li><li name="com.nicta.scoobi.lib.InMemDenseVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@DVector[Elem,T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A distributed vector, stored in coordinate form.</p><div class="fullcomment"><div class="comment cmt"><p>A distributed vector, stored in coordinate form.
+Optimised for a huge spare vector, but should perform reasonably for a large dense vector too.
+If the vector is small (i.e. a few megabytes or less, you'll probably be better off with the
+in memory vectors instead
+</p></div></div>
+    </li><li name="com.nicta.scoobi.lib.InMemDenseVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="InMemDenseVector[T]extendsProductwithSerializable"></a>
       <a id="InMemDenseVector[T]:InMemDenseVector[T]"></a>
       <h4 class="signature">
@@ -121,9 +155,14 @@
       <span class="symbol">
         <a href="InMemDenseVector.html"><span class="name">InMemDenseVector</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="data">data: <a href="../Scoobi$.html#DObject[A]=com.nicta.scoobi.core.DObject[A]" class="extmbr" name="com.nicta.scoobi.Scoobi.DObject">DObject</a>[<a href="../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<span class="extype" name="com.nicta.scoobi.lib.InMemDenseVector.T">T</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$16">evidence$16: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.InMemDenseVector.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">An efficient, dense vector that needs to be small enough to fit in memory.</p>
-    </li><li name="com.nicta.scoobi.lib.InMemVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@InMemDenseVector[T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">An efficient, dense vector that needs to be small enough to fit in memory.</p><div class="fullcomment"><div class="comment cmt"><p>An efficient, dense vector that needs to be small enough to fit in memory. It must be indexed by an int
+</p></div></div>
+    </li><li name="com.nicta.scoobi.lib.InMemVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="InMemVector[Elem,T]extendsProductwithSerializable"></a>
       <a id="InMemVector[Elem,T]:InMemVector[Elem,T]"></a>
       <h4 class="signature">
@@ -134,8 +173,13 @@
       <span class="symbol">
         <a href="InMemVector.html"><span class="name">InMemVector</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: <a href="../Scoobi$.html#DObject[A]=com.nicta.scoobi.core.DObject[A]" class="extmbr" name="com.nicta.scoobi.Scoobi.DObject">DObject</a>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.nicta.scoobi.lib.InMemVector.Elem">Elem</span>, <span class="extype" name="com.nicta.scoobi.lib.InMemVector.T">T</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$10">evidence$10: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.InMemVector.Elem">Elem</span>]</span>, <span name="evidence$11">evidence$11: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.nicta.scoobi.lib.InMemVector.Elem">Elem</span>]</span>, <span name="evidence$12">evidence$12: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.InMemVector.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A vector that is small enough to send to one mapper (i.</p>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@InMemVector[Elem,T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A vector that is small enough to send to one mapper (i.</p><div class="fullcomment"><div class="comment cmt"><p>A vector that is small enough to send to one mapper (i.e. a few megs or less). Best suited for a sparse vector
+</p></div></div>
     </li><li name="com.nicta.scoobi.lib.Library" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="LibraryextendsAnyRef"></a>
       <a id="Library:Library"></a>
@@ -147,7 +191,11 @@
       <span class="symbol">
         <a href="Library.html"><span class="name">Library</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@LibraryextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.lib.Relational" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Relational[K,A]extendsProductwithSerializable"></a>
@@ -160,7 +208,11 @@
       <span class="symbol">
         <a href="Relational.html"><span class="name">Relational</span></a><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="left">left: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.Relational.K">K</span>, <span class="extype" name="com.nicta.scoobi.lib.Relational.A">A</span>)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.K">K</span>]</span>, <span name="evidence$2">evidence$2: <a href="../core/Grouping.html" class="extype" name="com.nicta.scoobi.core.Grouping">Grouping</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.K">K</span>]</span>, <span name="evidence$3">evidence$3: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.A">A</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@Relational[K,A]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -180,7 +232,11 @@
       <span class="symbol">
         <a href="InMemDenseVector$.html"><span class="name">InMemDenseVector</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@InMemDenseVector" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.lib.InMemVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="InMemVector"></a>
@@ -193,7 +249,11 @@
       <span class="symbol">
         <a href="InMemVector$.html"><span class="name">InMemVector</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@InMemVector" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.lib.Library" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Library"></a>
@@ -206,7 +266,11 @@
       <span class="symbol">
         <a href="Library$.html"><span class="name">Library</span></a><span class="result"> extends <a href="Library.html" class="extype" name="com.nicta.scoobi.lib.Library">Library</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@Library" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.lib.LinearAlgebra" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="LinearAlgebra"></a>
@@ -219,7 +283,11 @@
       <span class="symbol">
         <a href="LinearAlgebra$.html"><span class="name">LinearAlgebra</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@LinearAlgebra" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.lib.Relational" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Relational"></a>
@@ -232,7 +300,11 @@
       <span class="symbol">
         <a href="Relational$.html"><span class="name">Relational</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.lib.package@Relational" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -259,6 +331,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+
+
     </body>
       </html>

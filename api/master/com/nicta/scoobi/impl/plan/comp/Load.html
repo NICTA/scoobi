@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>Load - com.nicta.scoobi.impl.plan.comp.Load</title>
@@ -9,6 +8,11 @@
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.plan.comp">comp</a></p>
-        <h1>Load</h1>
+        <h1>Load</h1> <span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,7 +43,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Load</span><span class="params">(<span name="source">source: <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Load</span><span class="params">(<span name="source">source: <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="symbol">Seq()</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -90,9 +98,13 @@ A DataSource object specifies how the loading is performed
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Load</span><span class="params">(<span name="source">source: <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span>
+        <span class="name">Load</span><span class="params">(<span name="source">source: <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="symbol">Seq()</span></span>)</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@&lt;init&gt;(source:com.nicta.scoobi.core.Source,wf:com.nicta.scoobi.core.WireReaderWriter,sinks:Seq[com.nicta.scoobi.core.Sink]):com.nicta.scoobi.impl.plan.comp.Load" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -110,7 +122,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">C</span><span class="result"> = <a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@C=com.nicta.scoobi.core.ValueNode" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li></ol>
             </div>
@@ -120,19 +136,6 @@ A DataSource object specifies how the loading is performed
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -143,8 +146,12 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -156,7 +163,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@##():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[T,U](a:T=&gt;U)(implicitb:Attributable.this.type=&gt;T):U"></a>
@@ -169,7 +180,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span title="gt4s: $minus$greater" class="name">-&gt;</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="a">a: (<span class="extype" name="org.kiama.attribution.Attributable.-&gt;.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attributable.-&gt;.U">U</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="b">b: (<a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Load">Load</a>.this.type) ⇒ <span class="extype" name="org.kiama.attribution.Attributable.-&gt;.T">T</span></span>)</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable.-&gt;.U">U</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@-&gt;[T,U](a:T=&gt;U)(implicitb:Attributable.this.type=&gt;T):U" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
@@ -185,25 +200,16 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span title="gt4s: $minus$greater" class="name">-&gt;</span><span class="tparams">[<span name="U">U</span>]</span><span class="params">(<span name="a">a: (<a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Load">Load</a>.this.type) ⇒ <span class="extype" name="org.kiama.attribution.Attributable.-&gt;.U">U</span></span>)</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable.-&gt;.U">U</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@-&gt;[U](a:Attributable.this.type=&gt;U):U" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -214,8 +220,12 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.CompNode#addSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="addSink(sink:com.nicta.scoobi.core.Sink):CompNode.this.C"></a>
       <a id="addSink(Sink):C"></a>
@@ -227,7 +237,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">addSink</span><span class="params">(<span name="sink">sink: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>)</span><span class="result">: <a href="#C=com.nicta.scoobi.core.ValueNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.Load.C">C</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@addSink(sink:com.nicta.scoobi.core.Sink):CompNode.this.C" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -240,7 +254,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#children" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="children:Iterator[org.kiama.attribution.Attributable]"></a>
@@ -253,7 +271,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">children</span><span class="result">: <a href="../../../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@children:Iterator[org.kiama.attribution.Attributable]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#clone" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():org.kiama.attribution.Attributable"></a>
@@ -266,7 +288,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@clone():org.kiama.attribution.Attributable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable → AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.WithEnvironment#environment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="environment(sc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.Environment"></a>
@@ -279,7 +305,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">environment</span><span class="params">(<span name="sc">sc: <a href="../../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../core/Environment.html" class="extype" name="com.nicta.scoobi.core.Environment">Environment</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@environment(sc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.Environment" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WithEnvironment.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.WithEnvironment">WithEnvironment</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
@@ -292,7 +322,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.CompNode#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(a:Any):Boolean"></a>
@@ -305,7 +339,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">equals</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@equals(a:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a> → Equals → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
@@ -318,7 +356,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -337,7 +379,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">firstChild</span><span class="tparams">[<span name="T">T</span>]</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable.firstChild.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@firstChild[T]:T" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
@@ -350,7 +396,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.CompNode#hasCheckpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hasCheckpoint:Boolean"></a>
@@ -363,7 +413,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">hasCheckpoint</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@hasCheckpoint:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#hasChildren" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hasChildren:Boolean"></a>
@@ -376,7 +430,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">hasChildren</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@hasChildren:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.CompNode#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
@@ -389,7 +447,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a> → AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl#id" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="id:Int"></a>
@@ -402,8 +464,12 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@id:Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">unique identifier for this computation node</p><div class="fullcomment"><div class="comment cmt"><p>unique identifier for this computation node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#index" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="index:Int"></a>
       <a id="index:Int"></a>
@@ -415,7 +481,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">index</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@index:Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#initTreeProperties" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="initTreeProperties():Unit"></a>
@@ -428,7 +498,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">initTreeProperties</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@initTreeProperties():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#isFirst" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isFirst:Boolean"></a>
@@ -441,7 +515,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">isFirst</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@isFirst:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -454,7 +532,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#isLast" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isLast:Boolean"></a>
@@ -467,7 +549,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">isLast</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@isLast:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#isRoot" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isRoot:Boolean"></a>
@@ -480,7 +566,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">isRoot</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@isRoot:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#lastChild" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="lastChild[T]:T"></a>
@@ -493,7 +583,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">lastChild</span><span class="tparams">[<span name="T">T</span>]</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable.lastChild.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@lastChild[T]:T" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
@@ -506,7 +600,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#next" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="next[T]:T"></a>
@@ -519,7 +617,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">next</span><span class="tparams">[<span name="T">T</span>]</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable.next.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@next[T]:T" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#next" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="next:org.kiama.attribution.Attributable"></a>
@@ -532,7 +634,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">next</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@next:org.kiama.attribution.Attributable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
@@ -545,7 +651,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
@@ -558,7 +668,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#parent" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="parent[T]:T"></a>
@@ -571,7 +685,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">parent</span><span class="tparams">[<span name="T">T</span>]</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable.parent.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@parent[T]:T" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#parent" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="parent:org.kiama.attribution.Attributable"></a>
@@ -584,7 +702,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">parent</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@parent:org.kiama.attribution.Attributable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#prev" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="prev[T]:T"></a>
@@ -597,7 +719,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">prev</span><span class="tparams">[<span name="T">T</span>]</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable.prev.T">T</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@prev[T]:T" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#prev" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="prev:org.kiama.attribution.Attributable"></a>
@@ -610,7 +736,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">prev</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@prev:org.kiama.attribution.Attributable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.WithEnvironment#pushEnv" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="pushEnv(result:Any)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
@@ -623,7 +753,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">pushEnv</span><span class="params">(<span name="result">result: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@pushEnv(result:Any)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">push a value for this environment.</p><div class="fullcomment"><div class="comment cmt"><p>push a value for this environment. This serialises the value and distribute it in the file cache</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WithEnvironment.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.WithEnvironment">WithEnvironment</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.Load#sinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sinks:Seq[com.nicta.scoobi.core.Sink]"></a>
@@ -636,7 +770,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">sinks</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@sinks:Seq[com.nicta.scoobi.core.Sink]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Load">Load</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl#sinksString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sinksString:String"></a>
@@ -649,7 +787,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">sinksString</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@sinksString:String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">display the sinks if any</p><div class="fullcomment"><div class="comment cmt"><p>display the sinks if any</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.Load#source" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="source:com.nicta.scoobi.core.Source"></a>
@@ -662,7 +804,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">source</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@source:com.nicta.scoobi.core.Source" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
@@ -675,7 +821,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.Load#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString:String"></a>
@@ -688,7 +838,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">toString</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@toString:String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Load">Load</a> → AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.Load#updateSinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="updateSinks(f:Seq[com.nicta.scoobi.core.Sink]=&gt;Seq[com.nicta.scoobi.core.Sink]):com.nicta.scoobi.impl.plan.comp.Load"></a>
@@ -701,7 +855,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">updateSinks</span><span class="params">(<span name="f">f: (<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]) ⇒ <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Load">Load</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@updateSinks(f:Seq[com.nicta.scoobi.core.Sink]=&gt;Seq[com.nicta.scoobi.core.Sink]):com.nicta.scoobi.impl.plan.comp.Load" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Load">Load</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
@@ -714,7 +872,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -733,7 +895,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -752,7 +918,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -771,7 +941,11 @@ A DataSource object specifies how the loading is performed
       <span class="symbol">
         <span class="name">wf</span><span class="result">: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.Load@wf:com.nicta.scoobi.core.WireReaderWriter" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       <p class="shortcomment cmt">object defining how to serialise / deserialise  data for that node</p><div class="fullcomment"><div class="comment cmt"><p>object defining how to serialise / deserialise  data for that node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Load">Load</a> → <a href="WithEnvironment.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.WithEnvironment">WithEnvironment</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li></ol>
             </div>
@@ -824,6 +998,7 @@ A DataSource object specifies how the loading is performed
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
+
+
     </body>
       </html>

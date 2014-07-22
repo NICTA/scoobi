@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>exec - com.nicta.scoobi.impl.exec</title>
@@ -9,6 +8,11 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../../lib/package_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a></p>
-        <h1>exec</h1>
+        <h1>exec</h1> <span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -69,8 +77,12 @@
       <span class="symbol">
         <a href="ConfiguredWritableComparator.html"><span class="name">ConfiguredWritableComparator</span></a><span class="result"> extends <span class="extype" name="org.apache.hadoop.io.RawComparator">RawComparator</span>[<span class="extype" name="org.apache.hadoop.io.WritableComparable">WritableComparable</span>[_]] with <a href="../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
       </span>
-      </h4>
-      <p class="comment cmt">This Comparator delegates comparisons to the WritableComparator for the MapOutputKeyClass
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package@ConfiguredWritableComparatorextendsRawComparator[org.apache.hadoop.io.WritableComparable[_]]withConfigured" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This Comparator delegates comparisons to the WritableComparator for the MapOutputKeyClass
 but first it instantiate keys using the configuration (instead of null in the original version)
 so that the TaggedKey can be set up with the proper metadata
 </p>
@@ -85,7 +97,11 @@ so that the TaggedKey can be set up with the proper metadata
       <span class="symbol">
         <a href="ExecutionMode.html"><span class="name">ExecutionMode</span></a><span class="result"> extends <a href="../plan/comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a> with <a href="../plan/comp/Optimiser.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Optimiser">Optimiser</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package@ExecutionModeextendsShowNodewithOptimiser" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.exec.InMemoryMode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="InMemoryModeextendsExecutionModewithProductwithSerializable"></a>
@@ -98,8 +114,12 @@ so that the TaggedKey can be set up with the proper metadata
       <span class="symbol">
         <a href="InMemoryMode.html"><span class="name">InMemoryMode</span></a><span class="params">()</span><span class="result"> extends <a href="ExecutionMode.html" class="extype" name="com.nicta.scoobi.impl.exec.ExecutionMode">ExecutionMode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A fast local mode for execution of Scoobi applications.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package@InMemoryModeextendsExecutionModewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A fast local mode for execution of Scoobi applications.</p>
     </li><li name="com.nicta.scoobi.impl.exec.JobExecException" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="JobExecExceptionextendsRuntimeException"></a>
       <a id="JobExecException:JobExecException"></a>
@@ -111,7 +131,11 @@ so that the TaggedKey can be set up with the proper metadata
       <span class="symbol">
         <a href="JobExecException.html"><span class="name">JobExecException</span></a><span class="result"> extends <a href="../../../../../scala/package.html#RuntimeException=RuntimeException" class="extmbr" name="scala.RuntimeException">RuntimeException</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package@JobExecExceptionextendsRuntimeException" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.exec.MapReduceJob" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="MapReduceJobextendsProductwithSerializable"></a>
@@ -124,8 +148,12 @@ so that the TaggedKey can be set up with the proper metadata
       <span class="symbol">
         <a href="MapReduceJob.html"><span class="name">MapReduceJob</span></a><span class="params">(<span name="mscr">mscr: <a href="../plan/mscr/Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a></span>, <span name="mscrNumber">mscrNumber: <span class="extype" name="scala.Int">Int</span></span>, <span name="mscrsNumber">mscrsNumber: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package@MapReduceJobextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
 </p>
     </li><li name="com.nicta.scoobi.impl.exec.Progress" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ProgressextendsAnyRef"></a>
@@ -138,7 +166,11 @@ so that the TaggedKey can be set up with the proper metadata
       <span class="symbol">
         <a href="Progress.html"><span class="name">Progress</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package@ProgressextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li><li name="com.nicta.scoobi.impl.exec.TaskDetailsLogger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TaskDetailsLoggerextendsAnyRef"></a>
@@ -151,7 +183,11 @@ so that the TaggedKey can be set up with the proper metadata
       <span class="symbol">
         <a href="TaskDetailsLogger.html"><span class="name">TaskDetailsLogger</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.nicta.scoobi.impl.exec.package@TaskDetailsLoggerextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -182,6 +218,7 @@ so that the TaggedKey can be set up with the proper metadata
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+
+
     </body>
       </html>
