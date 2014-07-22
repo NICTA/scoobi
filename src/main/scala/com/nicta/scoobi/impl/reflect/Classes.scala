@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package impl
 package reflect
 
+import com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader
 import java.util.jar.{JarEntry, JarInputStream}
 import java.io.{File, FileInputStream}
 import java.net.{URL, URLDecoder}
@@ -27,9 +28,7 @@ import monitor.Loggable._
 import org.apache.commons.logging.LogFactory
 
 import control.Exceptions._
-import tools.nsc.util.ScalaClassLoader
-import scala.reflect.io.{AbstractFile, VirtualDirectory}
-import tools.nsc.interpreter.AbstractFileClassLoader
+import scala.reflect.io.AbstractFile
 
 /**
  * Utility methods for accessing classes and methods
@@ -121,7 +120,7 @@ trait Classes {
   /** @return the classes contained in a class loader, by class name */
   def loadedClasses(classLoader: AbstractFileClassLoader) = {
     def virtualClasses(file: AbstractFile): Seq[AbstractFile] = {
-      if (file.isDirectory) (file.flatMap(child => virtualClasses(child)).toSeq ++ file.filter(_.name.endsWith(".class")))
+      if (file.isDirectory) file.flatMap(child => virtualClasses(child)).toSeq ++ file.filter(_.name.endsWith(".class"))
       else Seq(file).filter(_.name.endsWith(".class"))
     }
 

@@ -37,9 +37,9 @@ import io.FileSystems
 import Configurations._
 import FileSystems._
 import monitor.Loggable._
-import tools.nsc.interpreter.AbstractFileClassLoader
 import com.nicta.scoobi.impl.util.Compatibility
 import com.nicta.scoobi.core.Mode.{Local, InMemory}
+import com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader
 import org.apache.commons.codec.binary.Base64
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,

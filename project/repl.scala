@@ -37,7 +37,7 @@ object repl {
       dependencies.hadoop(version.value).map(dehadoop)       ++
       dependencies.scalaz()                                  ++
       dependencies.specs2()                                  ++
-      dependencies.repl
+      dependencies.repl(scalaVersion.value)
 
   lazy val repl = Seq(
     deps,

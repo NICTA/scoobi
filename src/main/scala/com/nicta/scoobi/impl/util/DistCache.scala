@@ -85,7 +85,7 @@ object DistCache {
 
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
-  def pullObject[T](configuration: Configuration, tag: String, deserialiser: DataInputStream => T, memoise: Boolean = false): Option[T] =
+  def pullObjectDeserialise[T](configuration: Configuration, tag: String, deserialiser: DataInputStream => T, memoise: Boolean = false): Option[T] =
     pullPath(configuration, tagToPath(configuration, tag), memoise)(deserialiser)
 
   /** pull an object from the cache by passing the cache paths directly */

@@ -18,7 +18,7 @@ package application
 
 import org.apache.hadoop.fs._
 import scala.tools.nsc.Settings
-import tools.nsc.interpreter.{ReplReporter, AbstractFileClassLoader, ILoop}
+import scala.tools.nsc.interpreter.{ReplReporter, ILoop}
 import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter
@@ -117,7 +117,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 /**
  * definition of the interpreter loop
  */
-class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
+class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoopCompat {
   val configuration = scoobiInterpreter.configuration
 
   def imports: Seq[String] = Seq(
@@ -136,10 +136,12 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
     else result
   }
 
-  addThunk {
+  override def createInterpreter() {
+    if (addedClasspath != "")
+      settings.classpath append addedClasspath
     // create a new interpreter which will strip the output with a special function
-    intp = new ILoopInterpreter {
-      def strippingWriter = new ReplStrippingWriter(outer) {
+    intp = new ILoopInterpreter { inner =>
+      def strippingWriter = new ReplStrippingWriter(inner) {
         override def truncate(str: String): String = {
           val truncated =
             if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
@@ -147,20 +149,29 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
           truncateResult(truncated)
         }
       }
-      override lazy val reporter = new ReplReporter(outer) {
-        val realReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
+      override lazy val reporter = new ReplReporter(inner) {
+        val realReporter = new ConsoleReporter(inner.settings, null, strippingWriter)
         override def printMessage(message: String) { realReporter.printMessage(message) }
         override def displayPrompt() { realReporter.displayPrompt() }
         override def flush() { realReporter.flush() }
       }
     }
-    intp.beQuietDuring {
-      imports.foreach(i => intp.addImports(i))
-      configuration.addClassLoader(intp.classLoader)
-      if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
-      else                                      scoobiInterpreter.local
-      scoobiInterpreter.initialise
-      woof()
+    addThunk {
+      intp.beQuietDuring {
+        if (imports.nonEmpty) intp.interpret(imports.mkString("import ", "; import ", "\n"))
+        configuration.addClassLoader(intp.classLoader)
+        // It's important that the LogFactories are initialized with the _same_ ContextClassLoader to ensure we setup
+        // the correct commons-logging LogFactory, otherwise we use the default 'quiet' configuration of 'true'.
+        // This happened previously with Scala 2.10, due to the real 'addThunk', but not in 2.11+.
+        val oldClassLoader = Thread.currentThread.getContextClassLoader
+        try {
+          Thread.currentThread.setContextClassLoader(intp.classLoader)
+          if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
+          else scoobiInterpreter.local
+          scoobiInterpreter.initialise
+        } finally Thread.currentThread.setContextClassLoader(oldClassLoader)
+        woof()
+      }
     }
   }
 

@@ -93,7 +93,7 @@ case class InMemoryMode() extends ExecutionMode {
 
       if (isExpectedResult(node))
         node match {
-          case Materialise1(_) | Op1(_) | GroupByKey1(_) | ParallelDo1(_) | Combine1(_) | Return1(_) => saveSinks(result, node)
+          case Materialise1(_) | Op1(_,_) | GroupByKey1(_) | ParallelDo1(_) | Combine1(_) | Return1(_) => saveSinks(result, node)
           case _                                                                                     => ()
         }
       result

@@ -16,16 +16,12 @@
 package com.nicta.scoobi
 package core
 
+import com.nicta.scoobi.reflect.internal.util.AbstractFileClassLoader
 import java.net.URL
 import java.io.File
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{Path, FileSystem}
-import org.apache.hadoop.mapreduce.Job
-import impl.ScoobiConfigurationImpl
-import tools.nsc.util.ScalaClassLoader
-import tools.nsc.interpreter.AbstractFileClassLoader
 import org.apache.hadoop.mapreduce.{Counters => HadoopCounters}
-import core.Mode.InMemory
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
