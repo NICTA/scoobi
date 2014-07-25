@@ -597,7 +597,10 @@ which the function is defined
       </a>
     </span>
       <p class="shortcomment cmt">Computes the multiset difference between this DList and that
-This has the same semantics as Scala's List.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the multiset difference between this DList and that
+This has the same semantics as Scala's List.diff
+ This makes code makes the assumption that all A's that group together are exactly
+ equivalent and interchangeable with each other, and all A's that do group together
+ will be brought together in the resultant DList.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the multiset difference between this DList and that
 This has the same semantics as Scala's List.diff
  This makes code makes the assumption that all A's that group together are exactly
  equivalent and interchangeable with each other, and all A's that do group together
@@ -621,7 +624,7 @@ This has the same semantics as Scala's List.diff
       </a>
     </span>
       <p class="shortcomment cmt">Build a new distributed list from this list without any duplicate elements.</p>
-    </li><li name="com.nicta.scoobi.core.DList#distinctDiff" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.DList#distinctDiff" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="distinctDiff(that:com.nicta.scoobi.core.DList[A])(implicitcmp:com.nicta.scoobi.core.Grouping[A]):com.nicta.scoobi.core.DList[A]"></a>
       <a id="distinctDiff(DList[A])(Grouping[A]):DList[A]"></a>
       <h4 class="signature">
@@ -638,11 +641,9 @@ This has the same semantics as Scala's List.diff
       </a>
     </span>
       <p class="shortcomment cmt">Computes the set difference between this DList and another
-This has the same semantics as Scala's Set.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the set difference between this DList and another
 This has the same semantics as Scala's Set.diff and is equivalent to calling
 .distinct.diff(that) but is considerably more efficient, as it can be done in a single
-mapReduce.
-</p></div></div>
+mapReduce.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -769,7 +770,7 @@ all the values are concatenated.</p>
       </a>
     </span>
       <p class="shortcomment cmt">Sum up the elements of this distributed list.</p>
-    </li><li name="com.nicta.scoobi.core.DList#foldMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.DList#foldMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="foldMap[B](f:A=&gt;B)(implicitevidence$9:scalaz.Monoid[B],implicitevidence$10:com.nicta.scoobi.core.WireFormat[B]):com.nicta.scoobi.core.DObject[B]"></a>
       <a id="foldMap[B]((A)⇒B)(Monoid[B],WireFormat[B]):DObject[B]"></a>
       <h4 class="signature">
@@ -785,7 +786,7 @@ all the values are concatenated.</p>
         <img src="../../../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Map each element to a scalaz.</p><div class="fullcomment"><div class="comment cmt"><p>Map each element to a scalaz.Monoid and fold.</p></div></div>
+      <p class="shortcomment cmt">Map each element to a scalaz.Monoid and fold.</p>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -1631,7 +1632,7 @@ defined by <code>weights</code>.</p>
       </a>
     </span>
       <p class="shortcomment cmt">the withFilter method</p>
-    </li><li name="com.nicta.scoobi.core.DList#zipWithIndex" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.DList#zipWithIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="zipWithIndex:com.nicta.scoobi.core.DList[(A,Long)]"></a>
       <a id="zipWithIndex:DList[(A,Long)]"></a>
       <h4 class="signature">
@@ -1647,7 +1648,7 @@ defined by <code>weights</code>.</p>
         <img src="../../../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Add an index (Long) to the DList where the index is between 0 and .</p><div class="fullcomment"><div class="comment cmt"><p>Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList</p></div></div>
+      <p class="shortcomment cmt">Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList</p>
     </li></ol>
             </div>
 
