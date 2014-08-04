@@ -52,7 +52,7 @@ object build extends Build {
     id = "scoobi",
     base = file("."),
     configurations = Configurations.default ++ Seq(repl.Repl),
-    settings = Seq(name := "scoobi") ++
+    settings = Seq(name := "scoobi-parent") ++
       moduleSettings                 ++
       siteSettings                   ++
       releaseSettings                ++
@@ -75,7 +75,7 @@ object build extends Build {
     id = "core",
     base = file("scoobi-core"),
     settings = moduleSettings ++ Seq(
-        name := "scoobi-core"
+        name := "scoobi"
       // We're playing games with SBT to avoid having to move everything from 'src' to 'scoobi-core'
       , sourceDirectory := baseDirectory.value.getParentFile / "src"
       , dependencies.dependencies
