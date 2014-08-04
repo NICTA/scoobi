@@ -61,6 +61,10 @@ object dependencies {
     "org.specs2"                        %% "specs2-html"               % specs2Version      ,
     "org.specs2"                        %% "specs2-analysis"           % specs2Version      ).map(_ % "test")
 
+  val thrift = Seq(
+    "org.apache.thrift"                  % "libthrift"                 % "0.9.1"
+  )
+
   def repl(scalaVersion: String) = Seq(
     if (scalaVersion.contains("2.10"))
     "org.scala-lang"                    %  "jline"                     % scalaVersion

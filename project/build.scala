@@ -57,7 +57,7 @@ object build extends Build {
       siteSettings                   ++
       releaseSettings                ++
       Seq(sourceDirectory := file("ignoreme"))
-  ).aggregate(core)
+  ).aggregate(core, thrift)
 
   lazy val moduleSettings: Seq[Settings] =
      Defaults.defaultSettings   ++
@@ -82,6 +82,16 @@ object build extends Build {
       , (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen
     )
   )
+
+  lazy val thrift = Project(
+    id = "thrift"
+  , base = file("scoobi-thrift")
+  , settings = moduleSettings ++ Seq[Settings](
+      name := "scoobi-thrift"
+    , libraryDependencies ++= dependencies.thrift ++ dependencies.specs2()
+    )
+  )
+  .dependsOn(core)
 
   lazy val scoobiVersion = SettingKey[String]("scoobi-version", "defines the current Scoobi version")
   lazy val scoobiSettings: Seq[Settings] = Seq(
