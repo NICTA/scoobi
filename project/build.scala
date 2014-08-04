@@ -52,23 +52,39 @@ object build extends Build {
     id = "scoobi",
     base = file("."),
     configurations = Configurations.default ++ Seq(repl.Repl),
-    settings = Defaults.defaultSettings ++
-               scoobiSettings           ++
-               dependencies.settings    ++
-               buildSettings            ++
-               compilationSettings      ++
-               testingSettings          ++
-               siteSettings             ++
-               publicationSettings      ++
-               mimaSettings             ++ 
-               notificationSettings     ++
-               releaseSettings          ++
-               repl.settings
+    settings = Seq(name := "scoobi") ++
+      moduleSettings                 ++
+      siteSettings                   ++
+      releaseSettings                ++
+      Seq(sourceDirectory := file("ignoreme"))
+  ).aggregate(core)
+
+  lazy val moduleSettings: Seq[Settings] =
+     Defaults.defaultSettings   ++
+       scoobiSettings           ++
+       buildSettings            ++
+       compilationSettings      ++
+       testingSettings          ++
+       publicationSettings      ++
+       mimaSettings             ++
+       notificationSettings     ++
+       dependencies.resolversSettings ++
+       repl.settings
+
+  lazy val core = Project(
+    id = "core",
+    base = file("scoobi-core"),
+    settings = moduleSettings ++ Seq(
+        name := "scoobi-core"
+      // We're playing games with SBT to avoid having to move everything from 'src' to 'scoobi-core'
+      , sourceDirectory := baseDirectory.value.getParentFile / "src"
+      , dependencies.dependencies
+      , (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen
+    )
   )
 
   lazy val scoobiVersion = SettingKey[String]("scoobi-version", "defines the current Scoobi version")
   lazy val scoobiSettings: Seq[Settings] = Seq(
-    name := "scoobi",
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
     scalaVersion := "2.11.2",
@@ -89,7 +105,6 @@ object build extends Build {
 
 
   lazy val compilationSettings: Seq[Settings] = Seq(
-    (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
     incOptions := incOptions.value.withNameHashing(true),
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:_"),
     scalacOptions in Test ++= Seq("-Yrangepos")

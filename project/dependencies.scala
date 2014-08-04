@@ -18,7 +18,6 @@ import Keys._
 
 object dependencies {
 
-  lazy val settings = dependencies ++ resolversSettings
   lazy val dependencies = libraryDependencies ++=
     scoobi(scalaVersion.value) ++
     hadoop(version.value)      ++
