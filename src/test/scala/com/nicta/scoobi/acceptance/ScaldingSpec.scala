@@ -26,6 +26,8 @@ import Movies._
 class ScaldingSpec extends NictaSimpleJobs {
   "Translation of http://blog.echen.me/2012/02/09/movie-recommendations-and-more-via-mapreduce-and-scalding to Scoobi" >> { implicit sc: SC =>
 
+    implicit val IntOrdering = scalaz.Order.fromScalaOrdering[Int]
+
     // very small list of ratings
     val ratings = DList(
       Rating(1, 1, 1),

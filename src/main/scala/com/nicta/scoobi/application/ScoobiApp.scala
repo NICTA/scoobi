@@ -16,6 +16,7 @@
 package com.nicta.scoobi
 package application
 
+import Levels._
 import impl.io.FileSystems
 import impl.reflect.{ClasspathDiagnostics, Classes}
 import org.apache.commons.logging.LogFactory
@@ -89,9 +90,9 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     // arguments need to be stored before the configuration is even created
     // so that we know if configuration files must be read or not
     set(arguments)
-    HadoopLogFactory.setLogFactory(classOf[HadoopLogFactory].getName, quiet, showTimes, level, categories)
-    configuration.set("mapred.map.child.log.level", level)
-    configuration.set("mapred.reduce.child.log.level", level)
+    HadoopLogFactory.setLogFactory(classOf[HadoopLogFactory].getName, quiet, showTimes, level.asString, categories)
+    configuration.set("mapred.map.child.log.level", level.asString)
+    configuration.set("mapred.reduce.child.log.level", level.asString)
 
     logger.debug("parsing the hadoop arguments "+ arguments.mkString(", "))
     configuration.withHadoopArgs(arguments) { remainingArgs =>

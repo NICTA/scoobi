@@ -55,6 +55,8 @@ object SecondarySort {
   import syntax.semigroup._
   import syntax.order._
 
+  implicit val StringOrdering = scalaz.Order.fromScalaOrdering[String]
+
   val secondary: Grouping[(FirstName, LastName)] = new Grouping[(FirstName, LastName)] {
     override def partition(key: (FirstName, LastName), howManyReducers: Int): Int =
       implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)
