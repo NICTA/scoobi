@@ -95,7 +95,7 @@ object HadoopLogFactory {
   def setLogFactory(name: String = classOf[HadoopLogFactory].getName,
                     quiet: Boolean = false,
                     showTimes: Boolean = false,
-                    level: String = INFO,
+                    level: String = INFO.asString,
                     categories: String = ".*") {
     // release any previously set LogFactory for this class loader
     LogFactory.release(Thread.currentThread.getContextClassLoader)
@@ -120,7 +120,7 @@ object HadoopLogFactory {
   def setShowTimes(showTimes: Boolean = false) {
     LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
   }
-  def setLogLevel(level: String = INFO) {
+  def setLogLevel(level: String = INFO.asString) {
     LogFactory.getFactory.setAttribute(LOG_LEVEL, level)
   }
   def setLogCategories(categories: String = ".*") {

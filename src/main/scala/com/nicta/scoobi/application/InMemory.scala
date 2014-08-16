@@ -18,6 +18,7 @@ package application
 
 import org.apache.commons.logging.LogFactory
 import core._
+import Levels._
 import Mode._
 import HadoopLogFactory._
 import impl.time.SimpleTimer
@@ -85,6 +86,6 @@ trait InMemoryHadoop extends ScoobiUserArgs {
    * Static setup to use a testing log factory
    */
   def setLogFactory(name: String = classOf[HadoopLogFactory].getName) {
-    HadoopLogFactory.setLogFactory(name, quiet, showTimes, level, categories)
+    HadoopLogFactory.setLogFactory(name, quiet, showTimes, level.asString, categories)
   }
 }

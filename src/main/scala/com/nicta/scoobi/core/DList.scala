@@ -298,7 +298,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
         // Oh, no. We have a key collision, so let's try randomize as much as we can
         else if (util.Random.nextBoolean()) scalaz.Ordering.LT
         else scalaz.Ordering.GT
-      override def groupCompare(a: Int, b: Int) = implicitly[scalaz.Order[Int]].order(a,b)
+      override def groupCompare(a: Int, b: Int) = scalaz.Order.fromScalaOrdering[Int].order(a,b)
     }
     groupWith(_ => util.Random.nextInt())(sgp).mapFlatten(_._2)
   }
