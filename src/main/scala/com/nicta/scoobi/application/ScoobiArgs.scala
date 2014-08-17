@@ -91,7 +91,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
 
   private[scoobi]
   def extractLevel(args: Seq[String]): Level =
-    args.filter(a => allLevels contains a.toUpperCase).map(l => l.toUpperCase.asInstanceOf[Level]).headOption.getOrElse(INFO)
+    args.filter(a => allLevels contains a.toUpperCase).map(l => Level(l.toUpperCase)).headOption.getOrElse(INFO)
 
   /**
    * extract the categories as a regular expression from the scoobi arguments, once all the other argument names have been

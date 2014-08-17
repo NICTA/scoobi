@@ -121,7 +121,7 @@ object HadoopLogFactory {
     LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
   }
   def setLogLevel(level: Level = INFO) {
-    LogFactory.getFactory.setAttribute(LOG_LEVEL, level.level)
+    LogFactory.getFactory.setAttribute(LOG_LEVEL, level)
   }
   def setLogCategories(categories: String = ".*") {
     LogFactory.getFactory.setAttribute(LOG_CATEGORIES, categories)
@@ -136,7 +136,7 @@ object HadoopLogFactory {
         FATAL   -> SimpleLog.LOG_LEVEL_FATAL,
         OFF     -> SimpleLog.LOG_LEVEL_OFF)
 
-  lazy val allLevels = levelsMappings.keys.map(_.toString).toSet
+  lazy val allLevels = levelsMappings.keys.map(_.level).toSet
 
 
   lazy val ALL  : Level = Level("ALL"  )
