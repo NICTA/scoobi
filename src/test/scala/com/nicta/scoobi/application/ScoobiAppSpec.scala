@@ -41,7 +41,7 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
     }
     "By defaults logs must be displayed, at the INFO level" >> {
       app.quiet aka "quiet" must beFalse
-      app.level must_== "INFO"
+      app.level.level must_== "INFO"
     }
     "If 'quiet' is passed on the command line then there must be no logs" >> {
       val app = new ScoobiApp { def run {} }
