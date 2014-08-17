@@ -46,7 +46,7 @@ object dependencies {
     else if (version.contains("cdh5")) Seq("com.nicta" %% "scoobi-compatibility-cdh5"    % "1.0.2")
     else                               Seq("com.nicta" %% "scoobi-compatibility-hadoop2" % "1.0.2")
 
-  def scalaz(scalazVersion: String = "7.0.6") = Seq(
+  def scalaz(scalazVersion: String = "7.1.0") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
     "org.scalaz"                        %% "scalaz-iteratee"           % scalazVersion,
     "org.scalaz"                        %% "scalaz-concurrent"         % scalazVersion,
@@ -54,7 +54,7 @@ object dependencies {
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  def specs2(specs2Version: String = "2.3.12") = Seq(
+  def specs2(specs2Version: String = "2.4") = Seq(
     "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional") ++ Seq(
     "org.specs2"                        %% "specs2-mock"               % specs2Version      ,
     "org.specs2"                        %% "specs2-scalacheck"         % specs2Version      ,
