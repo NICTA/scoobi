@@ -121,7 +121,7 @@ object HadoopLogFactory {
     LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
   }
   def setLogLevel(level: Level = INFO) {
-    LogFactory.getFactory.setAttribute(LOG_LEVEL, level.asString)
+    LogFactory.getFactory.setAttribute(LOG_LEVEL, level.level)
   }
   def setLogCategories(categories: String = ".*") {
     LogFactory.getFactory.setAttribute(LOG_CATEGORIES, categories)
@@ -139,13 +139,13 @@ object HadoopLogFactory {
   lazy val allLevels = levelsMappings.keys.map(_.toString).toSet
 
 
-  lazy val ALL  : Level = level("ALL"  )
-  lazy val TRACE: Level = level("TRACE")
-  lazy val INFO : Level = level("INFO" )
-  lazy val WARN : Level = level("WARN" )
-  lazy val ERROR: Level = level("ERROR")
-  lazy val FATAL: Level = level("FATAL")
-  lazy val OFF  : Level = level("OFF"  )
+  lazy val ALL  : Level = Level("ALL"  )
+  lazy val TRACE: Level = Level("TRACE")
+  lazy val INFO : Level = Level("INFO" )
+  lazy val WARN : Level = Level("WARN" )
+  lazy val ERROR: Level = Level("ERROR")
+  lazy val FATAL: Level = Level("FATAL")
+  lazy val OFF  : Level = Level("OFF"  )
 
 }
 

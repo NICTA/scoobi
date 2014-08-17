@@ -16,15 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import scalaz.{@@, Tag}
-
 object Levels {
 
-  trait AsLevel
-  type Level = String @@ AsLevel
-  def level(l: String): Level = l.asInstanceOf[Level]
-
-  implicit class LevelSyntax(val level: Level) extends AnyVal {
-    def asString: String = Tag.unwrap(level)
-  }
+  case class Level(level: String) extends AnyVal
 }
