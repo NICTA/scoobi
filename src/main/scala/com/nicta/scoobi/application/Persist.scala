@@ -31,7 +31,7 @@ trait Persist { outer =>
   /** Persisting */
   def persist[A](o: DObject[A])(implicit sc: core.ScoobiConfiguration) =     { sc.persist(o) }
   def persist[A](list: core.DList[A])(implicit sc: core.ScoobiConfiguration) = { sc.persist(list) }
-  def persist[A](ps: Persistent[_]*)(implicit sc: core.ScoobiConfiguration)  = { sc.persist(ps) }
+  def persist(ps: Persistent[_]*)(implicit sc: core.ScoobiConfiguration)  = { sc.persist(ps) }
 
   /**
    * run a list.
