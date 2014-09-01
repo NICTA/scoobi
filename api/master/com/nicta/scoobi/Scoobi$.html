@@ -1670,6 +1670,23 @@
       </a>
     </span>
       <p class="shortcomment cmt">Sequence File I/O</p><div class="fullcomment"><div class="comment cmt"><p>Sequence File I/O</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits.ShortWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ShortWireFormatextendsWireFormat[Short]"></a>
+      <a id="ShortWireFormat:ShortWireFormat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="core/WireFormatImplicits$ShortWireFormat.html"><span class="name">ShortWireFormat</span></a><span class="result"> extends <a href="core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="scala.Short">Short</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.WireFormatImplicits@ShortWireFormatextendsWireFormat[Short]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="core/WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.LowPriorityWireFormatImplicits.SpecificFixedAvroWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="SpecificFixedAvroWireFormat[T&lt;:org.apache.avro.specific.SpecificFixed]extendsWireFormat[T]"></a>
       <a id="SpecificFixedAvroWireFormat[T&lt;:SpecificFixed]:SpecificFixedAvroWireFormat[T]"></a>
@@ -2728,6 +2745,23 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#com.nicta.scoobi.Scoobi$@SetFmt[T](implicitevidence$19:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[Set[T]]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="core/WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#ShortFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ShortFmt:WireFormatImplicits.this.ShortWireFormat"></a>
+      <a id="ShortFmt:ShortWireFormat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ShortFmt</span><span class="result">: <a href="#ShortWireFormatextendsWireFormat[Short]" class="extmbr" name="com.nicta.scoobi.core.WireFormatImplicits.ShortWireFormat">ShortWireFormat</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#com.nicta.scoobi.Scoobi$@ShortFmt:WireFormatImplicits.this.ShortWireFormat" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -5446,18 +5480,18 @@ the &quot;key&quot;.</p></div><dl class="attributes block"> <dt>Definition Class
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="io/sequence/SequenceOutput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput">SequenceOutput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.Persist#persist" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="persist[A](ps:com.nicta.scoobi.core.Persistent[_]*)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Seq[com.nicta.scoobi.core.Persistent[_]]"></a>
-      <a id="persist[A](Persistent[_]*)(core.ScoobiConfiguration):Seq[Persistent[_]]"></a>
+      <a id="persist(ps:com.nicta.scoobi.core.Persistent[_]*)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Seq[com.nicta.scoobi.core.Persistent[_]]"></a>
+      <a id="persist(Persistent[_]*)(core.ScoobiConfiguration):Seq[Persistent[_]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ps">ps: <a href="core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">core.ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]]</span>
+        <span class="name">persist</span><span class="params">(<span name="ps">ps: <a href="core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">core.ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#com.nicta.scoobi.Scoobi$@persist[A](ps:com.nicta.scoobi.core.Persistent[_]*)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Seq[com.nicta.scoobi.core.Persistent[_]]" title="Permalink" target="_top">
+      <a href="../../../index.html#com.nicta.scoobi.Scoobi$@persist(ps:com.nicta.scoobi.core.Persistent[_]*)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Seq[com.nicta.scoobi.core.Persistent[_]]" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
