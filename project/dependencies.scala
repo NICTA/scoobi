@@ -22,7 +22,8 @@ object dependencies {
   lazy val dependencies = libraryDependencies ++=
     scoobi(scalaVersion.value) ++
     hadoop(version.value)      ++
-    scalaz()             ++
+    thrift                     ++
+    scalaz()                   ++
     specs2()
 
   // Libraries
@@ -53,6 +54,10 @@ object dependencies {
     "org.scalaz"                        %% "scalaz-scalacheck-binding" % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
+
+  val thrift = Seq(
+    "org.apache.thrift"                  % "libthrift"                 % "0.9.1"
+  )
 
   def specs2(specs2Version: String = "2.4") = Seq(
     "org.specs2"                        %% "specs2-core"               % specs2Version      % "optional") ++ Seq(
