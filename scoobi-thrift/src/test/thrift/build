@@ -1,7 +1,0 @@
-#!/bin/sh -eu
-
-# This requires a copy of thrift to be installed because it can be run
-# The expected files have been checked in for convenience
-
-DIR=$(dirname $0)/../../..
-thrift -r -out ${DIR}/src/test/java/ --gen java ${DIR}/src/test/thrift/test.thrift
