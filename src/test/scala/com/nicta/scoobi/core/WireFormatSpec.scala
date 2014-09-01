@@ -35,6 +35,7 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
   "A WireFormat instance is available for basic types" >> {
     serialisationIsOkFor[Int]
     serialisationIsOkFor[java.lang.Integer]
+    serialisationIsOkFor[Short]
     serialisationIsOkFor[Boolean]
     serialisationIsOkFor[Long]
     serialisationIsOkFor[Double]
