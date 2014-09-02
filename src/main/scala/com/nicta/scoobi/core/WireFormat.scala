@@ -340,7 +340,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   class DoubleWireFormat extends WireFormat[Double] {
     def toWire(x: Double, out: DataOutput) { out.writeDouble(x) }
     def fromWire(in: DataInput): Double = { in.readDouble() }
-    override def toString = "Float"
+    override def toString = "Double"
   }
 
   implicit def FloatFmt = new FloatWireFormat
