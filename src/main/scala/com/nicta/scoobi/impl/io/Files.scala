@@ -54,7 +54,9 @@ trait Files {
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
       if (sameFileSystem(from, to))
-        path.toUri.getPath.startsWith(destPath.toUri.getPath) || {
+        (path == destPath) || // same files
+        (from.isDirectory(path) && to.isDirectory(destPath) && path.toUri.getPath.startsWith(destPath.toUri.getPath)) || // nested directories
+        {
           logger.debug(s"renaming $path to $destPath")
           tryOk {
             Compatibility.rename(path, destPath)
