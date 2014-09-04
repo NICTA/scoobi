@@ -288,7 +288,7 @@ object Relational {
 
     implicit val grouping = new Grouping[(K, Int)] {
       def groupCompare(a: (K, Int), b: (K, Int)) =
-        implicitly[Grouping[K]].groupCompare(a._1, b._1) |+| scalaz.Order.fromScalaOrdering[Int].order(a._2, b._2)
+        implicitly[Grouping[K]].groupCompare(a._1, b._1) |+| a._2 ?|? b._2
     }
 
     Relational.join(
