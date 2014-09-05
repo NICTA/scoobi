@@ -207,10 +207,10 @@ trait SequenceInput {
 object SequenceInput extends SequenceInput
 
 /* Class that abstracts all the common functionality of reading from sequence files. */
-class SeqSource[K, V, A](paths: Seq[String],
+class SeqSource[K, V, A](val paths: Seq[String],
                          val inputFormat: Class[SequenceFileInputFormat[K, V]] = SequenceInput.defaultSequenceInputFormat,
                          val inputConverter: InputConverter[K, V, A],
-                         checkFileTypes: Boolean = true,
+                         val checkFileTypes: Boolean = true,
                          val check: Source.InputCheck = Source.defaultInputCheck)
   extends DataSource[K, V, A] {
 
@@ -232,6 +232,10 @@ class SeqSource[K, V, A](paths: Seq[String],
   }
 
   def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Files.pathSize(p)(sc)).sum
+
+  private[scoobi]
+  def fuseWith(other: SeqSource[_,_,_]): SeqSource[K, V, A] =
+    new SeqSource(paths ++ other.paths, inputFormat, inputConverter, checkFileTypes, check)
 }
 
 /** This class can check if the source types are ok, based on the Manifest of the input types */

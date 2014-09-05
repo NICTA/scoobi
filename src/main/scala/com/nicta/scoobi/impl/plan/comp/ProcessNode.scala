@@ -18,6 +18,7 @@ package impl
 package plan
 package comp
 
+import com.nicta.scoobi.io.sequence.{SeqSource, CheckedSeqSource}
 import core._
 import WireFormat._
 import mapreducer._
@@ -170,6 +171,14 @@ object ParallelDo {
                    pd2.bridgeStoreId)
   }
 
+  def fuseSources(load: Load, pds: Seq[ParallelDo]): Load = {
+    pds.foldLeft(load) {
+      case (ld @ Load1(s1: SeqSource[_,_,_]), ParallelDo1(Load1(s2: SeqSource[_,_,_]) +: _)) =>
+        ld.copy(source = s1 fuseWith s2)
+      case (res, cur) => res
+    }
+  }
+
   private[scoobi]
   def create(ins: CompNode*)(wf: WireReaderWriter): ParallelDo =
     new ParallelDo(ins.toVector, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf)
@@ -300,7 +309,7 @@ object Return {
   def unit = Return((), wireFormat[Unit])
 
   def isUnit(node: ValueNode) = node match {
-    case Return(a, _, _) => a.value == ()
+    case Return(a, _, _) => a.value.==(())
     case _               => false
   }
 }

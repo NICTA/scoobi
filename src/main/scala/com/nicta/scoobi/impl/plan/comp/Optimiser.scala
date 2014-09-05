@@ -18,6 +18,7 @@ package impl
 package plan
 package comp
 
+import com.nicta.scoobi.io.sequence.{SeqSource, CheckedSeqSource}
 import org.apache.commons.logging.LogFactory
 import core._
 import monitor.Loggable._
@@ -69,6 +70,28 @@ trait Optimiser extends CompNodes with MemoRewriter {
       !mustBeRead(p1)                       => ParallelDo.fuse(p1, p2).debug(p => "Fused "+p2.id+" with "+p1.id+". Result is "+p.id)
   }
 
+  def parDoFuseSource = traverseSomebu(parDoFuseSourceRule)
+
+  def parDoFuseSourceRule = rule[ParallelDo] {
+    case p1 @ ParallelDo((ld @ Load1(_)) +: nodes,env,dofn,wfa,wfb,sinks,bridge) if sourcesCanBeFused(nodes) =>
+      ParallelDo(Seq(ParallelDo.fuseSources(ld, nodes.collect(isAParallelDo))),env,dofn,wfa,wfb,sinks,bridge).debug(p => "Fused parallelDo sources for node"+p1.id)
+  }
+
+  def sourcesCanBeFused(pdNodes: Seq[CompNode]): Boolean = {
+    pdNodes.nonEmpty && pdNodes.forall(isParallelDo) && {
+      val pds = pdNodes.collect(isAParallelDo)
+      val loadNodes = pds.flatMap(_.ins)
+      loadNodes.forall(isLoad) && {
+        val loads = loadNodes.collect(isALoad)
+        val sources = loads.map(_.source)
+        sources.forall {
+          case checked: SeqSource[_,_,_] => true
+          case other                     => false
+        }
+      }
+    }
+  }
+
   /** @return true if this parallelDo must be read ==> can't be fused */
   def mustBeRead(pd: ParallelDo): Boolean =
     hasBeenFilled(pd.bridgeStore) || pd.bridgeStore.isCheckpoint || pd.nodeSinks.nonEmpty
@@ -113,6 +136,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
   def allStrategies =
     combineToParDo                          <*
     parDoFuse                               <*
+    parDoFuseSource                         <*
     attempt(addParallelDoForNonFilledSinks)
 
   /**

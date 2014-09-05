@@ -16,6 +16,7 @@
 package com.nicta.scoobi
 package acceptance
 
+import org.apache.hadoop.fs.Path
 import testing.mutable.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.impl.plan.comp.factory._
@@ -194,5 +195,24 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
     val counts2 = (DObject(1) zip DObject(1) join words(l2)).map { case (_, word) => (word, 1) }
 
     (counts1 ++ counts2).groupByKey.combine(Scoobi.Reduction.Sum.int).run.toSet === Set(("hello", 2), ("world", 2))
+  }
+
+  /**
+   * A foldLeft with a large number of append (++) operation has the potential to create
+   * too many ParallelDo nodes triggering serialisation issues.
+   *
+   * This test should show that the graph is optimised in order to get only one Load node
+   */
+  "33. foldLeft on a large number of identical sources" >> { implicit sc: SC =>
+    def path(i: Int) = "target/SimpleDListSpec/seq"+i
+    (1 to 10).foreach { i =>
+      if (!sc.fileSystem.exists(new Path(path(i))))
+        DList(1).valueToSequenceFile(path(i), overwrite = true).persist
+    }
+    val list = (1 to 10).map { i =>
+      valueFromSequenceFile[Int](path(i))
+    }.reduce(_ ++ _)
+
+    list.run must_== Seq.fill(10)(1)
   }
 }
