@@ -216,6 +216,12 @@ case class MapReduceJob(mscr: Mscr, mscrNumber: Int, mscrsNumber: Int)(implicit 
         // Log task details
         taskDetailsLogger.logTaskCompletionDetails()
       }
+    } catch {
+      case (e: Throwable) => {
+        // ask to kill the job
+        job.killJob
+        throw e
+      }
     } finally {
       configuration.temporaryJarFile.delete
     }
