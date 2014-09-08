@@ -1,0 +1,17 @@
+#/bin/sh
+
+JVM_OPTS="-Dfile.encoding=UTF8 -XX:MaxPermSize=512m -Xms512m -Xmx2g -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC"; export JVM_OPTS
+
+cat > project/ambiata-oss-plugins.sbt <<EOF
+
+resolvers += Resolver.url("ambiata-oss", new URL("https://ambiata-oss.s3.amazonaws.com"))(Resolver.ivyStylePatterns)
+
+addSbtPlugin("com.ambiata" % "promulgate" % "0.11.0-20140410040932-7b5bc30")
+
+EOF
+
+./sbt -Dsbt.log.noformat=true ';set version in ThisBuild <<= (version in ThisBuild)(_.replace("SNAPSHOT", "cdh5")); set com.ambiata.promulgate.version.VersionPlugin.promulgateVersionSettings; set com.ambiata.promulgate.notify.NotifyPlugin.promulgateNotifySettings;  set com.ambiata.promulgate.s3.PromulgateS3Plugin.S3LibKeys.bucket := "ambiata-oss";  set com.ambiata.promulgate.s3.PromulgateS3Plugin.promulgateS3LibSettings; set com.ambiata.promulgate.s3.PromulgateS3Plugin.S3LibKeys.bucket := "ambiata-oss"; +publish; echo-version'
+
+./sbt -Dsbt.log.noformat=true ';set version in ThisBuild <<= (version in ThisBuild)(_.replace("SNAPSHOT", "cdh4")); set com.ambiata.promulgate.version.VersionPlugin.promulgateVersionSettings; set com.ambiata.promulgate.notify.NotifyPlugin.promulgateNotifySettings;  set com.ambiata.promulgate.s3.PromulgateS3Plugin.S3LibKeys.bucket := "ambiata-oss";  set com.ambiata.promulgate.s3.PromulgateS3Plugin.promulgateS3LibSettings; set com.ambiata.promulgate.s3.PromulgateS3Plugin.S3LibKeys.bucket := "ambiata-oss"; +publish; echo-version'
+
+./sbt -Dsbt.log.noformat=true ';set version in ThisBuild <<= (version in ThisBuild)(_.replace("SNAPSHOT", "cdh3")); set com.ambiata.promulgate.version.VersionPlugin.promulgateVersionSettings; set com.ambiata.promulgate.notify.NotifyPlugin.promulgateNotifySettings;  set com.ambiata.promulgate.s3.PromulgateS3Plugin.S3LibKeys.bucket := "ambiata-oss";  set com.ambiata.promulgate.s3.PromulgateS3Plugin.promulgateS3LibSettings; set com.ambiata.promulgate.s3.PromulgateS3Plugin.S3LibKeys.bucket := "ambiata-oss"; +publish; echo-version'

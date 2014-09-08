@@ -1,0 +1,5 @@
+#/bin/sh
+
+JVM_OPTS="-Dfile.encoding=UTF8 -XX:MaxPermSize=512m -Xms512m -Xmx2g -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC"; export JVM_OPTS
+
+./sbt -Dsbt.log.noformat=true ";set version := "0.9.0-cdh4-SNAPSHOT";test-only -- junitxml console -exclude MatrixMultiplication -include hadoop -- scoobi deletelibjars.!local.!inmemory.cluster.times.verbose.all.[[^(Tracker|Client)]|scoobi]"
