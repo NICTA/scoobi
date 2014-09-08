@@ -89,8 +89,10 @@ trait FileSystems extends Files {
 
   /** @return the list of children files in a given directory on the file system  - do not recurse */
   def listDirectPaths(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
-    if (!fileSystem.exists(dest)) Seq()
-    else fileSystem.listStatus(dest).toSeq.map(_.getPath)
+    // TODO: change the other "fileSystem" usage to include path as parameter
+    val fs = FileSystem.get(dest.toUri, configuration)
+    if (!exists(dest)) Seq()
+    else fs.listStatus(dest).toSeq.map(_.getPath)
   }
 
   /**

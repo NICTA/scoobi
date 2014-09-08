@@ -53,7 +53,9 @@ trait Files {
       val destPath = to.makeQualified(new Path(dirPath(dir.toString) + newPath))
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
-      if (sameFileSystem(from, to))
+      // s3 has some quirks (can't rename, can't copy/rename dir simultaneously, ...)
+      val isS3 = List("s3n", "s3").contains(to.getScheme.toLowerCase)
+      if (!isS3 && sameFileSystem(from, to))
         (path == destPath) || // same files
         (from.isDirectory(path) && to.isDirectory(destPath) && path.toUri.getPath.startsWith(destPath.toUri.getPath)) || // nested directories
         {
@@ -63,9 +65,23 @@ trait Files {
           }
         }
       else {
-        logger.debug(s"copying $path to $destPath")
-        FileUtil.copy(from, path, to, destPath,
-          true /* deleteSource */, true /* overwrite */, configuration)
+        val fStatus = from.getFileStatus(path)
+        if (fStatus.isDirectory && isS3) {
+          // copying from dir/ to s3 requires copying individual dir/* files
+          val sourceFiles = FileSystem.get(path.toUri, configuration).listStatus(path)
+            .toSeq.map(_.getPath).toList
+          for (sourceFile <- sourceFiles) {
+            logger.debug(s"individually copying $sourceFile to $destPath")
+            FileUtil.copy(from, sourceFile, to, destPath,
+              true /* deleteSource */ , true /* overwrite */ , configuration)
+          }
+          true
+        } else {
+          // copying from one dir to another
+          logger.debug(s"copying $path to $destPath")
+          FileUtil.copy(from, path, to, destPath,
+            true /* deleteSource */ , true /* overwrite */ , configuration)
+        }
       }
     }
   }
