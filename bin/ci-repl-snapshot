@@ -1,0 +1,24 @@
+#/bin/sh
+
+JVM_OPTS="-Dfile.encoding=UTF8 -XX:MaxPermSize=512m -Xms512m -Xmx2g -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC"; export JVM_OPTS
+
+./sbt -Dsbt.log.noformat=true ';set version <<= version(_.replace("SNAPSHOT", "cdh5-SNAPSHOT")); clean; update; compile; repl:dist'
+
+tarball=`basename target/scoobi-repl-*.tar.gz`
+$S3CMD_HOME/s3cmd --access_key=$AWS_ACCESS_KEY --secret_key=$AWS_SECRET_KEY sync target/$tarball s3://ambiata-dist
+$S3CMD_HOME/s3cmd --access_key=$AWS_ACCESS_KEY --secret_key=$AWS_SECRET_KEY mv s3://ambiata-dist/$tarball s3://ambiata-dist/scoobi-repl/scoobi-repl-cdh5.tgz 2>&1
+rm target/scoobi-repl-*.tar.gz
+
+./sbt -Dsbt.log.noformat=true ';set version <<= version(_.replace("SNAPSHOT", "cdh3-SNAPSHOT")); clean; update; compile; repl:dist'
+
+tarball=`basename target/scoobi-repl-*.tar.gz`
+$S3CMD_HOME/s3cmd --access_key=$AWS_ACCESS_KEY --secret_key=$AWS_SECRET_KEY sync target/$tarball s3://ambiata-dist
+$S3CMD_HOME/s3cmd --access_key=$AWS_ACCESS_KEY --secret_key=$AWS_SECRET_KEY mv s3://ambiata-dist/$tarball s3://ambiata-dist/scoobi-repl/scoobi-repl-cdh3.tgz 2>&1
+rm target/scoobi-repl-*.tar.gz
+
+./sbt -Dsbt.log.noformat=true ';clean; update; compile; repl:dist'
+
+tarball=`basename target/scoobi-repl-*.tar.gz`
+$S3CMD_HOME/s3cmd --access_key=$AWS_ACCESS_KEY --secret_key=$AWS_SECRET_KEY sync target/$tarball s3://ambiata-dist
+$S3CMD_HOME/s3cmd --access_key=$AWS_ACCESS_KEY --secret_key=$AWS_SECRET_KEY mv s3://ambiata-dist/$tarball s3://ambiata-dist/scoobi-repl/scoobi-repl.tgz 2>&1
+rm target/scoobi-repl-*.tar.gz
