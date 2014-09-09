@@ -1,4 +1,5 @@
-resolvers += "cavorite" at "http://files.cavorite.com/maven/"
+resolvers += "sbt-plugin-releases" at "http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases"
 
-addSbtPlugin("com.cavorite" % "sbt-avro" % "0.2")
+//resolvers += "cavorite" at "http://files.cavorite.com/maven/"
 
+addSbtPlugin("com.cavorite" % "sbt-avro" % "0.3.2")
