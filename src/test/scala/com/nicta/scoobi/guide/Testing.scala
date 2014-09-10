@@ -80,7 +80,7 @@ The [command-line arguments](${GUIDE_PAGE}com.nicta.scoobi.guide.Application.htm
 // enable logging with all the categories
 sbt> test-only *WordCountSpec* -- scoobi verbose.all
 
-// enably logging but filter the categories with a regular expression
+// enable logging but filter the categories with a regular expression
 sbt> test-only *WordCountSpec* -- scoobi verbose.all.[scoobi.impl.*]
 
 // only run in memory

@@ -38,7 +38,7 @@ and are built into `target/spec2-reports/guide-SNAPSHOT/guide`
 
 ### Contributions
   
-We welcome pull-requests on github. We rebase commits aggressively (up until the point they land on master) to have a clean and linear history. So don't be suprised if the sha1 changes when it lands. As such, it makes our lives a lot easier if your commit is already based on master and all squashed down into nice logical commits.
+We welcome pull-requests on github. We rebase commits aggressively (up until the point they land on master) to have a clean and linear history. So don't be surprised if the sha1 changes when it lands. As such, it makes our lives a lot easier if your commit is already based on master and all squashed down into nice logical commits.
   
 Once landing on master, our build server will then run the full tests on our internal cluster -- and if everything looks good, a new snapshot will be published.
 

@@ -202,7 +202,7 @@ Avro *schemas* describe the structure of data and are the key to creating or loa
 
 ###### Avro schemas
 
-The mechanism for mapping between Avro schemas and Scala types is the [`AvroSchema`]($API_PAGE#com.nicta.scoobi.io.avro.AvroSchema) type class. Instances are provided for all Scala types that have sensbile mappings to Avro schema elements:
+The mechanism for mapping between Avro schemas and Scala types is the [`AvroSchema`]($API_PAGE#com.nicta.scoobi.io.avro.AvroSchema) type class. Instances are provided for all Scala types that have sensible mappings to Avro schema elements:
 
  Scala type                | Avro Schema
  ----------                | -----------
@@ -302,7 +302,7 @@ val xs2: DList[(Int, String, Float)] = fromAvroFile(files)
 
 ###### With a predefined avro schema
 
-Any type that extends `org.apache.avro.generic.GenericContainer` Scoobi knows how to generate a WireFormat for. This means that Scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given Avro record/protocol. See `examples/avro` for an example of this plugin in action
+Any type that extends `org.apache.avro.generic.GenericContainer` Scoobi knows how to generate a WireFormat for. This means that Scoobi is capable of seamlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given Avro record/protocol. See `examples/avro` for an example of this plugin in action
 
 It is also possible to load and persist `GenericRecord`s even if you don't know the schema. You can indeed access the schema and all the fields at run-time like this: ${snippet {
   // load generic records
@@ -316,7 +316,7 @@ It is also possible to load and persist `GenericRecord`s even if you don't know 
 
 ##### Without files
 
-Because Scoobi is a library for constructing Hadoop applications, *data* input and ouput is typically synonymous with *file* input and output. Whilst Scoobi provides numerous mechanism for creating new `DList` objects from files (and multiple file types), it also has some simple ways for constructing a `DList` without files.
+Because Scoobi is a library for constructing Hadoop applications, *data* input and output is typically synonymous with *file* input and output. Whilst Scoobi provides numerous mechanism for creating new `DList` objects from files (and multiple file types), it also has some simple ways for constructing a `DList` without files.
 
 The simplest way of creating a new `DList` object is to use the `DList` companion object's `apply` method. This behaves just like the Scala `List` version: ${snippet{
 
@@ -400,15 +400,15 @@ The core role of a `DataSource` is to provide a mechanism for taking the key-val
  * `inputFormat` specifies an `InputFormat` class
  * The `InputFormat` class will produce key-value records of type `K`-`V`
  * `inputConverter` specifies an `InputConverter` object
- * The `InputConverter` object implments `fromKeyValue` which converts a key of type `K` and a value of type `V` (as produced by the `InputFormat`) to a value of type `A`
+ * The `InputConverter` object implements `fromKeyValue` which converts a key of type `K` and a value of type `V` (as produced by the `InputFormat`) to a value of type `A`
  * Calling `fromSource` with this `DataSource` object will produce a `DList` parameterised on type `A`
 
 The other methods that must be implemented in the `DataSource` trait provide hooks for configuration and giving Scoobi some visibility of the data source:
 
- * `inputCheck`: This method is called before any MapReduce jobs are run. It is provided as a hook to check the valiidity of data source input. For example, it could check that the input exists and if not
+ * `inputCheck`: This method is called before any MapReduce jobs are run. It is provided as a hook to check the validity of data source input. For example, it could check that the input exists and if not
 throw an exception.
  * `inputConfigure`: This method is provided as a hook to configure the `DataSource`. Typically it is used to configure the `InputFormat` by adding or modifying properties in the job's `Configuration`. It
-is called prior to running the specific MapReduce job this `DataSoure` provides input data to.
+is called prior to running the specific MapReduce job this `DataSource` provides input data to.
  * `inputSize`: This method should returns an estimate of the size in bytes of the input data source. It does not need to be exact. Scoobi will use this value as one metric in determining how to configure the execution of MapReduce jobs.
 
 The following Scala objects provided great working examples of `DataSource` implementations in Scoobi:
@@ -563,7 +563,7 @@ ints.keyToSequenceFile("hdfs://path/to/output").persist
 ints.valueToSequenceFile("hdfs://path/to/output").persist
 }}
 
-Like loading, `DList`s of simple Scala types can be automatically converted to `Writable` types and persisted as Sequence files. The extent of these automatic conversions is limited to the types listed in the table above. Value- and key-only veesions are also provided: ${snippet{
+Like loading, `DList`s of simple Scala types can be automatically converted to `Writable` types and persisted as Sequence files. The extent of these automatic conversions is limited to the types listed in the table above. Value- and key-only versions are also provided: ${snippet{
 
 // persist as Int-String Sequence file
 val intString: DList[(Int, String)] = DList[(Int, String)](???)
@@ -592,7 +592,7 @@ val (dogs, names) = (DList("Labrador retriever", "Poodle", "Boxer"), DList("Max"
 persist(dogs.toTextFile("hdfs://path/to/dogs"), names.toAvroFile("hdfs://path/to/names"))
 }}
 
-But what exactly does `toTextFile`, `toAvroFile` and the other output methods? Those methods simply add *Sinks* to the `DList`. Those sinks implement the `DataSink` trait. The `DataSink` trait is, not surpringly, the reverse of the `DataSource` trait. It is tightly coupled with the Hadoop `OutputFormat` interface and requires the specification of an `OutputConverter` that converts values contained within the `DList` to key-value records to be persisted by the `OutputFormat`: ${snippet{
+But what exactly does `toTextFile`, `toAvroFile` and the other output methods? Those methods simply add *Sinks* to the `DList`. Those sinks implement the `DataSink` trait. The `DataSink` trait is, not surprisingly, the reverse of the `DataSource` trait. It is tightly coupled with the Hadoop `OutputFormat` interface and requires the specification of an `OutputConverter` that converts values contained within the `DList` to key-value records to be persisted by the `OutputFormat`: ${snippet{
 
 trait DataSink[K, V, B] extends Sink {
   def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[K, V]]
@@ -703,7 +703,7 @@ val evenAsDObject: DObject[Iterable[Int]] = fromAvroFile[Int]("hdfs://path/to/ev
 
 Many distributed algorithms (such as PageRank) require to iterate over DList computations. You evaluate the results of a DList computation, and based on that, you decide if you should go on with more computations.
 
-For example, let's say we want to remove 1 to a list of positive elements (and nothing if the element is already 0) until the maximum is 10.
+For example, let's say for each integer in the list, we want to subtract 1 if the integer is positive (and leave it alone if it is 0 or less). We want to do this until the maximum from the list is 10.
 
 There are several ways to write this, which we are going to evaluate: ${snippet{
 
@@ -748,7 +748,7 @@ The big disadvantage of this method is that the `DList` being computed is gettin
  2. one call to persist the intermediate `DList`
 
 Here, before trying to evaluate the maximum value of the list, we save the mapped list first because later on we know we want to resume the computations from that stage, then we compute the maximum.
-This generates 8 MapReduce jobs: 4 jobs to map the list each time we enter the loop + 4 jobs to compute the maximum. However, if we compare with 1. the computations are reduced to a mimimum for each job because we reuse previously saved data.
+This generates 8 MapReduce jobs: 4 jobs to map the list each time we enter the loop + 4 jobs to compute the maximum. However, if we compare with 1. the computations are reduced to a minimum for each job because we reuse previously saved data.
 
  3. one call to persist the intermediate `DList` and the maximum
 

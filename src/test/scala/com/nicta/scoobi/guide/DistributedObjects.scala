@@ -109,10 +109,10 @@ This will execute `f` on Hadoop for every element of the `DList`. This may not b
 ```scala
 val f: Int => Int = ...
 val minMod: DObject[Int] = minimum.map(f)
-val normalised: DList[Int] = (minMod join ints) map { case (m, i) => i - f(m) }
+val normalised: DList[Int] = (minMod join ints) map { case (f_m, i) => i - f_m }
 ```
 
-This will now apply `f` to the mimimum value as a client-side computation. Note that we can't apply `f` to `minimum` directly because it's of type `DObject[Int]`, not `Int`. The `map` method, however, is able to apply functions to the values wrapped within.
+This will now apply `f` to the minimum value as a client-side computation. Note that we can't apply `f` to `minimum` directly because it's of type `DObject[Int]`, not `Int`. The `map` method, however, is able to apply functions to the values wrapped within.
 
 Looking at this example in total, we can see how `DObjects` are used to bridge between Hadoop and client-side computations in a way that allows Scoobi to be aware of all dependencies:
 
@@ -152,7 +152,7 @@ val bounded: DList[Int] = ((lower, upper) join ints) filter { case ((l, u), i) =
 A good way of illustrating the use of distributed objects is to contrast it with what is difficult to do with distributed lists alone. For example, how might we implement the following with Scoobi's distributed list abstraction: from a large collection of integers, filter out those that are less than the average? Logically, the steps would look something like the following:
 
  1. Create a `DList[Int]` representing the collection of integers (e.g. maybe read in the integers from a series of text files);
- 2. Compute the average `Int` value accross the entire `DList[Int]`;
+ 2. Compute the average `Int` value across the entire `DList[Int]`;
  3. Filter the `DList[Int]` based on whether each integer value is less than the computed average.
 
 With the distributed list abstraction we have described thus far, it would not be possible to implement the above easily. You would need one Scoobi job that computed and persisted to file the sum of all the integers as well as the total number of integers. Then, the application would need to read those two files in order to extract the sum and the total, from which the average could be computed. Finally, another Scoobi job would be needed to filter the original DList with the computed average.
@@ -160,7 +160,7 @@ With the distributed list abstraction we have described thus far, it would not b
 So, it's possible but not convenient. In order for it to be convenient, there are problems with both steps 2 and 3 above that need to be overcome:
 
  * How do we represent the average value of a `DList[Int]`? Using a `DList[Int]` to represent the average is not the best solution as it will always be of length 1;
- * Even if we did represent the average as a `DList[Int]` of legth 1, how do we *inject* the value into the body of the filter predicate that is applied to the original `DList`?
+ * Even if we did represent the average as a `DList[Int]` of length 1, how do we *inject* the value into the body of the filter predicate that is applied to the original `DList`?
 
 The distributed object abstraction allows us to more easily solve this problem:
 
@@ -173,9 +173,9 @@ val bigger: DList[Int] = (average join ints) filter { case (a, i) => i > a } .va
 persist(bigger.toTextFile("hdfs://all/my/big-integers"))
 ```
 
-In this example, we first encounter the use of `DObject` as the return value of the `DList` `sum` method. Rather than returning a `DList[Int]` with a single entry, `sum` instead returns a `DObject[Int]`. This `DObject` represents a delayed computation that if executed would calculate the sum of the intergers in `ints`. Similarly for `num` which is the result of the `DList` method `size`.
+In this example, we first encounter the use of `DObject` as the return value of the `DList` `sum` method. Rather than returning a `DList[Int]` with a single entry, `sum` instead returns a `DObject[Int]`. This `DObject` represents a delayed computation that if executed would calculate the sum of the integers in `ints`. Similarly for `num` which is the result of the `DList` method `size`.
 
-The average interger value can be calculated using `total` and `num`, however, it too is a `DObject` which means it's also a delayed computation. By pairing `total` and `size, we create a `DObject[(Int, Int)]` object that can be mapped over to compute `average`. Finally, in order to get access to `average` when we filter the orignal `DList`, we *join* `average` (`DObject[Float]) with `ints` (`DList[Int]`) which results in a new `DList` where every element is paired with the `DObject`. In this case, `filter` will operate on a `DList[(Float, Int)]`.
+The average integer value can be calculated using `total` and `num`, however, it too is a `DObject` which means it's also a delayed computation. By pairing `total` and `size, we create a `DObject[(Int, Int)]` object that can be mapped over to compute `average`. Finally, in order to get access to `average` when we filter the original `DList`, we *join* `average` (`DObject[Float]) with `ints` (`DList[Int]`) which results in a new `DList` where every element is paired with the `DObject`. In this case, `filter` will operate on a `DList[(Float, Int)]`.
 
 
 ### Persisting Distributed Objects
@@ -211,5 +211,4 @@ val (aR: A, cR: C) = (a.run, c.run)
 Note that persisting a `DList` does not return a value, hence the underscore.
 
   """
-
 }

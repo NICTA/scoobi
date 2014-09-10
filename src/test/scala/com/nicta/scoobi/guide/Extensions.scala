@@ -25,19 +25,19 @@ Scoobi includes a growing set of reusable components, ready for use in your appl
 
 ### Grouping
 
-Understanding how `Grouping` works is important before moving on to use the Scoobi libraries. This is because the libraries use the grouping in order to determain how values are grouped. While normally the defaults are very sane, in some case they may not be what you want. For instance, if you're doing a full outer join, where you're grouping based on an `Option[T]` it is quite likely you would not `None`s to be grouped (and cartesian product expanded) together. So to do this, you would specify a Grouping implicit that will make two `None`'s not group together.
+Understanding how `Grouping` works is important before moving on to use the Scoobi libraries. This is because the libraries use the grouping in order to determine how values are grouped. While normally the defaults are very sane, in some case they may not be what you want. For instance, if you're doing a full outer join, where you're grouping based on an `Option[T]` it is quite likely you would not want `None`s to be grouped (and cartesian product expanded) together. So to do this, you would specify a Grouping implicit that will make two `None`'s not group together.
 
-In the future, this will be more explicit and some convience ones will be provided for you out of the box.
+In the future, this will be more explicit and some convenience ones will be provided for you out of the box.
   
 ### Joins
   
   [Background Reading](http://en.wikipedia.org/wiki/Join_%28relational_algebra%29#Joins_and_join-like_operators)
 
-  Often you two collections, and would like to collate them somehow. While you might expect the logic to be around a `DList[A]`, with a `DList[B]` and predicate `(A, B) => Bool` to create `DList[(A, B)]` -- it would not be possible to do (remotely) efficiently in this manner, and be rather cumbersome. So instead our join code is structured around having a `DList[(K, A)]` and a `DList[(K, B)]` where the `K` has to have an `Ordering` available (a requirement for `DList.groupByKey`)
+  Often you have two collections, and would like to collate them somehow. While you might expect the logic to be around a `DList[A]`, with a `DList[B]` and predicate `(A, B) => Bool` to create `DList[(A, B)]` -- it would not be possible to do (remotely) efficiently in this manner, and be rather cumbersome. So instead our join code is structured around having a `DList[(K, A)]` and a `DList[(K, B)]` where the `K` has to have an `Ordering` available (a requirement for `DList.groupByKey`)
   
   From this, you generally end up with a `DList[(K, (A, B)]`.
   
-  In addition to a normal (equi)join, often you want to do something for a `K` when theres no corresponding values in the left (`A`) or right (`B`) DList. This forms the basis of left, right, inner and outter joins. See: [wikipedia](http://en.wikipedia.org/wiki/Join_%28SQL%29) for an almost tutorial like walkthrough of the different join types.  
+  In addition to a normal (equi)join, often you want to do something for a `K` when there's no corresponding values in the left (`A`) or right (`B`) DList. This forms the basis of left, right, inner and outer joins. See: [wikipedia](http://en.wikipedia.org/wiki/Join_%28SQL%29) for an almost tutorial like walkthrough of the different join types.
   
 ### Cogroup
   
@@ -45,7 +45,7 @@ In the future, this will be more explicit and some convience ones will be provid
   
 ### DMatrix
   
-  `DMatrix[Elem, V]` provides you with a distributed matrix currently backed by a coordinate oriented DList ( `DList[((Elem, Elem), V)]` ) which makes it ideal for storing huge sparse matrixes. When multiplying by vectors that can fit in memory, it often makes sense to convert it to a RowWise or ColWise matrix and use it from there. There are implicit conversions that can happen, but remember the conversion isn't cheap -- so try save the result if you're going to keep using it (e.g. doing an iterative algorithm with the same matrix)
+  `DMatrix[Elem, V]` provides you with a distributed matrix currently backed by a coordinate oriented DList ( `DList[((Elem, Elem), V)]` ) which makes it ideal for storing huge sparse matrices. When multiplying by vectors that can fit in memory, it often makes sense to convert it to a RowWise or ColWise matrix and use it from there. There are implicit conversions that can happen, but remember the conversion isn't cheap -- so try save the result if you're going to keep using it (e.g. doing an iterative algorithm with the same matrix)
   
 ### DVector
   
