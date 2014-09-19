@@ -57,7 +57,7 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { mergeStrategy => {
 }}
 ```
 
-The downside is, that this brings in dependencies that are not strictly required (avro, hadoop, etc...).
+The downside is, that this brings in dependencies that are not strictly required (Avro, Hadoop, etc...).
 
 The big advantage to this approach, is that `sbt run` still works
 
@@ -65,7 +65,7 @@ The big advantage to this approach, is that `sbt run` still works
 
 We can also fake the `libraryDependencies` to build a proper jar. Please note, the way we change this, will make it incompatible with a normal `sbt run`. So you might want to have two versions of your `build.sbt`
 
-First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:
+First of all, we want to only get some of Scoobi's dependencies (namely we don't want Hadoop itself, likely don't need Avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:
 
 ```
 "com.nicta" %% "scoobi" % "$VERSION" intransitive()
