@@ -86,18 +86,17 @@ trait Files {
       // copying from a dir/ to s3 requires copying individual dir/* files
       val sourceFiles = FileSystem.get (path.toUri, configuration).listStatus(path)
         .toSeq.map (_.getPath).toList
-      for (sourceFile <- sourceFiles) {
+      sourceFiles.forall { sourceFile =>
         // TODO: do parallel S3 copy to speed up process
         logger.debug(s"individually copying $sourceFile to $destPath (S3)")
         FileUtil.copy(from, sourceFile, to, destPath,
-          true /* deleteSource */ , true /* overwrite */ , configuration)
+          true /* deleteSource */, true /* overwrite */, configuration)
       }
-      true
     } else {
       // copying from one dir to S3
       logger.debug(s"copying $path to $destPath (S3)")
       FileUtil.copy(from, path, to, destPath,
-        true /* deleteSource */ , true /* overwrite */ , configuration)
+        true /* deleteSource */, true /* overwrite */, configuration)
     }
   }
 
