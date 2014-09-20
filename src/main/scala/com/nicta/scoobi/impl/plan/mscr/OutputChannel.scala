@@ -143,7 +143,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
     // this will be switched to a _SUCCESS job if all the jobs of the Scoobi job succeed
     successFile.foreach { successFile =>
       sinks.flatMap(_.outputPath).foreach { outDir =>
-        FileSystems.fileSystem(outDir).create(new Path(outDir, "_SUCCESS_JOB"))
+        FileSystems.fileSystem(outDir).createNewFile(new Path(outDir, "_SUCCESS_JOB"))
       }
     }
   }
