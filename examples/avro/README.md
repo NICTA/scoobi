@@ -8,7 +8,7 @@
 
     $ sbt avro:generate
 
-Look at the output:
+Afterwards, look at the auto-generated file:
 
     $ cat ./target/scala-2.10/src_managed/main/compiled_avro/test/Weather.java
 

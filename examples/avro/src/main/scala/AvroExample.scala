@@ -39,33 +39,31 @@ object AvroExample extends ScoobiApp {
       new AvroWeather("Bondi Junction", 1920, 100))
 
     // and they can easily be persisted, using our schema ( at src/main/avro/weather.avsc )
-    weatherList.toAvroFile("avro-test-output", overwrite=true).persist
+    weatherList.toAvroFile("output-avro", overwrite=true).persist
 
     // and of course, it's easy to read avro files to disk, given a schema!
-    val weatherReadList: DList[AvroWeather] =
-      fromAvroFile[AvroWeather]("avro-test-output")
+    val weatherReadList: DList[AvroWeather] = fromAvroFile[AvroWeather]("output-avro")
 
-    weatherReadList.toTextFile("avro-test-output2", overwrite=true).persist
-
-    /*
-    FIXME: below will generate:
-    java.lang.InternalError: Malformed class name
-	at java.lang.Class.getSimpleName(Class.java:1190)
-	at com.nicta.scoobi.core.LowPriorityWireFormatImplicits$AvroWireFormat.toString(WireFormat.scala:207)
-	at java.lang.String.valueOf(String.java:2847)
-	at scala.collection.mutable.StringBuilder.append(StringBuilder.scala:197)
-	at com.nicta.scoobi.impl.plan.comp.Return.<init>(ProcessNode.scala:273)
-	at com.nicta.scoobi.impl.plan.comp.Return$.apply(ProcessNode.scala:296)
-	at com.nicta.scoobi.impl.plan.DObjectImpl$.apply(DObjectImpl.scala:75)
-	at com.nicta.scoobi.application.DObjects$.apply(DObject.scala:26)
-  ...
+    weatherReadList.toTextFile("output-text", overwrite=true).persist
 
     // The other plugin we are using, generates AvroSchema's for case-classes, as we have to do
     // is extend AvroRecord, and make sure all the members are 'var's
     case class Person(var name: String, var awesomeness: Int)
-      extends AvroRecord
+      //extends AvroRecord
+    /* if you extend AvroRecord, you'll get:
+    [error] .../scoobi/examples/avro/src/main/scala/AvroExample.scala:60: ambiguous implicit values:
+    [error]  both value personFmt of type com.nicta.scoobi.core.WireFormat[Person]
+      [error]  and method AvroFmt in trait LowPriorityWireFormatImplicits of type [T <: org.apache.avro.specific.SpecificRecordBase](implicit evidence$4: Manifest[T], implicit evidence$5: com.nicta.scoobi.io.avro.AvroSchema[T])com.nicta.scoobi.Scoobi.AvroWireFormat[T]
+      [error]  match expected type com.nicta.scoobi.core.WireFormat[Person]
+      [error]     val joined: DList[(Person, AvroWeather)] = DObject(p) join weatherReadList
+      [error]                                                       ^
+    [error] one error found
+      [error] (compile:compile) Compilation failed
+    */
 
-    implicit val _personFmt: WireFormat[Person] = mkCaseWireFormat(Person, Person.unapply _)
+    // without "extends AvroRecord, you'd need to uncomment the line below:
+    implicit val personFmt = mkCaseWireFormat(Person, Person.unapply _)
+
     val p = new Person("Eric", 10)
 
     // There are also WireFormat's available, so there's no problem doing all the cool stuff
@@ -73,7 +71,11 @@ object AvroExample extends ScoobiApp {
     val joined: DList[(Person, AvroWeather)] = DObject(p) join weatherReadList
 
     // and let's dump it to a text file, so you can easily verify it worked ;D
-    joined.toTextFile("avro-joined-output", overwrite=true).persist
-    */
+    joined.toTextFile("output-joined", overwrite=true).persist
+
+    // Output of output-joined/out-m-00000 should look like:
+    //(Person(Eric,10),{"station": "Town Hall", "time": 925, "temp": 23})
+    //(Person(Eric,10),{"station": "Red Fern", "time": 1201, "temp": -55})
+    //(Person(Eric,10),{"station": "Bondi Junction", "time": 1920, "temp": 100})
   }
 }
