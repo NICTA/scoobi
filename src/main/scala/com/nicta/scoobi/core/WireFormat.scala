@@ -205,7 +205,7 @@ trait LowPriorityWireFormatImplicits {
       val reader : SpecificDatumReader[T] = new SpecificDatumReader(sch)
       reader.read(null.asInstanceOf[T], decoder)
     }
-    override def toString = "Avro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
+    override def toString = "Avro["+implicitly[Manifest[T]].runtimeClass.getName+"]"
   }
 
   /**
