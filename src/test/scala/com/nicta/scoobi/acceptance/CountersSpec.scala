@@ -25,7 +25,7 @@ import scala.collection.JavaConversions._
 import org.specs2.specification.Groups
 import com.nicta.scoobi.impl.Configurations
 
-class CountersSpec extends NictaSimpleJobs with Groups { def is = s2"""
+class CountersSpec extends NictaSimpleJobs with Groups { def is = sequential ^ s2"""
 
  It is possible to increment counters when doing DList operations
   + inside a map with a paralleDo

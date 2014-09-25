@@ -210,12 +210,11 @@ case class MapReduceJob(mscr: Mscr, mscrNumber: Int, mscrsNumber: Int)(implicit 
         if (map.hasProgressed || reduce.hasProgressed)
           logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
             "Reduce " + reduce.getProgress.formatted("%3d") + "%")
-
-        // update the original configuration with the job counters for each job
-        configuration.updateCounters(job.getCounters)
         // Log task details
         taskDetailsLogger.logTaskCompletionDetails()
       }
+      // update the original configuration with the job counters for the job
+      configuration.updateCounters(job.getCounters)
     } finally {
       configuration.temporaryJarFile.delete
     }
