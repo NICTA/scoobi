@@ -76,9 +76,10 @@ case class MapReduceJob(mscr: Mscr, mscrNumber: Int, mscrsNumber: Int)(implicit 
     // an IllegalStateException can be thrown when asking for job.isSuccessful if the job has started executing but the
     // RUNNING state has not been set
     val successful = tryOrElse(job.isSuccessful)(false)
-    if(!successful) {
-      throw new JobExecException("MapReduce job '" + job.getJobID + "' failed!" + tryOrElse(" Please see " + job.getTrackingURL + " for more info.")(""))
-    }
+    val seeTrackingUrl = tryOrElse(s" Please see ${job.getTrackingURL} for more info.")("")
+
+    if(!successful) s"MapReduce job '${job.getJobID}' failed! $seeTrackingUrl".error
+
     this
   }
 
