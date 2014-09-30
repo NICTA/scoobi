@@ -54,6 +54,7 @@ trait FileSystems extends Files {
     val newFiles = sourceFiles.filter(_.exists).filterNot(isOldFile(uploaded))
     logger.debugNot(newFiles.isEmpty, "uploading files\n"+newFiles.mkString("\n"))
     newFiles.map { file: File =>
+      // TODO: verify that this works when dest is on S3
       fileSystem.copyFromLocalFile(new Path(file.getPath), new Path(dest))
     }
 
@@ -79,6 +80,7 @@ trait FileSystems extends Files {
 
   /** @return the recursive list of files in a given directory on the file system */
   def listPaths(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
+    val fileSystem = fileSystemForPath(dest)
     if (!fileSystem.exists(dest)) Seq()
     else {
       val paths = fileSystem.listStatus(dest).toSeq.map(_.getPath)
@@ -89,8 +91,8 @@ trait FileSystems extends Files {
 
   /** @return the list of children files in a given directory on the file system  - do not recurse */
   def listDirectPaths(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
-    if (!fileSystem.exists(dest)) Seq()
-    else fileSystem.listStatus(dest).toSeq.map(_.getPath)
+    if (!exists(dest)) Seq()
+    else fileSystemForPath(dest).listStatus(dest).toSeq.map(_.getPath)
   }
 
   /**
@@ -98,7 +100,7 @@ trait FileSystems extends Files {
    */
   def mkdir(dest: Path)(implicit sc: ScoobiConfiguration) = {
     if (!exists(dest))
-      FileSystem.get(dest.toUri, sc.configuration).mkdirs(dest)
+      fileSystemForPath(dest).mkdirs(dest)
     else true
   }
 
@@ -110,7 +112,7 @@ trait FileSystems extends Files {
   }
 
   def exists(path: Path)(implicit sc: ScoobiConfiguration): Boolean =
-    FileSystem.get(path.toUri, sc.configuration).exists(path)
+    fileSystemForPath(path).exists(path)
 
   /** @return true if a Path exists with this name on the file system */
   def exists(path: String)(implicit configuration: ScoobiConfiguration): Boolean =
@@ -121,13 +123,14 @@ trait FileSystems extends Files {
    */
   def deleteFiles(dest: String)(implicit configuration: ScoobiConfiguration) {
     val destPath = new Path(dest)
-    if (fileSystem.exists(destPath)) fileSystem.delete(destPath, true)
+    if (exists(destPath)) fileSystemForPath(destPath).delete(destPath, true)
   }
 
   /**
    * @return the file system for a given configuration
    */
   def fileSystem(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration)
+  def fileSystemForPath(path: Path)(implicit sc: ScoobiConfiguration) = FileSystem.get(path.toUri, sc)
 
   /**
    * @return true if the file system is local

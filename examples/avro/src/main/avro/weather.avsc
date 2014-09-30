@@ -1,4 +1,4 @@
-{"type": "record", "name": "test.Weather",
+{"type": "record", "name": "test.AvroWeather",
  "doc": "A weather reading.",
  "fields": [
      {"name": "station", "type": "string", "order": "ignore"},

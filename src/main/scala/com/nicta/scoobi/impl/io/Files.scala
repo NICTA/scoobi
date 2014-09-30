@@ -53,9 +53,15 @@ trait Files {
       val destPath = to.makeQualified(new Path(dirPath(dir.toString) + newPath))
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
-      if (sameFileSystem(from, to))
+      if (List("s3n", "s3").contains(to.getScheme.toLowerCase))
+        // s3 has special cases (can't rename, can't copy/rename dir simultaneously, ...)
+        moveToS3(from, to, path, destPath)
+
+      else if (sameFileSystem(from, to))
         (path == destPath) || // same files
-        (from.isDirectory(path) && to.isDirectory(destPath) && path.toUri.getPath.startsWith(destPath.toUri.getPath)) || // nested directories
+        (from.isDirectory(path) &&
+          to.isDirectory(destPath) &&
+          path.toUri.getPath.startsWith(destPath.toUri.getPath)) || // nested directories
         {
           logger.debug(s"renaming $path to $destPath")
           tryOk {
@@ -67,6 +73,30 @@ trait Files {
         FileUtil.copy(from, path, to, destPath,
           true /* deleteSource */, true /* overwrite */, configuration)
       }
+    }
+  }
+
+  /**
+   * @return true if copy to S3 is successful. S3 is a special cases
+   *         because it can't rename, can't copy/rename dir simultaneously, ...
+   */
+  def moveToS3(from: FileSystem, to: FileSystem,
+               path: Path, destPath: Path)(implicit configuration: Configuration) = {
+    if (from.getFileStatus(path).isDirectory) {
+      // copying from a dir/ to s3 requires copying individual dir/* files
+      val sourceFiles = FileSystem.get (path.toUri, configuration).listStatus(path)
+        .toSeq.map (_.getPath).toList
+      sourceFiles.forall { sourceFile =>
+        // TODO: do parallel S3 copy to speed up process
+        logger.debug(s"individually copying $sourceFile to $destPath (S3)")
+        FileUtil.copy(from, sourceFile, to, destPath,
+          true /* deleteSource */, true /* overwrite */, configuration)
+      }
+    } else {
+      // copying from one dir to S3
+      logger.debug(s"copying $path to $destPath (S3)")
+      FileUtil.copy(from, path, to, destPath,
+        true /* deleteSource */, true /* overwrite */, configuration)
     }
   }
 
