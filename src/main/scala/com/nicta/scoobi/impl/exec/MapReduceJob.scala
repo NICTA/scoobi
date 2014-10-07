@@ -78,7 +78,7 @@ case class MapReduceJob(mscr: Mscr, mscrNumber: Int, mscrsNumber: Int)(implicit 
     val successful = tryOrElse(job.isSuccessful)(false)
     val seeTrackingUrl = tryOrElse(s" Please see ${job.getTrackingURL} for more info.")("")
 
-    if(!successful) s"MapReduce job '${job.getJobID}' failed! $seeTrackingUrl".error
+    if (!successful) s"MapReduce job '${job.getJobID}' failed! $seeTrackingUrl".error
 
     this
   }
