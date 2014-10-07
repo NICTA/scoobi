@@ -18,7 +18,7 @@ package io
 
 import java.io.File
 import org.specs2.specification.Scope
-import org.apache.hadoop.fs.{FileStatus, Path}
+import org.apache.hadoop.fs.{FileSystem, FileStatus, Path}
 import impl.ScoobiConfiguration
 import com.nicta.scoobi.impl.io.{Files, FileSystems}
 import testing.mutable.UnitSpecification
@@ -44,15 +44,16 @@ class FileSystemsSpec extends UnitSpecification with Tables {
   }
   "2 file systems are the same if they have the same host and same scheme" >> {
     val nullString: String = null
-    def uri(host: String, scheme: String) = new URI(scheme+"://"+host)
+    def uri(scheme: String, host: String) =
+      if (host == null) FileSystem.get(new URI(scheme+":"), new Configuration)
+      else              FileSystem.get(new URI(scheme+"://"+host+":3100/"), new Configuration)
 
-    "host1"    | "scheme1"  | "host2"    | "scheme2"  | "same?" |>
-    "local"    ! "file"     ! "local"    ! "file"     ! true    |
-    "local"    ! "hdfs"     ! "local"    ! "file"     ! false   |
-    "local"    ! "file"     ! "cluster"  ! "file"     ! false   |
-    nullString ! nullString ! nullString ! nullString ! true    |
-    nullString ! "file"     ! "local"    ! "file"     ! false   | { (h1, s1, h2, s2, same) =>
-      Files.sameFileSystem(uri(h1, s1), uri(h2, s2)) === same
+    "scheme1" | "host1"     | "scheme1" | "host2"      | "same?" |>
+    "file"    ! "localhost" ! "file"    ! "local"      ! true    |
+    "hdfs"    ! "localhost" ! "file"    ! "local"      ! false   |
+    "hdfs"    ! "localhost" ! "hdfs"    ! "google.com" ! false   |
+    "hdfs"    ! "localhost" ! "file"    ! "google.com" ! false   | { (s1, h1, s2, h2, same) =>
+      Files.sameFileSystem(uri(s1, h1), uri(s2, h2)) === same
     }
   }
 

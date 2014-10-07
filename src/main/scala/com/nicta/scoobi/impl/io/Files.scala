@@ -53,14 +53,14 @@ trait Files {
       val destPath = to.makeQualified(new Path(dirPath(dir.toString) + newPath))
       if (!pathExists(destPath.getParent)) to.mkdirs(destPath.getParent)
 
-      if (List("s3n", "s3").contains(to.getScheme.toLowerCase))
+      if (List("s3n", "s3").contains(Compatibility.getScheme(to).toLowerCase))
         // s3 has special cases (can't rename, can't copy/rename dir simultaneously, ...)
         moveToS3(from, to, path, destPath)
 
       else if (sameFileSystem(from, to))
         (path == destPath) || // same files
-        (from.isDirectory(path) &&
-          to.isDirectory(destPath) &&
+        (Compatibility.isDirectory(from, path) &&
+         Compatibility.isDirectory(to, destPath) &&
           path.toUri.getPath.startsWith(destPath.toUri.getPath)) || // nested directories
         {
           logger.debug(s"renaming $path to $destPath")
@@ -114,12 +114,9 @@ trait Files {
   def fileStatus(path: Path)(implicit configuration: Configuration) = fileSystem(path).getFileStatus(path)
 
   /** @return true if the 2 fileSystems are the same */
-  def sameFileSystem(from: FileSystem, to: FileSystem): Boolean = sameFileSystem(from.getUri, to.getUri)
-
-  /** @return true if the 2 uri are one the same host with the same scheme */
-  def sameFileSystem(from: URI, to: URI): Boolean = {
+  def sameFileSystem(from: FileSystem, to: FileSystem): Boolean = {
     def equalIgnoreCase(from: String, to: String) = (from == null && to == null) || from.equalsIgnoreCase(to)
-    equalIgnoreCase(from.getHost, to.getHost) && equalIgnoreCase(from.getScheme, to.getScheme)
+    equalIgnoreCase(from.getUri.getHost, to.getUri.getHost) && equalIgnoreCase(Compatibility.getScheme(from), Compatibility.getScheme(to))
   }
 
   /** @return true if the file is a directory */
