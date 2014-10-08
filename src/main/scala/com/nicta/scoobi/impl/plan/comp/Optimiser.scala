@@ -73,17 +73,17 @@ trait Optimiser extends CompNodes with MemoRewriter {
   def parDoFuseSource = traverseSomebu(parDoFuseSourceRule)
 
   def parDoFuseSourceRule = rule[ParallelDo] {
-    case p1 @ ParallelDo((ld @ Load1(_)) +: nodes,env,dofn,wfa,wfb,sinks,bridge) if sourcesCanBeFused(nodes) =>
+    case p1 @ ParallelDo((ld @ Load1(_)) +: nodes,env,dofn,wfa,wfb,sinks,bridge) if sourcesCanBeFused(ld, nodes) =>
       ParallelDo(Seq(ParallelDo.fuseSources(ld, nodes.collect(isAParallelDo))),env,dofn,wfa,wfb,sinks,bridge).debug(p => "Fused parallelDo sources for node"+p1.id)
   }
 
-  def sourcesCanBeFused(pdNodes: Seq[CompNode]): Boolean = {
+  def sourcesCanBeFused(ld: Load, pdNodes: Seq[CompNode]): Boolean = {
     pdNodes.nonEmpty && pdNodes.forall(isParallelDo) && {
       val pds = pdNodes.collect(isAParallelDo)
       val loadNodes = pds.flatMap(_.ins)
       loadNodes.forall(isLoad) && {
         val loads = loadNodes.collect(isALoad)
-        val sources = loads.map(_.source)
+        val sources = (ld +: loads).map(_.source) // all sources must be the same to be fused
         sources.forall {
           case checked: SeqSource[_,_,_] => true
           case other                     => false

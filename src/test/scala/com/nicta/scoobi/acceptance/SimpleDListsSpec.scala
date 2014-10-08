@@ -204,7 +204,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
    * This test should show that the graph is optimised in order to get only one Load node
    */
   "33. foldLeft on a large number of identical sources" >> { implicit sc: SC =>
-    def path(i: Int) = "target/SimpleDListSpec/seq"+i
+    def path(i: Int) = "target/SimpleDListsSpec/seq"+i
     (1 to 10).foreach { i =>
       if (!sc.fileSystem.exists(new Path(path(i))))
         DList(1).valueToSequenceFile(path(i), overwrite = true).persist
@@ -214,5 +214,12 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
     }.reduce(_ ++ _)
 
     list.run must_== Seq.fill(10)(1)
+  }
+
+  tag("issue 349")
+  "34. combine empty DList with full DList" >> { implicit sc: SC =>
+    val path = "target/SimpleDListsSpec/34.seq"
+    DList("a", "b").valueToSequenceFile(path, overwrite = true).persist
+    (DList[String]() ++ valueFromSequenceFile[String](path)).run.toList ==== List("a", "b")
   }
 }
