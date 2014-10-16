@@ -16,12 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import scalaz.@@
-
 object Levels {
 
-  trait AsLevel
-  type Level = String @@ AsLevel
-  def level(l: String): Level = l.asInstanceOf[Level]
-
+  case class Level(level: String) extends AnyVal
 }

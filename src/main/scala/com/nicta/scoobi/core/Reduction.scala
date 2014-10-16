@@ -18,6 +18,7 @@ package core
 
 import scalaz.{BijectionT, Semigroup, Kleisli, Cokleisli, Endo, Store, Order, Equal, Digit, Writer, Compose,
                NonEmptyList, EphemeralStream, Validation, \/-, -\/, \/, State, Ordering, Failure, Success, Apply}
+import scalaz.Kleisli.kleisli
 import scalaz.syntax.equal._
 import BijectionT._
 import scala.reflect.ClassTag
@@ -261,40 +262,40 @@ trait Reduction[A] {
   /**
    * Takes a reduction to a reduction on a unary function in an environment (Q).
    */
-  def pointwiseK[Q[+_], B](implicit A: Apply[Q]): Reduction[Kleisli[Q, B, A]] =
-    Reduction((g, h) => Kleisli(
+  def pointwiseK[Q[_], B](implicit A: Apply[Q]): Reduction[Kleisli[Q, B, A]] =
+    Reduction((g, h) => kleisli(
       b => A.apply2(g(b), h(b))(reduce(_, _))
     ))
 
   /**
    * Takes a reduction to a reduction on a binary function with an environment (Q) in return position.
    */
-  def pointwise2K[Q[+_], B, C](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C), A]] =
-    Reduction((g, h) => Kleisli {
+  def pointwise2K[Q[_], B, C](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C), A]] =
+    Reduction((g, h) => kleisli {
       case (b, c) => A.apply2(g(b, c), h(b, c))(reduce(_, _))
     })
 
   /**
    * Takes a reduction to a reduction on a ternary function with an environment (Q) in return position.
    */
-  def pointwise3K[Q[+_], B, C, D](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C, D), A]] =
-    Reduction((g, h) => Kleisli {
+  def pointwise3K[Q[_], B, C, D](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C, D), A]] =
+    Reduction((g, h) => kleisli {
       case (b, c, d) => A.apply2(g(b, c, d), h(b, c, d))(reduce(_, _))
     })
 
   /**
    * Takes a reduction to a reduction on an arity-4 function with an environment (Q) in return position.
    */
-  def pointwise4K[Q[+_], B, C, D, E](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C, D, E), A]] =
-    Reduction((g, h) => Kleisli {
+  def pointwise4K[Q[_], B, C, D, E](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C, D, E), A]] =
+    Reduction((g, h) => kleisli {
       case (b, c, d, e) => A.apply2(g(b, c, d, e), h(b, c, d, e))(reduce(_, _))
     })
 
   /**
    * Takes a reduction to a reduction on an arity-5 function with an environment (Q) in return position.
    */
-  def pointwise5K[Q[+_], B, C, D, E, F](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C, D, E, F), A]] =
-    Reduction((g, h) => Kleisli {
+  def pointwise5K[Q[_], B, C, D, E, F](implicit A: Apply[Q]): Reduction[Kleisli[Q, (B, C, D, E, F), A]] =
+    Reduction((g, h) => kleisli {
       case (b, c, d, e, f) => A.apply2(g(b, c, d, e, f), h(b, c, d, e, f))(reduce(_, _))
     })
 
@@ -364,7 +365,7 @@ trait Reduction[A] {
   /**
    * Lifts this reduction to a reduction with an environment.
    */
-  def lift[F[+_]](implicit A: Apply[F]): Reduction[F[A]] =
+  def lift[F[_]](implicit A: Apply[F]): Reduction[F[A]] =
     Reduction((a1, a2) =>
       A.apply2(a1, a2)(reduce(_, _)))
 
@@ -372,13 +373,13 @@ trait Reduction[A] {
    * Takes a reduction to a reduction on state.
    */
   def state[S]: Reduction[State[S, A]] =
-    lift[({type lam[+a]=State[S, a]})#lam]
+    lift[({type lam[a]=State[S, a]})#lam]
 
   /**
    * Takes a reduction to a reduction on writer.
    */
   def writer[W: Semigroup]: Reduction[Writer[W, A]] =
-    lift[({type lam[+a]=Writer[W, a]})#lam]
+    lift[({type lam[a]=Writer[W, a]})#lam]
 
   /**
    * Maps a pair of functions on a reduction to produce a reduction.
