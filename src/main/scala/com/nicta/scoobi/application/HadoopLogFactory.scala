@@ -32,7 +32,7 @@ class HadoopLogFactory() extends LogFactory {
 
   def quiet      = Option(getAttribute(QUIET)).map(_.asInstanceOf[Boolean]).getOrElse(true)
   def showTimes  = Option(getAttribute(SHOW_TIMES)).map(_.asInstanceOf[Boolean]).getOrElse(false)
-  def logLevel   = Option(getAttribute(LOG_LEVEL)).map(_.asInstanceOf[Level]).getOrElse(INFO)
+  def logLevel   = Option(getAttribute(LOG_LEVEL)).map(_.asInstanceOf[String]).map(Level).getOrElse(INFO)
   def categories = Option(getAttribute(LOG_CATEGORIES)).map { c =>
     if (c == ".*") noNoise
     else           ".*"+c.toString+".*"
