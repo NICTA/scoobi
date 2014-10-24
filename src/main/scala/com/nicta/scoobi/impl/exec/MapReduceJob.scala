@@ -312,8 +312,6 @@ class TaskDetailsLogger(job: Job) {
   }
 }
 
-class JobExecException(msg: String) extends RuntimeException(msg)
-
 /**
  * This Comparator delegates comparisons to the WritableComparator for the MapOutputKeyClass
  * but first it instantiate keys using the configuration (instead of null in the original version)
