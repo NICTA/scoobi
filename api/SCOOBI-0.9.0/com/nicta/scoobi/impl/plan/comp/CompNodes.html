@@ -1,0 +1,1294 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>CompNodes - com.nicta.scoobi.impl.plan.comp.CompNodes</title>
+          <meta name="description" content="CompNodes - com.nicta.scoobi.impl.plan.comp.CompNodes" />
+          <meta name="keywords" content="CompNodes com.nicta.scoobi.impl.plan.comp.CompNodes" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.nicta.scoobi.impl.plan.comp.CompNodes';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="CompNodes$.html" title="Go to companion"><img src="../../../../../../lib/trait_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.plan.comp">comp</a></p>
+        <h1><a href="CompNodes$.html" title="Go to companion">CompNodes</a></h1> <span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CompNodes</span><span class="result"> extends <a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>General methods for navigating a graph of CompNodes
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a>, <span class="extype" name="org.kiama.attribution.AttributionCore">AttributionCore</span>, <span class="extype" name="org.kiama.util.Memoiser">Memoiser</span>, <span class="extype" name="org.kiama.attribution.AttributionCommon">AttributionCommon</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="CompNodes$.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a>, <a href="../../exec/ExecutionMode.html" class="extype" name="com.nicta.scoobi.impl.exec.ExecutionMode">ExecutionMode</a>, <a href="../mscr/Graph.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Graph">Graph</a>, <a href="../../exec/InMemoryMode.html" class="extype" name="com.nicta.scoobi.impl.exec.InMemoryMode">InMemoryMode</a>, <a href="../mscr/Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a>, <a href="../mscr/MscrsDefinition.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition">MscrsDefinition</a>, <a href="Optimiser$.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Optimiser">Optimiser</a>, <a href="Optimiser.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Optimiser">Optimiser</a>, <a href="ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a>, <a href="ShowNode$.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></div>
+          </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.nicta.scoobi.impl.plan.comp.CompNodes"><span>CompNodes</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.GraphNodes"><span>GraphNodes</span></li><li class="in" name="org.kiama.attribution.AttributionCore"><span>AttributionCore</span></li><li class="in" name="org.kiama.util.Memoiser"><span>Memoiser</span></li><li class="in" name="org.kiama.attribution.AttributionCommon"><span>AttributionCommon</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.kiama.attribution.AttributionCore.CachedAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]"></a>
+      <a id="CachedAttribute[T,U]:CachedAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CachedAttribute</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.U">U</span>] with <span class="extype" name="org.kiama.util.Memoiser.IdMemoised">org.kiama.attribution.AttributionCore.IdMemoised</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.T">T</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.U">U</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore.CachedDynamicAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CachedDynamicAttribute[T,U]extendsAttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="CachedDynamicAttribute[T,U]:CachedDynamicAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CachedDynamicAttribute</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute">CachedAttribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedDynamicAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CachedDynamicAttribute.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@CachedDynamicAttribute[T,U]extendsAttributionCore.this.CachedAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore.CachedParamAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CachedParamAttribute[A,T,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]"></a>
+      <a id="CachedParamAttribute[A,T,U]:CachedParamAttribute[A,T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CachedParamAttribute</span><span class="tparams">[<span name="A">A</span>, <span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends (<span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.A">A</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.U">U</span>] with <span class="extype" name="org.kiama.util.Memoiser.Memoised">org.kiama.attribution.AttributionCore.Memoised</span>[<span class="extype" name="org.kiama.attribution.ParamAttributeKey">ParamAttributeKey</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.U">U</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@CachedParamAttribute[A,T,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore.CircularAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CircularAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,U]"></a>
+      <a id="CircularAttribute[T,U]:CircularAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CircularAttribute</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.U">U</span>] with <span class="extype" name="org.kiama.util.Memoiser.IdMemoised">org.kiama.attribution.AttributionCore.IdMemoised</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@CircularAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCommon.ConstantAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ConstantAttribute[T,U]extendsAttribute[T,U]"></a>
+      <a id="ConstantAttribute[T,U]:ConstantAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ConstantAttribute</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCommon.ConstantAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCommon.ConstantAttribute.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@ConstantAttribute[T,U]extendsAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCommon</dd></dl></div>
+    </li><li name="org.kiama.util.Memoiser.IdMemoised" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="IdMemoised[T,U]extendsMemoiser.this.MemoisedBase[T,U]"></a>
+      <a id="IdMemoised[T,U]:IdMemoised[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">IdMemoised</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.util.Memoiser.MemoisedBase">MemoisedBase</span>[<span class="extype" name="org.kiama.util.Memoiser.IdMemoised.T">T</span>, <span class="extype" name="org.kiama.util.Memoiser.IdMemoised.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@IdMemoised[T,U]extendsMemoiser.this.MemoisedBase[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
+    </li><li name="org.kiama.util.Memoiser.Memoised" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Memoised[T,U]extendsMemoiser.this.MemoisedBase[T,U]"></a>
+      <a id="Memoised[T,U]:Memoised[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Memoised</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.util.Memoiser.MemoisedBase">MemoisedBase</span>[<span class="extype" name="org.kiama.util.Memoiser.Memoised.T">T</span>, <span class="extype" name="org.kiama.util.Memoiser.Memoised.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@Memoised[T,U]extendsMemoiser.this.MemoisedBase[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
+    </li><li name="org.kiama.util.Memoiser.MemoisedBase" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="MemoisedBase[T,U]extendsAnyRef"></a>
+      <a id="MemoisedBase[T,U]:MemoisedBase[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MemoisedBase</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@MemoisedBase[T,U]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes.T" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="T=com.nicta.scoobi.core.CompNode"></a>
+      <a id="T:T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">T</span><span class="result"> = <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@T=com.nicta.scoobi.core.CompNode" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a> → <a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@##():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#allSinks" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="allSinks:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.core.Sink]]"></a>
+      <a id="allSinks:CachedAttribute[CompNode,Seq[Sink]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">allSinks</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@allSinks:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.core.Sink]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">collect all the sinks in the computation graph</p><div class="fullcomment"><div class="comment cmt"><p>collect all the sinks in the computation graph</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#attr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="attr[T,U](name:String,f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="attr[T,U](String,(T)⇒U):CachedAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">attr</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@attr[T,U](name:String,f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#attr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="attr[T,U](f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="attr[T,U]((T)⇒U):CachedAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">attr</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@attr[T,U](f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#childAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="childAttr[T&lt;:org.kiama.attribution.Attributable,U](name:String,f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="childAttr[T&lt;:Attributable,U](String,(T)⇒(Attributable)⇒U):CachedAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">childAttr</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@childAttr[T&lt;:org.kiama.attribution.Attributable,U](name:String,f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):AttributionCore.this.CachedAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#childAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="childAttr[T&lt;:org.kiama.attribution.Attributable,U](f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="childAttr[T&lt;:Attributable,U]((T)⇒(Attributable)⇒U):CachedAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">childAttr</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@childAttr[T&lt;:org.kiama.attribution.Attributable,U](f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):AttributionCore.this.CachedAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#children" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="children:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]"></a>
+      <a id="children:CachedAttribute[T,Seq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">children</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@children:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">compute the children of a node.</p><div class="fullcomment"><div class="comment cmt"><p>compute the children of a node.</p><p>This is similar to calling the initTree method on the node but this stores the information as an attribute instead of storing it
+as a tree. This is a way to avoid conflicts if we have 2 processes trying to initialise the same graph
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="circular[T,U](name:String,init:U)(f:T=&gt;U):AttributionCore.this.CircularAttribute[T,U]"></a>
+      <a id="circular[T,U](String,U)((T)⇒U):CircularAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">circular</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: <a href="#CircularAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CircularAttribute">CircularAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@circular[T,U](name:String,init:U)(f:T=&gt;U):AttributionCore.this.CircularAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="circular[T,U](init:U)(f:T=&gt;U):AttributionCore.this.CircularAttribute[T,U]"></a>
+      <a id="circular[T,U](U)((T)⇒U):CircularAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">circular</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: <a href="#CircularAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CircularAttribute">CircularAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@circular[T,U](init:U)(f:T=&gt;U):AttributionCore.this.CircularAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCommon#constant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="constant[T,U](name:String,u:=&gt;U):org.kiama.attribution.Attribute[T,U]"></a>
+      <a id="constant[T,U](String,⇒U):Attribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constant</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="u">u: ⇒ <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span></span>)</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCommon.constant.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@constant[T,U](name:String,u:=&gt;U):org.kiama.attribution.Attribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCommon</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCommon#constant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="constant[T,U](u:=&gt;U):org.kiama.attribution.Attribute[T,U]"></a>
+      <a id="constant[T,U](⇒U):Attribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constant</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="u">u: ⇒ <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span></span>)</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCommon.constant.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@constant[T,U](u:=&gt;U):org.kiama.attribution.Attribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCommon</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#descendents" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="descendents:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]"></a>
+      <a id="descendents:CachedAttribute[T,Seq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">descendents</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@descendents:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">compute all the descendents of a node
+They are all the recursive children reachable from this node
+</p><div class="fullcomment"><div class="comment cmt"><p>compute all the descendents of a node
+They are all the recursive children reachable from this node
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#descendentsUntil" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="descendentsUntil:GraphNodes.this.CachedParamAttribute[GraphNodes.this.T=&gt;Boolean,GraphNodes.this.T,Seq[GraphNodes.this.T]]"></a>
+      <a id="descendentsUntil:CachedParamAttribute[(T)⇒Boolean,T,Seq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">descendentsUntil</span><span class="result">: <a href="#CachedParamAttribute[A,T,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedParamAttribute">CachedParamAttribute</a>[(<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>, <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@descendentsUntil:GraphNodes.this.CachedParamAttribute[GraphNodes.this.T=&gt;Boolean,GraphNodes.this.T,Seq[GraphNodes.this.T]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#dynAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="dynAttr[T,U](name:String,f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]"></a>
+      <a id="dynAttr[T,U](String,(T)⇒U):CachedDynamicAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dynAttr</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T,U]extendsAttributionCore.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@dynAttr[T,U](name:String,f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#dynAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="dynAttr[T,U](f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]"></a>
+      <a id="dynAttr[T,U]((T)⇒U):CachedDynamicAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dynAttr</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T,U]extendsAttributionCore.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@dynAttr[T,U](f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#filledSink" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="filledSink:CompNodes.this.CachedAttribute[String,String]"></a>
+      <a id="filledSink:CachedAttribute[String,String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filledSink</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@filledSink:CompNodes.this.CachedAttribute[String,String]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">this attribute stores the fact that a Sink has received data</p><div class="fullcomment"><div class="comment cmt"><p>this attribute stores the fact that a Sink has received data</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#hasBeenFilled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hasBeenFilled:com.nicta.scoobi.core.Sink=&gt;Boolean"></a>
+      <a id="hasBeenFilled:(Sink)⇒Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasBeenFilled</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@hasBeenFilled:com.nicta.scoobi.core.Sink=&gt;Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if a given Sink has already received data</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#initAttributable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initAttributable[S&lt;:GraphNodes.this.T](s:S):S"></a>
+      <a id="initAttributable[S&lt;:T](S):S"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initAttributable</span><span class="tparams">[<span name="S">S &lt;: <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a></span>]</span><span class="params">(<span name="s">s: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.initAttributable.S">S</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.initAttributable.S">S</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@initAttributable[S&lt;:GraphNodes.this.T](s:S):S" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">initialise the parent/child relationship recursively from node s</p><div class="fullcomment"><div class="comment cmt"><p>initialise the parent/child relationship recursively from node s</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCommon#initTree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initTree[T&lt;:org.kiama.attribution.Attributable](t:T):Unit"></a>
+      <a id="initTree[T&lt;:Attributable](T):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initTree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="t">t: <span class="extype" name="org.kiama.attribution.AttributionCommon.initTree.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@initTree[T&lt;:org.kiama.attribution.Attributable](t:T):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCommon</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#inputs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="inputs:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.core.CompNode]]"></a>
+      <a id="inputs:CachedAttribute[CompNode,Seq[CompNode]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">inputs</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@inputs:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.core.CompNode]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">compute the inputs of a given node
+For a ParallelDo node this does not consider its environment
+</p>
+    </li><li name="org.kiama.attribution.AttributionCore#internalToDynamicAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="internalToDynamicAttribute[T,U](f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]"></a>
+      <a id="internalToDynamicAttribute[T,U]((T)⇒U):CachedDynamicAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">internalToDynamicAttribute</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T,U]extendsAttributionCore.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@internalToDynamicAttribute[T,U](f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#isCyclic" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isCyclic:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Boolean]"></a>
+      <a id="isCyclic:CachedAttribute[T,Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCyclic</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@isCyclic:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Boolean]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">return true if a CompNode has a cycle in its graph,
+this will be detected by Kiama throwing an exception when fetching the descendents of a node
+</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode has a cycle in its graph,
+this will be detected by Kiama throwing an exception when fetching the descendents of a node
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#isUsedAtMostOnce" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isUsedAtMostOnce:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Boolean]"></a>
+      <a id="isUsedAtMostOnce:CachedAttribute[T,Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isUsedAtMostOnce</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@isUsedAtMostOnce:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Boolean]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">true if a node is used at most once</p><div class="fullcomment"><div class="comment cmt"><p>true if a node is used at most once</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#markSinkAsFilled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="markSinkAsFilled:com.nicta.scoobi.core.Sink=&gt;String"></a>
+      <a id="markSinkAsFilled:(Sink)⇒String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">markSinkAsFilled</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@markSinkAsFilled:com.nicta.scoobi.core.Sink=&gt;String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">mark a sink as filled so it doesn't have to be recomputed</p><div class="fullcomment"><div class="comment cmt"><p>mark a sink as filled so it doesn't have to be recomputed</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#nodeHasBeenFilled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nodeHasBeenFilled:com.nicta.scoobi.core.CompNode=&gt;Boolean"></a>
+      <a id="nodeHasBeenFilled:(CompNode)⇒Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nodeHasBeenFilled</span><span class="result">: (<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@nodeHasBeenFilled:com.nicta.scoobi.core.CompNode=&gt;Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if a process node has been filled</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#paramAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="paramAttr[V,T,U](name:String,f:V=&gt;(T=&gt;U)):AttributionCore.this.CachedParamAttribute[V,T,U]"></a>
+      <a id="paramAttr[V,T,U](String,(V)⇒(T)⇒U):CachedParamAttribute[V,T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">paramAttr</span><span class="tparams">[<span name="V">V</span>, <span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>) ⇒ (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedParamAttribute[A,T,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedParamAttribute">CachedParamAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@paramAttr[V,T,U](name:String,f:V=&gt;(T=&gt;U)):AttributionCore.this.CachedParamAttribute[V,T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#paramAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="paramAttr[V,T,U](f:V=&gt;(T=&gt;U)):AttributionCore.this.CachedParamAttribute[V,T,U]"></a>
+      <a id="paramAttr[V,T,U]((V)⇒(T)⇒U):CachedParamAttribute[V,T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">paramAttr</span><span class="tparams">[<span name="V">V</span>, <span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>) ⇒ (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedParamAttribute[A,T,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedParamAttribute">CachedParamAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@paramAttr[V,T,U](f:V=&gt;(T=&gt;U)):AttributionCore.this.CachedParamAttribute[V,T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#parent" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parent:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Option[GraphNodes.this.T]]"></a>
+      <a id="parent:CachedAttribute[T,Option[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parent</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <span class="extype" name="scala.Option">Option</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@parent:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Option[GraphNodes.this.T]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">compute the parent of a node.</p><div class="fullcomment"><div class="comment cmt"><p>compute the parent of a node. This relationship is actually maintained while getting the children of a node
+if the parent node has not been set while recursing for children, then it is None
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#parents" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parents:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]"></a>
+      <a id="parents:CachedAttribute[T,Seq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parents</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@parents:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p><div class="fullcomment"><div class="comment cmt"><p>compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#reinit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reinit[S&lt;:GraphNodes.this.T](s:S):S"></a>
+      <a id="reinit[S&lt;:T](S):S"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reinit</span><span class="tparams">[<span name="S">S &lt;: <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a></span>]</span><span class="params">(<span name="s">s: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.reinit.S">S</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.reinit.S">S</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@reinit[S&lt;:GraphNodes.this.T](s:S):S" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">reinitialise all the attributes related to a node, starting from all the parent/children relationships</p><div class="fullcomment"><div class="comment cmt"><p>reinitialise all the attributes related to a node, starting from all the parent/children relationships</p><p>reset the attributes, then recreate the parent/children relationships recursively
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="org.kiama.util.Memoiser#resetMemo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="resetMemo():Unit"></a>
+      <a id="resetMemo():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">resetMemo</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@resetMemo():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#resetUses" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="resetUses:Unit"></a>
+      <a id="resetUses:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">resetUses</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@resetUses:Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">reinit usages</p><div class="fullcomment"><div class="comment cmt"><p>reinit usages</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#root" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="root:GraphNodes.this.CachedAttribute[GraphNodes.this.T,GraphNodes.this.T]"></a>
+      <a id="root:CachedAttribute[T,T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">root</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@root:GraphNodes.this.CachedAttribute[GraphNodes.this.T,GraphNodes.this.T]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">the root of the graph, computed from a given node</p><div class="fullcomment"><div class="comment cmt"><p>the root of the graph, computed from a given node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@toString():String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#transitiveUses" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="transitiveUses:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Set[GraphNodes.this.T]]"></a>
+      <a id="transitiveUses:CachedAttribute[T,Set[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">transitiveUses</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <span class="extype" name="scala.Predef.Set">Set</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@transitiveUses:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Set[GraphNodes.this.T]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p><div class="fullcomment"><div class="comment cmt"><p>compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#tree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](name:String,f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="tree[T&lt;:Attributable,U&lt;:Attributable](String,(T)⇒U):CachedAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](name:String,f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#tree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="tree[T&lt;:Attributable,U&lt;:Attributable]((T)⇒U):CachedAttribute[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#uses" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="uses:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Set[GraphNodes.this.T]]"></a>
+      <a id="uses:CachedAttribute[T,Set[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uses</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>, <span class="extype" name="scala.Predef.Set">Set</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.T">T</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@uses:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Set[GraphNodes.this.T]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">the nodes which have this node as a direct child</p><div class="fullcomment"><div class="comment cmt"><p>the nodes which have this node as a direct child</p><p>for efficiency, this uses a table of all the nodes using a given one, computed from the root
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#usesAsEnvironment" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="usesAsEnvironment:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]]"></a>
+      <a id="usesAsEnvironment:CachedAttribute[CompNode,Seq[ParallelDo]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">usesAsEnvironment</span><span class="result">: <a href="#CachedAttribute[T,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.CompNodes.CachedAttribute">CachedAttribute</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@usesAsEnvironment:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">compute all the nodes which use a given node as an environment</p>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.comp.CompNodes@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">
+              <h3>Inherited from <a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></h3>
+            </div><div class="parent" name="org.kiama.attribution.AttributionCore">
+              <h3>Inherited from <span class="extype" name="org.kiama.attribution.AttributionCore">AttributionCore</span></h3>
+            </div><div class="parent" name="org.kiama.util.Memoiser">
+              <h3>Inherited from <span class="extype" name="org.kiama.util.Memoiser">Memoiser</span></h3>
+            </div><div class="parent" name="org.kiama.attribution.AttributionCommon">
+              <h3>Inherited from <span class="extype" name="org.kiama.attribution.AttributionCommon">AttributionCommon</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
