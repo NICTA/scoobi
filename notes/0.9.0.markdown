@@ -1,0 +1,21 @@
+Maintenance version
+
+### Improvements
+
+* use Scalaz 7.1.0 (by @charlesofarrell and @markhibberd)
+* Fix String cast to Level in LogFactory (by @charlesofarrell)
+* update to Scala 2.11 (by @charlesofarrell)
+* catching verification errors in seq sources
+* fuse of sequences sources when appending lots of DLists (to avoid possible serialization issues)
+* added a `Short` wire format [#327](http://github.com/NICTA/scoobi/issues/327) (by @raronson)
+* added a wire format for Thrift [#344](http://github.com/NICTA/scoobi/issues/351)
+* added a WireFormat for `\/`
+* create the scoobi tmp jar in the scoobi temp dir
+
+### Fixes
+
+* EMR/S3 fixes (by Kevin X Chang) [#344](http://github.com/NICTA/scoobi/issues/344)
+* don't move files which are already in the right place
+* update the job counters as soon as the job is finished and propagate to the ScoobiConfiguration 
+  
+------ 
