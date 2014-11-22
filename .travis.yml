@@ -6,4 +6,4 @@ scala:
 jdk:
   - oraclejdk7
  
-script: sbt clean package
+script: sbt clean test package
