@@ -49,20 +49,26 @@ trait DataSink[K, V, B] extends Sink { outer =>
 
   /** @return a compression object if this sink is compressed */
   def compression: Option[Compression]
+
+  private var compressionConfigured = false
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration) = {
-    compression.filter { c =>
-      Compression.getCompressor(c.codec)(configuration).fold(
-      { e => logger.error(s"compressor not available for codec type ${c.codec.getClass}: $e"); throw e },
-      { _ => logger.debug(s"compressor available for codec type ${c.codec.getClass}"); true })
+    if (!compressionConfigured) {
+      compression.filter { c =>
+        Compression.getCompressor(c.codec)(configuration).fold(
+        { e => logger.error(s"compressor not available for codec type ${c.codec.getClass}: $e"); throw e},
+        { _ => logger.debug(s"compressor available for codec type ${c.codec.getClass}"); true})
 
-    } map  { case Compression(codec, compressionType) =>
-      configuration.set("mapred.output.compress", "true")
-      configuration.set("mapred.output.compression.type", compressionType.toString)
-      configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
-    } getOrElse {
-      logger.debug(s"no compression set on this sink")
-      configuration.set("mapred.output.compress", "false")
+      } map { case Compression(codec, compressionType) =>
+        configuration.set("mapred.output.compress", "true")
+        configuration.set("mapred.output.compression.type", compressionType.toString)
+        configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
+      } getOrElse {
+        logger.debug(s"no compression set on this sink")
+        configuration.set("mapred.output.compress", "false")
+      }
+
+      compressionConfigured = true
     }
     this
   }
