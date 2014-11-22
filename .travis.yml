@@ -5,5 +5,5 @@ scala:
 
 jdk:
   - oraclejdk7
-
+ 
 script: sbt 'test-only -- -include hadoop -exclude unstable '
