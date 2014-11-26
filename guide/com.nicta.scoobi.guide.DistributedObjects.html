@@ -64,15 +64,15 @@
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
       <title>Distributed Objects</title>
-    </head><body><div id="breadcrumbs"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html">DistributedObjects</a></div><div class="colmask threecol">
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html">DistributedObjects</a></div><div class="colmask threecol">
             <div class="colmid">
               <div class="colleft">
-                <div class="col1"><div id="central"><html><title>Distributed Objects</title><a name="Distributed+Objects"><h2 specId="1098150096">Distributed Objects</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>The distributed list abstraction is very useful for specifying operations that transform large data sets into another large data set. Because these data sets are so large they typically reside on systems such as HDFS. There are other operations, however, which involve transforming a large data set into a small data set that is able to fit within the memory of a single machine. Examples of such use case are:</p>
+                <div class="col1"><div id="central"><html><title>Distributed Objects</title><a name="Distributed+Objects"><h2 specId="1441197791">Distributed Objects</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>The distributed list abstraction is very useful for specifying operations that transform large data sets into another large data set. Because these data sets are so large they typically reside on systems such as HDFS. There are other operations, however, which involve transforming a large data set into a small data set that is able to fit within the memory of a single machine. Examples of such use case are:</p>
 <ul>
   <li>From a collection of numbers, computing the average value;</li>
   <li>From a collection of entity-score pairs, determining the ten entities with the highest scores;</li>
   <li>From a corpus of documents, compute word frequencies for words present in a 1000-word dictionary.</li>
-</ul><p>Scoobi provides the distributed object abstraction as a solution for these cases. Like distributed lists, distributed objects are delayed computations. However, whereas a distributed list abstracts a very large data set in, say, HDFS, a distributed object simply abstract an in-memory value, which is typically the result of a distributed list (MapReduce) operation. Distributed objects are described by the <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.8.5/index.html#com.nicta.scoobi.core.DObject"><code class="prettyprint">DObject</code></a> trait.</p><a name="Materialising"><h3>Materialising</h3></a><p>After computing a <code class="prettyprint">DList</code> on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a <code class="prettyprint">DList</code> with relatively few entries, <em>relative</em> meaning the entries could fit into the memory of a single machine.</p><p>To bring the contents of such a <code class="prettyprint">DList</code> on to the client, you can use the <code class="prettyprint">materialise</code> method:</p>
+</ul><p>Scoobi provides the distributed object abstraction as a solution for these cases. Like distributed lists, distributed objects are delayed computations. However, whereas a distributed list abstracts a very large data set in, say, HDFS, a distributed object simply abstract an in-memory value, which is typically the result of a distributed list (MapReduce) operation. Distributed objects are described by the <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.9.1/index.html#com.nicta.scoobi.core.DObject"><code class="prettyprint">DObject</code></a> trait.</p><a name="Materialising"><h3>Materialising</h3></a><p>After computing a <code class="prettyprint">DList</code> on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a <code class="prettyprint">DList</code> with relatively few entries, <em>relative</em> meaning the entries could fit into the memory of a single machine.</p><p>To bring the contents of such a <code class="prettyprint">DList</code> on to the client, you can use the <code class="prettyprint">materialise</code> method:</p>
 <pre><code class="prettyprint">val xs: DList[Int] = ...
 val ys: DObject[Iterable[Int]] = xs.materialise
 val ws: Iterable[Int] = ys.run
@@ -107,8 +107,8 @@ val normalised: DList[Int] = (minimum join ints) map { case (m, i) =&gt; i - f(m
 </code></pre><p>This will execute <code class="prettyprint">f</code> on Hadoop for every element of the <code class="prettyprint">DList</code>. This may not be a problem but what if <code class="prettyprint">f</code> is expensive or needs access, say, to the client's local file system. In that case, it would be useful to apply <code class="prettyprint">f</code> on the client. We can do that using the <code class="prettyprint">DObject</code> <code class="prettyprint">map</code> method:</p>
 <pre><code class="prettyprint">val f: Int =&gt; Int = ...
 val minMod: DObject[Int] = minimum.map(f)
-val normalised: DList[Int] = (minMod join ints) map { case (m, i) =&gt; i - f(m) }
-</code></pre><p>This will now apply <code class="prettyprint">f</code> to the mimimum value as a client-side computation. Note that we can't apply <code class="prettyprint">f</code> to <code class="prettyprint">minimum</code> directly because it's of type <code class="prettyprint">DObject[Int]</code>, not <code class="prettyprint">Int</code>. The <code class="prettyprint">map</code> method, however, is able to apply functions to the values wrapped within.</p><p>Looking at this example in total, we can see how <code class="prettyprint">DObjects</code> are used to bridge between Hadoop and client-side computations in a way that allows Scoobi to be aware of all dependencies:</p>
+val normalised: DList[Int] = (minMod join ints) map { case (f_m, i) =&gt; i - f_m }
+</code></pre><p>This will now apply <code class="prettyprint">f</code> to the minimum value as a client-side computation. Note that we can't apply <code class="prettyprint">f</code> to <code class="prettyprint">minimum</code> directly because it's of type <code class="prettyprint">DObject[Int]</code>, not <code class="prettyprint">Int</code>. The <code class="prettyprint">map</code> method, however, is able to apply functions to the values wrapped within.</p><p>Looking at this example in total, we can see how <code class="prettyprint">DObjects</code> are used to bridge between Hadoop and client-side computations in a way that allows Scoobi to be aware of all dependencies:</p>
 <pre><code class="prettyprint">val f: Int =&gt; Int = ...
 val ints: DList[Int] = ...
 
@@ -132,12 +132,12 @@ val bounded: DList[Int] = ((lower, upper) join ints) filter { case ((l, u), i) =
 </code></pre><a name="Example"><h3>Example</h3></a><p>A good way of illustrating the use of distributed objects is to contrast it with what is difficult to do with distributed lists alone. For example, how might we implement the following with Scoobi's distributed list abstraction: from a large collection of integers, filter out those that are less than the average? Logically, the steps would look something like the following:</p>
 <ol>
   <li>Create a <code class="prettyprint">DList[Int]</code> representing the collection of integers (e.g. maybe read in the integers from a series of text files);</li>
-  <li>Compute the average <code class="prettyprint">Int</code> value accross the entire <code class="prettyprint">DList[Int]</code>;</li>
+  <li>Compute the average <code class="prettyprint">Int</code> value across the entire <code class="prettyprint">DList[Int]</code>;</li>
   <li>Filter the <code class="prettyprint">DList[Int]</code> based on whether each integer value is less than the computed average.</li>
 </ol><p>With the distributed list abstraction we have described thus far, it would not be possible to implement the above easily. You would need one Scoobi job that computed and persisted to file the sum of all the integers as well as the total number of integers. Then, the application would need to read those two files in order to extract the sum and the total, from which the average could be computed. Finally, another Scoobi job would be needed to filter the original DList with the computed average.</p><p>So, it's possible but not convenient. In order for it to be convenient, there are problems with both steps 2 and 3 above that need to be overcome:</p>
 <ul>
   <li>How do we represent the average value of a <code class="prettyprint">DList[Int]</code>? Using a <code class="prettyprint">DList[Int]</code> to represent the average is not the best solution as it will always be of length 1;</li>
-  <li>Even if we did represent the average as a <code class="prettyprint">DList[Int]</code> of legth 1, how do we <em>inject</em> the value into the body of the filter predicate that is applied to the original <code class="prettyprint">DList</code>?</li>
+  <li>Even if we did represent the average as a <code class="prettyprint">DList[Int]</code> of length 1, how do we <em>inject</em> the value into the body of the filter predicate that is applied to the original <code class="prettyprint">DList</code>?</li>
 </ul><p>The distributed object abstraction allows us to more easily solve this problem:</p>
 <pre><code class="prettyprint">val ints: DList[Int] = fromTextFile(&quot;hdfs://all/my/integers&quot;) collect { case AnInt(i) =&gt; i }
 val total: DObject[Int] = ints.sum
@@ -145,7 +145,7 @@ val num: DObject[Int] = ints.size
 val average: DObject[Float] = (total, num) map { case (t, s) =&gt; t / s }
 val bigger: DList[Int] = (average join ints) filter { case (a, i) =&gt; i &gt; a } .values
 persist(bigger.toTextFile(&quot;hdfs://all/my/big-integers&quot;))
-</code></pre><p>In this example, we first encounter the use of <code class="prettyprint">DObject</code> as the return value of the <code class="prettyprint">DList</code> <code class="prettyprint">sum</code> method. Rather than returning a <code class="prettyprint">DList[Int]</code> with a single entry, <code class="prettyprint">sum</code> instead returns a <code class="prettyprint">DObject[Int]</code>. This <code class="prettyprint">DObject</code> represents a delayed computation that if executed would calculate the sum of the intergers in <code class="prettyprint">ints</code>. Similarly for <code class="prettyprint">num</code> which is the result of the <code class="prettyprint">DList</code> method <code class="prettyprint">size</code>.</p><p>The average interger value can be calculated using <code class="prettyprint">total</code> and <code class="prettyprint">num</code>, however, it too is a <code class="prettyprint">DObject</code> which means it's also a delayed computation. By pairing <code class="prettyprint">total</code> and <code class="prettyprint">size, we create a</code>DObject[(Int, Int)]<code class="prettyprint">object that can be mapped over to compute</code>average<code class="prettyprint">. Finally, in order to get access to</code>average<code class="prettyprint">when we filter the orignal</code>DList<code class="prettyprint">, we *join*</code>average<code class="prettyprint">(</code>DObject[Float]) with <code class="prettyprint">ints</code> (<code class="prettyprint">DList[Int]</code>) which results in a new <code class="prettyprint">DList</code> where every element is paired with the <code class="prettyprint">DObject</code>. In this case, <code class="prettyprint">filter</code> will operate on a <code class="prettyprint">DList[(Float, Int)]</code>.</p><a name="Persisting+Distributed+Objects"><h3>Persisting Distributed Objects</h3></a><p>We've seen previously that the way to &quot;get inside&quot; a <code class="prettyprint">DObject</code> is to <code class="prettyprint">run</code> it - that is, compute it:</p>
+</code></pre><p>In this example, we first encounter the use of <code class="prettyprint">DObject</code> as the return value of the <code class="prettyprint">DList</code> <code class="prettyprint">sum</code> method. Rather than returning a <code class="prettyprint">DList[Int]</code> with a single entry, <code class="prettyprint">sum</code> instead returns a <code class="prettyprint">DObject[Int]</code>. This <code class="prettyprint">DObject</code> represents a delayed computation that if executed would calculate the sum of the integers in <code class="prettyprint">ints</code>. Similarly for <code class="prettyprint">num</code> which is the result of the <code class="prettyprint">DList</code> method <code class="prettyprint">size</code>.</p><p>The average integer value can be calculated using <code class="prettyprint">total</code> and <code class="prettyprint">num</code>, however, it too is a <code class="prettyprint">DObject</code> which means it's also a delayed computation. By pairing <code class="prettyprint">total</code> and <code class="prettyprint">size, we create a</code>DObject[(Int, Int)]<code class="prettyprint">object that can be mapped over to compute</code>average<code class="prettyprint">. Finally, in order to get access to</code>average<code class="prettyprint">when we filter the original</code>DList<code class="prettyprint">, we *join*</code>average<code class="prettyprint">(</code>DObject[Float]) with <code class="prettyprint">ints</code> (<code class="prettyprint">DList[Int]</code>) which results in a new <code class="prettyprint">DList</code> where every element is paired with the <code class="prettyprint">DObject</code>. In this case, <code class="prettyprint">filter</code> will operate on a <code class="prettyprint">DList[(Float, Int)]</code>.</p><a name="Persisting+Distributed+Objects"><h3>Persisting Distributed Objects</h3></a><p>We've seen previously that the way to &quot;get inside&quot; a <code class="prettyprint">DObject</code> is to <code class="prettyprint">run</code> it - that is, compute it:</p>
 <pre><code class="prettyprint">val x: DObject[A] = ...
 val y: A = x.run
 </code></pre><p>Like <code class="prettyprint">DLists</code>, it's also possible to persist multiple <code class="prettyprint">DObjects</code> at a time. This similarly has the advantage of jointly optimising the dependency graph formed by all <code class="prettyprint">DObjects</code>.</p>
@@ -163,8 +163,8 @@ persist(a, bs.toTextFile(&quot;hdfs://...&quot;), c, ds.toTextFile(&quot;hfds://
 val (aR: A, cR: C) = (a.run, c.run)
 </code></pre><p>Note that persisting a <code class="prettyprint">DList</code> does not return a value, hence the underscore.</p></div></status></html></div></div>
                 <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1728182942"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="270450524"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="1314332413"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="1681545195"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -174,7 +174,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1565773915"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1120969835"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -198,7 +198,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="697579067"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="265981714"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -216,7 +216,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1098150096"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1441197791"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -230,7 +230,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1134201154"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="743218824"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -284,7 +284,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="1453944506"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1513884016"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -296,7 +296,7 @@ val (aR: A, cR: C) = (a.run, c.run)
             
           </li></ul>
           </li></ul>
-          </li><li id="228893129"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="462407256"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -304,7 +304,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="863607326"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="2082916746"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -320,7 +320,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1953841656"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="1450820275"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -350,7 +350,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1044266115"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1407033887"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -368,7 +368,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1744231521"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="2076101692"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -376,7 +376,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="2147391897"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="726840988"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -388,7 +388,7 @@ val (aR: A, cR: C) = (a.run, c.run)
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1728182942','1098150096'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1314332413','1441197791'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                 <div class="col3"><div id="rightcolumn"></div></div>
               </div>
