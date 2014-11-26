@@ -1,0 +1,7 @@
+Maintenance version
+
+### Fixes
+
+* configureCompression only creates compressor once (fixes compression problems with Deflate and Snappy) by @jbeynon [#352](http://github.com/NICTA/scoobi/issues/352)
+  
+------ 
