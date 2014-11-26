@@ -1,0 +1,70 @@
+{
+  "organization" : "com.nicta",
+  "name" : "scoobi",
+  "version" : "0.9.1-cdh4-SNAPSHOT",
+  "description" : "scoobi",
+  "site" : "",
+  "tags" : [ ],
+  "docs" : "",
+  "resolvers" : [ "https://oss.sonatype.org/content/repositories/releases" ],
+  "dependencies" : [ {
+    "organization" : "org.apache.avro",
+    "name" : "avro",
+    "version" : "1.7.4"
+  }, {
+    "organization" : "com.thoughtworks.xstream",
+    "name" : "xstream",
+    "version" : "1.4.4"
+  }, {
+    "organization" : "javassist",
+    "name" : "javassist",
+    "version" : "3.12.1.GA"
+  }, {
+    "organization" : "com.googlecode.kiama",
+    "name" : "kiama",
+    "version" : "1.6.0"
+  }, {
+    "organization" : "com.chuusai",
+    "name" : "shapeless",
+    "version" : "2.0.0"
+  }, {
+    "organization" : "com.nicta",
+    "name" : "scoobi-compatibility-cdh4",
+    "version" : "1.0.3"
+  }, {
+    "organization" : "org.apache.thrift",
+    "name" : "libthrift",
+    "version" : "0.9.1"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-core",
+    "version" : "7.1.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-iteratee",
+    "version" : "7.1.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-concurrent",
+    "version" : "7.1.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-scalacheck-binding",
+    "version" : "7.1.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-typelevel",
+    "version" : "7.1.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-xml",
+    "version" : "7.1.0"
+  }, {
+    "organization" : "org.specs2",
+    "name" : "specs2-core",
+    "version" : "2.4.2"
+  } ],
+  "scalas" : [ "2.10.4", "2.11.2" ],
+  "licenses" : [ ],
+  "sbt" : false
+}
