@@ -78,7 +78,7 @@ One of the advantages of using `fromDelimitedTextFile` is that we have at our di
 
     // load CSV and pull out id and second_name if first_name is "Harry"
     val names = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
-      case AnyInt(id) :: "Harry" :: second_name :: age :: _ => (id, second_name)
+      case AnInt(id) :: "Harry" :: second_name :: age :: _ => (id, second_name)
     }
 
 We can of course supply multiple patterns:
