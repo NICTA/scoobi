@@ -6,4 +6,4 @@ scala:
 jdk:
   - oraclejdk7
  
--script: sbt 'test-only -- -include hadoop -exclude unstable '
+script: sbt clean compile package
