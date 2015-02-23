@@ -108,10 +108,8 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     val groupNames = Option(hadoopCounters.getGroupNames)                                     
     if(groupNames.isDefined) {
         groupNames.map { groupName: String =>
-           val group = Option(hadoopCounters.getGroup(groupName))
-           if(group.isDefined) {
-             group.iterator.foreach((c: Counter) => counters.findCounter(groupName, c.getName).increment(c.getValue))
-           }
+           val group = hadoopCounters.getGroup(groupName)
+           group.iterator.foreach((c: Counter) => counters.findCounter(groupName, c.getName).increment(c.getValue))
         }
     }
     this
