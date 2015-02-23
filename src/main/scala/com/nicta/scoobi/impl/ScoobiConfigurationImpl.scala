@@ -105,9 +105,14 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
 
   /** update the current counters from the result of a job that has just been run */
   def updateCounters(hadoopCounters: HadoopCounters) = {
-    hadoopCounters.getGroupNames.map { groupName: String =>
-      val group = hadoopCounters.getGroup(groupName)
-      group.iterator.foreach((c: Counter) => counters.findCounter(groupName, c.getName).increment(c.getValue))
+    val groupNames = Option(hadoopCounters.getGroupNames)
+    if(groupNames.isDefined) {
+        groupNames.get.map { groupName: String =>
+           val group = Option(hadoopCounters.getGroup(groupName))
+           if(group.isDefined) {
+             group.get.iterator.foreach((c: Counter) => counters.findCounter(groupName, c.getName).increment(c.getValue))
+           }
+        }
     }
     this
   }
