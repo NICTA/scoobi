@@ -1,0 +1,1997 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>Iterator1 - com.nicta.scoobi.core.Iterator1</title>
+          <meta name="description" content="Iterator1 - com.nicta.scoobi.core.Iterator1" />
+          <meta name="keywords" content="Iterator1 com.nicta.scoobi.core.Iterator1" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.nicta.scoobi.core.Iterator1';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="Iterator1$.html" title="Go to companion"><img src="../../../../lib/trait_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
+        <h1><a href="Iterator1$.html" title="Go to companion">Iterator1</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="Iterator1$.html" title="See companion">object Iterator1</a>
+            | <a href="package.html" class="extype" name="com.nicta.scoobi.core">package core</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Iterator1</span><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#TraversableOnce[+A]=scala.collection.TraversableOnce[A]" class="extmbr" name="scala.TraversableOnce">TraversableOnce</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A non-empty iterator contains at least one element. Consequences include:</p><p>- <code>reduceLeft</code> will always produce a value.
+- <code>first</code> will always produce a value.
+- <code>next</code> will always produce a value on its first invocation.
+- <code>hasNext</code> will always return true on its first invocation.
+- <code>scanLeft1</code> will always produce a value.</p><p>Some operations on a non-empty iterator result in a non-empty iterator.</p><p>Construction of an <code>Iterator1</code> is typically performed with the <code>+::</code> method, defined on <code>Iterator1.RichIterator</code>.</p><p>For example:</p><pre><span class="kw">import</span> Iterator1._
+
+<span class="cmt">// A regular iterator.</span>
+<span class="kw">val</span> x: Iterator[<span class="std">Int</span>] = ...
+<span class="cmt">// Constructs a non-empty iterator with 74 at the first.</span>
+<span class="kw">val</span> y: Iterator1[<span class="std">Int</span>] = <span class="num">77</span> +:: x</pre><p><b>NOTE: Most Iterator functions perform SIDE-EFFECTS and so EQUATIONAL REASONING DOES NOT APPLY.</b>
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.collection.TraversableOnce">TraversableOnce</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>], <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>], <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.nicta.scoobi.core.Iterator1"><span>Iterator1</span></li><li class="in" name="scala.collection.TraversableOnce"><span>TraversableOnce</span></li><li class="in" name="scala.collection.GenTraversableOnce"><span>GenTraversableOnce</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.nicta.scoobi.core.Iterator1#first" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="first:A"></a>
+      <a id="first:A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">first</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@first:A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The constant first element of this iterator.</p>
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@##():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#++" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="++[AA&gt;:A](that:=&gt;com.nicta.scoobi.core.Iterator1[AA]):com.nicta.scoobi.core.Iterator1[AA]"></a>
+      <a id="++[AA&gt;:A](⇒Iterator1[AA]):Iterator1[AA]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $plus$plus" class="name">++</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="that">that: ⇒ <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.++.AA">AA</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.++.AA">AA</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@++[AA&gt;:A](that:=&gt;com.nicta.scoobi.core.Iterator1[AA]):com.nicta.scoobi.core.Iterator1[AA]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Append the given iterator to this iterator.</p>
+    </li><li name="scala.collection.TraversableOnce#/:" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="/:[B](z:B)(op:(B,A)=&gt;B):B"></a>
+      <a id="/:[B](B)((B,A)⇒B):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $div$colon" class="name">/:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce./:.B">B</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@/:[B](z:B)(op:(B,A)=&gt;B):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#:\" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id=":\[B](z:B)(op:(A,B)=&gt;B):B"></a>
+      <a id=":\[B](B)((A,B)⇒B):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $colon$bslash" class="name">:\</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@:\[B](z:B)(op:(A,B)=&gt;B):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#&lt;*&gt;:" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;*&gt;:[B](f:com.nicta.scoobi.core.Iterator1[A=&gt;B]):com.nicta.scoobi.core.Iterator1[B]"></a>
+      <a id="&lt;*&gt;:[B](Iterator1[(A)⇒B]):Iterator1[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $less$times$greater$colon" class="name">&lt;*&gt;:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[(<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.Iterator1.&lt;*&gt;:.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.&lt;*&gt;:.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@&lt;*&gt;:[B](f:com.nicta.scoobi.core.Iterator1[A=&gt;B]):com.nicta.scoobi.core.Iterator1[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Runs the iterator sequence effect (<code>flatMap</code>) of functions on this iterator.</p><div class="fullcomment"><div class="comment cmt"><p>Runs the iterator sequence effect (<code>flatMap</code>) of functions on this iterator. Synonym for <code>ap</code>.
+</p></div></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#addString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addString(b:StringBuilder):StringBuilder"></a>
+      <a id="addString(StringBuilder):StringBuilder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addString</span><span class="params">(<span name="b">b: <a href="../../../../scala/package.html#StringBuilder=StringBuilder" class="extmbr" name="scala.StringBuilder">StringBuilder</a></span>)</span><span class="result">: <a href="../../../../scala/package.html#StringBuilder=StringBuilder" class="extmbr" name="scala.StringBuilder">StringBuilder</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@addString(b:StringBuilder):StringBuilder" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#addString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addString(b:StringBuilder,sep:String):StringBuilder"></a>
+      <a id="addString(StringBuilder,String):StringBuilder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addString</span><span class="params">(<span name="b">b: <a href="../../../../scala/package.html#StringBuilder=StringBuilder" class="extmbr" name="scala.StringBuilder">StringBuilder</a></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#StringBuilder=StringBuilder" class="extmbr" name="scala.StringBuilder">StringBuilder</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@addString(b:StringBuilder,sep:String):StringBuilder" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#addString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addString(b:StringBuilder,start:String,sep:String,end:String):StringBuilder"></a>
+      <a id="addString(StringBuilder,String,String,String):StringBuilder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addString</span><span class="params">(<span name="b">b: <a href="../../../../scala/package.html#StringBuilder=StringBuilder" class="extmbr" name="scala.StringBuilder">StringBuilder</a></span>, <span name="start">start: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="end">end: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#StringBuilder=StringBuilder" class="extmbr" name="scala.StringBuilder">StringBuilder</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@addString(b:StringBuilder,start:String,sep:String,end:String):StringBuilder" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#aggregate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="aggregate[B](z:=&gt;B)(seqop:(B,A)=&gt;B,combop:(B,B)=&gt;B):B"></a>
+      <a id="aggregate[B](⇒B)((B,A)⇒B,(B,B)⇒B):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">aggregate</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: ⇒ <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>)</span><span class="params">(<span name="seqop">seqop: (<span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>, <span name="combop">combop: (<span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>, <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@aggregate[B](z:=&gt;B)(seqop:(B,A)=&gt;B,combop:(B,B)=&gt;B):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#ap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ap[B](f:com.nicta.scoobi.core.Iterator1[A=&gt;B]):com.nicta.scoobi.core.Iterator1[B]"></a>
+      <a id="ap[B](Iterator1[(A)⇒B]):Iterator1[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[(<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.Iterator1.ap.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.ap.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@ap[B](f:com.nicta.scoobi.core.Iterator1[A=&gt;B]):com.nicta.scoobi.core.Iterator1[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Runs the iterator sequence effect (<code>flatMap</code>) of functions on this iterator.</p><div class="fullcomment"><div class="comment cmt"><p>Runs the iterator sequence effect (<code>flatMap</code>) of functions on this iterator. Synonym for <code>&lt;*&gt;:</code>.
+</p></div></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#collect" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="collect[B](pf:PartialFunction[A,B]):Iterator[B]"></a>
+      <a id="collect[B](PartialFunction[A,B]):Iterator[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collect</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="pf">pf: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.collect.B">B</span>]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.collect.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@collect[B](pf:PartialFunction[A,B]):Iterator[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return the first element in the iterator satisfying the given predicate, mapping the given function.</p>
+    </li><li name="scala.collection.TraversableOnce#collectFirst" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="collectFirst[B&lt;:&lt;?&gt;](pf:&lt;?&gt;):Option[B]"></a>
+      <a id="collectFirst[B](PartialFunction[A,B]):Option[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collectFirst</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="pf">pf: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="scala.collection.TraversableOnce.collectFirst.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.collectFirst.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@collectFirst[B](pf:PartialFunction[A,B]):Option[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#contains" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="contains(elem:Any):Boolean"></a>
+      <a id="contains(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contains</span><span class="params">(<span name="elem">elem: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@contains(elem:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">True if any elements of the iterator are equal to the given value.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#copyToArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="copyToArray[AA&gt;:A](xs:Array[AA],start:Int,n:Int):Unit"></a>
+      <a id="copyToArray[AA&gt;:A](Array[AA],Int,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">copyToArray</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.copyToArray.AA">AA</span>]</span>, <span name="start">start: <span class="extype" name="scala.Int">Int</span></span>, <span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@copyToArray[AA&gt;:A](xs:Array[AA],start:Int,n:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Copies this iterator to an array at the given interval.</p><div class="fullcomment"><div class="comment cmt"><p>Copies this iterator to an array at the given interval.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#copyToArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="copyToArray[B&gt;:A](xs:Array[B]):Unit"></a>
+      <a id="copyToArray[B&gt;:A](Array[B]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToArray.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@copyToArray[B&gt;:A](xs:Array[B]):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#copyToArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="copyToArray[B&gt;:A](xs:Array[B],start:Int):Unit"></a>
+      <a id="copyToArray[B&gt;:A](Array[B],Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToArray.B">B</span>]</span>, <span name="start">start: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@copyToArray[B&gt;:A](xs:Array[B],start:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#copyToBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="copyToBuffer[B&lt;:&lt;?&gt;](dest:&lt;?&gt;):Unit"></a>
+      <a id="copyToBuffer[B&gt;:A](Buffer[B]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">copyToBuffer</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="dest">dest: <span class="extype" name="scala.collection.mutable.Buffer">Buffer</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToBuffer.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@copyToBuffer[B&gt;:A](dest:scala.collection.mutable.Buffer[B]):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#count" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="count(p:A=&gt;Boolean):Int"></a>
+      <a id="count((A)⇒Boolean):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">count</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@count(p:A=&gt;Boolean):Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#drop" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="drop(n:Int):Iterator[A]"></a>
+      <a id="drop(Int):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">drop</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@drop(n:Int):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Drop at most the given number of elements from the front of the iterator.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#dropWhile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="dropWhile(p:A=&gt;Boolean):Iterator[A]"></a>
+      <a id="dropWhile((A)⇒Boolean):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dropWhile</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@dropWhile(p:A=&gt;Boolean):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Drop elements from the front of the iterator satisfying the given predicate.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#duplicate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="duplicate:(com.nicta.scoobi.core.Iterator1[A],com.nicta.scoobi.core.Iterator1[A])"></a>
+      <a id="duplicate:(Iterator1[A],Iterator1[A])"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">duplicate</span><span class="result">: (<a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>], <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>])</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@duplicate:(com.nicta.scoobi.core.Iterator1[A],com.nicta.scoobi.core.Iterator1[A])" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Creates two new iterators that both iterate over the same elements as this iterator (in the same order).</p><div class="fullcomment"><div class="comment cmt"><p>Creates two new iterators that both iterate over the same elements as this iterator (in the same order).  The duplicate iterators are considered equal if they are positioned at the same element.
+</p></div></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#exists" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="exists(p:A=&gt;Boolean):Boolean"></a>
+      <a id="exists((A)⇒Boolean):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">exists</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@exists(p:A=&gt;Boolean):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">True if any elements of the iterator satisfy the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>True if any elements of the iterator satisfy the given predicate.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#filter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="filter(p:A=&gt;Boolean):Iterator[A]"></a>
+      <a id="filter((A)⇒Boolean):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filter</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@filter(p:A=&gt;Boolean):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return an iterator with only the elements satisfying the predicate.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#filterNot" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="filterNot(p:A=&gt;Boolean):Iterator[A]"></a>
+      <a id="filterNot((A)⇒Boolean):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filterNot</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@filterNot(p:A=&gt;Boolean):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return an iterator with only the elements not satisfying the predicate.</p>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#find" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="find(p:A=&gt;Boolean):Option[A]"></a>
+      <a id="find((A)⇒Boolean):Option[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">find</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@find(p:A=&gt;Boolean):Option[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return the first element in the iterator satisfying the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>Return the first element in the iterator satisfying the given predicate.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#flatMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="flatMap[B](f:A=&gt;com.nicta.scoobi.core.Iterator1[B]):com.nicta.scoobi.core.Iterator1[B]"></a>
+      <a id="flatMap[B]((A)⇒Iterator1[B]):Iterator1[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">flatMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.flatMap.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.flatMap.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@flatMap[B](f:A=&gt;com.nicta.scoobi.core.Iterator1[B]):com.nicta.scoobi.core.Iterator1[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Sequence an iterator function on all elements of the iterator.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#flatten" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="flatten[I](implicitI1:A=&gt;com.nicta.scoobi.core.Iterator1[I]):com.nicta.scoobi.core.Iterator1[I]"></a>
+      <a id="flatten[I]((A)⇒Iterator1[I]):Iterator1[I]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">flatten</span><span class="tparams">[<span name="I">I</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="I1">I1: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.flatten.I">I</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.flatten.I">I</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@flatten[I](implicitI1:A=&gt;com.nicta.scoobi.core.Iterator1[I]):com.nicta.scoobi.core.Iterator1[I]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Flatten an iterator of iterator.</p>
+    </li><li name="scala.collection.TraversableOnce#fold" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fold[A1&gt;:A](z:A1)(op:(A1,A1)=&gt;A1):A1"></a>
+      <a id="fold[A1&gt;:A](A1)((A1,A1)⇒A1):A1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fold</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@fold[A1&gt;:A](z:A1)(op:(A1,A1)=&gt;A1):A1" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#foldLeft" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="foldLeft[B](z:B)(op:(B,A)=&gt;B):B"></a>
+      <a id="foldLeft[B](B)((B,A)⇒B):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">foldLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@foldLeft[B](z:B)(op:(B,A)=&gt;B):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#foldRight" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="foldRight[B](z:B)(op:(A,B)=&gt;B):B"></a>
+      <a id="foldRight[B](B)((A,B)⇒B):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">foldRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@foldRight[B](z:B)(op:(A,B)=&gt;B):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#forall" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="forall(p:A=&gt;Boolean):Boolean"></a>
+      <a id="forall((A)⇒Boolean):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">forall</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@forall(p:A=&gt;Boolean):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">True if all elements of the iterator satisfy the given predicate.</p><div class="fullcomment"><div class="comment cmt"><p>True if all elements of the iterator satisfy the given predicate.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#foreach" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="foreach[U](f:A=&gt;U):Unit"></a>
+      <a id="foreach[U]((A)⇒U):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">foreach</span><span class="tparams">[<span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.Iterator1.foreach.U">U</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@foreach[U](f:A=&gt;U):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Execute an effect for each element of the iterator.</p><div class="fullcomment"><div class="comment cmt"><p>Execute an effect for each element of the iterator.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#hasDefiniteSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hasDefiniteSize:Boolean"></a>
+      <a id="hasDefiniteSize:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasDefiniteSize</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@hasDefiniteSize:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A non-empty iterator always has a definite size.</p><div class="fullcomment"><div class="comment cmt"><p>A non-empty iterator always has a definite size.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#hasNext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hasNext:Boolean"></a>
+      <a id="hasNext:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasNext</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@hasNext:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">True if this iterator can produce a value from <code>next</code>.</p>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#indexOf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="indexOf[AA&gt;:A](elem:AA):Int"></a>
+      <a id="indexOf[AA&gt;:A](AA):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">indexOf</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="elem">elem: <span class="extype" name="com.nicta.scoobi.core.Iterator1.indexOf.AA">AA</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@indexOf[AA&gt;:A](elem:AA):Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return the index (starting at 0) of the first element in the iterator equal to the given value or -1 if no such element exists.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#indexWhere" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="indexWhere(p:A=&gt;Boolean):Int"></a>
+      <a id="indexWhere((A)⇒Boolean):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">indexWhere</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@indexWhere(p:A=&gt;Boolean):Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return the index (starting at 0) of the first element in the iterator satisfying the given predicate or -1 if no such element exists.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#isEmpty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isEmpty:Boolean"></a>
+      <a id="isEmpty:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@isEmpty:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The negation of <code>hasNext</code>.</p><div class="fullcomment"><div class="comment cmt"><p>The negation of <code>hasNext</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#isTraversableAgain" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isTraversableAgain:Boolean"></a>
+      <a id="isTraversableAgain:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isTraversableAgain</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@isTraversableAgain:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A non-empty iterator is never traversable again.</p><div class="fullcomment"><div class="comment cmt"><p>A non-empty iterator is never traversable again.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#length" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="length:Int"></a>
+      <a id="length:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">length</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@length:Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return the number of elements in the iterator.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#map" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="map[B](f:A=&gt;B):com.nicta.scoobi.core.Iterator1[B]"></a>
+      <a id="map[B]((A)⇒B):Iterator1[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.Iterator1.map.B">B</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.map.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@map[B](f:A=&gt;B):com.nicta.scoobi.core.Iterator1[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Map a function on all elements of the iterator.</p>
+    </li><li name="scala.collection.TraversableOnce#max" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="max[B&gt;:A](implicitcmp:Ordering[B]):A"></a>
+      <a id="max[B&gt;:A](Ordering[B]):A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">max</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="scala.collection.TraversableOnce.max.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@max[B&gt;:A](implicitcmp:Ordering[B]):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#maxBy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="maxBy[B](f:A=&gt;B)(implicitcmp:Ordering[B]):A"></a>
+      <a id="maxBy[B]((A)⇒B)(Ordering[B]):A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">maxBy</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.maxBy.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="scala.collection.TraversableOnce.maxBy.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@maxBy[B](f:A=&gt;B)(implicitcmp:Ordering[B]):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#min" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="min[B&gt;:A](implicitcmp:Ordering[B]):A"></a>
+      <a id="min[B&gt;:A](Ordering[B]):A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">min</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="scala.collection.TraversableOnce.min.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@min[B&gt;:A](implicitcmp:Ordering[B]):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#minBy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="minBy[B](f:A=&gt;B)(implicitcmp:Ordering[B]):A"></a>
+      <a id="minBy[B]((A)⇒B)(Ordering[B]):A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">minBy</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.minBy.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="scala.collection.TraversableOnce.minBy.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@minBy[B](f:A=&gt;B)(implicitcmp:Ordering[B]):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#mkString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mkString:String"></a>
+      <a id="mkString:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mkString</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@mkString:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#mkString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mkString(sep:String):String"></a>
+      <a id="mkString(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mkString</span><span class="params">(<span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@mkString(sep:String):String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#mkString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mkString(start:String,sep:String,end:String):String"></a>
+      <a id="mkString(String,String,String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mkString</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="end">end: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@mkString(start:String,sep:String,end:String):String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#next" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="next:A"></a>
+      <a id="next:A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">next</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@next:A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Produces a value if possible, or throws an exception if not possible.</p><div class="fullcomment"><div class="comment cmt"><p>Produces a value if possible, or throws an exception if not possible. The method <code>hasNext</code> determines if a value can be produced.
+</p></div></div>
+    </li><li name="scala.collection.TraversableOnce#nonEmpty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nonEmpty:Boolean"></a>
+      <a id="nonEmpty:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nonEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@nonEmpty:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#padTo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="padTo[AA&gt;:A](len:Int,elem:AA):com.nicta.scoobi.core.Iterator1[AA]"></a>
+      <a id="padTo[AA&gt;:A](Int,AA):Iterator1[AA]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">padTo</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="len">len: <span class="extype" name="scala.Int">Int</span></span>, <span name="elem">elem: <span class="extype" name="com.nicta.scoobi.core.Iterator1.padTo.AA">AA</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.padTo.AA">AA</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@padTo[AA&gt;:A](len:Int,elem:AA):com.nicta.scoobi.core.Iterator1[AA]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Appends an element value to the iterator until a given target length is reached.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#partition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="partition(p:A=&gt;Boolean):com.nicta.scoobi.core.Iterator1.BreakIterator1[A]"></a>
+      <a id="partition((A)⇒Boolean):BreakIterator1[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partition</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="Iterator1$$BreakIterator1.html" class="extype" name="com.nicta.scoobi.core.Iterator1.BreakIterator1">BreakIterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@partition(p:A=&gt;Boolean):com.nicta.scoobi.core.Iterator1.BreakIterator1[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Partition the iterator into those satisfying a predicate and those that do not.</p>
+    </li><li name="scala.collection.TraversableOnce#product" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="product[B&gt;:A](implicitnum:Numeric[B]):B"></a>
+      <a id="product[B&gt;:A](Numeric[B]):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">product</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="num">num: <a href="../../../../scala/package.html#Numeric[T]=scala.math.Numeric[T]" class="extmbr" name="scala.Numeric">Numeric</a>[<span class="extype" name="scala.collection.TraversableOnce.product.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.product.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@product[B&gt;:A](implicitnum:Numeric[B]):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#reduce" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reduce[A1&gt;:A](op:(A1,A1)=&gt;A1):A1"></a>
+      <a id="reduce[A1&gt;:A]((A1,A1)⇒A1):A1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduce</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@reduce[A1&gt;:A](op:(A1,A1)=&gt;A1):A1" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#reduceLeft" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reduceLeft[B&gt;:A](op:(B,A)=&gt;B):B"></a>
+      <a id="reduceLeft[B&gt;:A]((B,A)⇒B):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceLeft</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@reduceLeft[B&gt;:A](op:(B,A)=&gt;B):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#reduceLeftOption" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reduceLeftOption[B&gt;:A](op:(B,A)=&gt;B):Option[B]"></a>
+      <a id="reduceLeftOption[B&gt;:A]((B,A)⇒B):Option[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceLeftOption</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@reduceLeftOption[B&gt;:A](op:(B,A)=&gt;B):Option[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#reduceOption" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reduceOption[A1&gt;:A](op:(A1,A1)=&gt;A1):Option[A1]"></a>
+      <a id="reduceOption[A1&gt;:A]((A1,A1)⇒A1):Option[A1]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceOption</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@reduceOption[A1&gt;:A](op:(A1,A1)=&gt;A1):Option[A1]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#reduceRight" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reduceRight[B&gt;:A](op:(A,B)=&gt;B):B"></a>
+      <a id="reduceRight[B&gt;:A]((A,B)⇒B):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceRight</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@reduceRight[B&gt;:A](op:(A,B)=&gt;B):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#reduceRightOption" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reduceRightOption[B&gt;:A](op:(A,B)=&gt;B):Option[B]"></a>
+      <a id="reduceRightOption[B&gt;:A]((A,B)⇒B):Option[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceRightOption</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@reduceRightOption[B&gt;:A](op:(A,B)=&gt;B):Option[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#reversed" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reversed:List[A]"></a>
+      <a id="reversed:List[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reversed</span><span class="result">: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@reversed:List[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#sameElements" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sameElements(that:com.nicta.scoobi.core.Iterator1[_]):Boolean"></a>
+      <a id="sameElements(Iterator1[_]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sameElements</span><span class="params">(<span name="that">that: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@sameElements(that:com.nicta.scoobi.core.Iterator1[_]):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">True if this iterator produces equal elements to the given iterator in the same order.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#scanLeft" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="scanLeft[B](z:B)(op:(B,A)=&gt;B):com.nicta.scoobi.core.Iterator1[B]"></a>
+      <a id="scanLeft[B](B)((B,A)⇒B):Iterator1[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scanLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="com.nicta.scoobi.core.Iterator1.scanLeft.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.scanLeft.B">B</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.Iterator1.scanLeft.B">B</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.scanLeft.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@scanLeft[B](z:B)(op:(B,A)=&gt;B):com.nicta.scoobi.core.Iterator1[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Produces an iterator containing cumulative results of applying the operator going left to right.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#scanLeft1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="scanLeft1[AA&gt;:A](op:(AA,A)=&gt;AA):com.nicta.scoobi.core.Iterator1[AA]"></a>
+      <a id="scanLeft1[AA&gt;:A]((AA,A)⇒AA):Iterator1[AA]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scanLeft1</span><span class="tparams">[<span name="AA">AA &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.scanLeft1.AA">AA</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.Iterator1.scanLeft1.AA">AA</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.scanLeft1.AA">AA</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@scanLeft1[AA&gt;:A](op:(AA,A)=&gt;AA):com.nicta.scoobi.core.Iterator1[AA]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Produces an iterator containing cumulative results of applying the operator going left to right, starting at head.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#seq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="seq:Iterator[A]"></a>
+      <a id="seq:Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">seq</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@seq:Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return a regular iterator, losing the non-empty invariant in the type.</p><div class="fullcomment"><div class="comment cmt"><p>Return a regular iterator, losing the non-empty invariant in the type.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#sequenceFn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sequenceFn[X,Y](implicitI:A=&gt;(X=&gt;Y)):X=&gt;com.nicta.scoobi.core.Iterator1[Y]"></a>
+      <a id="sequenceFn[X,Y]((A)⇒(X)⇒Y):(X)⇒Iterator1[Y]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sequenceFn</span><span class="tparams">[<span name="X">X</span>, <span name="Y">Y</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="I">I: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ (<span class="extype" name="com.nicta.scoobi.core.Iterator1.sequenceFn.X">X</span>) ⇒ <span class="extype" name="com.nicta.scoobi.core.Iterator1.sequenceFn.Y">Y</span></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.sequenceFn.X">X</span>) ⇒ <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.sequenceFn.Y">Y</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@sequenceFn[X,Y](implicitI:A=&gt;(X=&gt;Y)):X=&gt;com.nicta.scoobi.core.Iterator1[Y]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Runs the iterator of functions to produce a function to iterators.</p>
+    </li><li name="scala.collection.TraversableOnce#size" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="size:Int"></a>
+      <a id="size:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">size</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@size:Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#slice" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="slice(from:Int,to:Int):Iterator[A]"></a>
+      <a id="slice(Int,Int):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">slice</span><span class="params">(<span name="from">from: <span class="extype" name="scala.Int">Int</span></span>, <span name="to">to: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@slice(from:Int,to:Int):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Returns an interval of elements in the iterator.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#span" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="span(p:A=&gt;Boolean):com.nicta.scoobi.core.Iterator1.BreakIterator1[A]"></a>
+      <a id="span((A)⇒Boolean):BreakIterator1[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">span</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="Iterator1$$BreakIterator1.html" class="extype" name="com.nicta.scoobi.core.Iterator1.BreakIterator1">BreakIterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@span(p:A=&gt;Boolean):com.nicta.scoobi.core.Iterator1.BreakIterator1[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Split the iterator, taking from the front while the given predicate satisfies.</p>
+    </li><li name="scala.collection.TraversableOnce#sum" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sum[B&gt;:A](implicitnum:Numeric[B]):B"></a>
+      <a id="sum[B&gt;:A](Numeric[B]):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sum</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="num">num: <a href="../../../../scala/package.html#Numeric[T]=scala.math.Numeric[T]" class="extmbr" name="scala.Numeric">Numeric</a>[<span class="extype" name="scala.collection.TraversableOnce.sum.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.sum.B">B</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@sum[B&gt;:A](implicitnum:Numeric[B]):B" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#take" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="take(n:Int):Iterator[A]"></a>
+      <a id="take(Int):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">take</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@take(n:Int):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Take at most the given number of elements from the front of the iterator.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#takeWhile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="takeWhile(p:A=&gt;Boolean):Iterator[A]"></a>
+      <a id="takeWhile((A)⇒Boolean):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">takeWhile</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@takeWhile(p:A=&gt;Boolean):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Take elements from the front of the iterator satisfying the given predicate.</p>
+    </li><li name="scala.collection.TraversableOnce#to" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="to[Col[_]](implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,A,Col[A@scala.annotation.unchecked.uncheckedVariance]]):Col[A@scala.annotation.unchecked.uncheckedVariance]"></a>
+      <a id="to[Col[_]](CanBuildFrom[Nothing,A,Col[A]]):Col[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">to</span><span class="tparams">[<span name="Col">Col<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="scala.collection.TraversableOnce.to.Col">Col</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.to.Col">Col</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@to[Col[_]](implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,A,Col[A@scala.annotation.unchecked.uncheckedVariance]]):Col[A@scala.annotation.unchecked.uncheckedVariance]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toArray[B&gt;:A](implicitevidence$1:scala.reflect.ClassTag[B]):Array[B]"></a>
+      <a id="toArray[B&gt;:A](ClassTag[B]):Array[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="scala.collection.TraversableOnce.toArray.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.toArray.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toArray[B&gt;:A](implicitevidence$1:scala.reflect.ClassTag[B]):Array[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toBuffer[B&gt;:A]:scala.collection.mutable.Buffer[B]"></a>
+      <a id="toBuffer[B&gt;:A]:Buffer[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toBuffer</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="result">: <span class="extype" name="scala.collection.mutable.Buffer">Buffer</span>[<span class="extype" name="scala.collection.TraversableOnce.toBuffer.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toBuffer[B&gt;:A]:scala.collection.mutable.Buffer[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toIndexedSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toIndexedSeq:scala.collection.immutable.IndexedSeq[A]"></a>
+      <a id="toIndexedSeq:IndexedSeq[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toIndexedSeq</span><span class="result">: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toIndexedSeq:scala.collection.immutable.IndexedSeq[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toIterable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toIterable:Iterable[A]"></a>
+      <a id="toIterable:Iterable[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toIterable</span><span class="result">: <span class="extype" name="scala.collection.Iterable">Iterable</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toIterable:Iterable[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#toIterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toIterator:Iterator[A]"></a>
+      <a id="toIterator:Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toIterator</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toIterator:Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return a regular iterator, losing the non-empty invariant in the type.</p><div class="fullcomment"><div class="comment cmt"><p>Return a regular iterator, losing the non-empty invariant in the type.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toList:List[A]"></a>
+      <a id="toList:List[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toList</span><span class="result">: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toList:List[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toMap[T,U](implicitev:&lt;:&lt;[A,(T,U)]):scala.collection.immutable.Map[T,U]"></a>
+      <a id="toMap[T,U](&lt;:&lt;[A,(T,U)]):Map[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toMap</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, (<span class="extype" name="scala.collection.TraversableOnce.toMap.T">T</span>, <span class="extype" name="scala.collection.TraversableOnce.toMap.U">U</span>)]</span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.collection.TraversableOnce.toMap.T">T</span>, <span class="extype" name="scala.collection.TraversableOnce.toMap.U">U</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toMap[T,U](implicitev:&lt;:&lt;[A,(T,U)]):scala.collection.immutable.Map[T,U]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toSeq:Seq[A]"></a>
+      <a id="toSeq:Seq[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toSeq</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toSeq:Seq[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toSet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toSet[B&gt;:A]:scala.collection.immutable.Set[B]"></a>
+      <a id="toSet[B&gt;:A]:Set[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toSet</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>]</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<span class="extype" name="scala.collection.TraversableOnce.toSet.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toSet[B&gt;:A]:scala.collection.immutable.Set[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#toStream" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toStream:Stream[A]"></a>
+      <a id="toStream:Stream[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toStream</span><span class="result">: <a href="../../../../scala/package.html#Stream[+A]=scala.collection.immutable.Stream[A]" class="extmbr" name="scala.Stream">Stream</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toStream:Stream[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Convert this iterator to a stream.</p><div class="fullcomment"><div class="comment cmt"><p>Convert this iterator to a stream.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → GenTraversableOnce</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toString():String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#toTraversable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toTraversable:Traversable[A]"></a>
+      <a id="toTraversable:Traversable[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toTraversable</span><span class="result">: <a href="../../../../scala/package.html#Traversable[+A]=Traversable[A]" class="extmbr" name="scala.Traversable">Traversable</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toTraversable:Traversable[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Returns a stream of this iterator.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a stream of this iterator.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a> → TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.collection.TraversableOnce#toVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toVector:Vector[A]"></a>
+      <a id="toVector:Vector[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toVector</span><span class="result">: <a href="../../../../scala/package.html#Vector[+A]=scala.collection.immutable.Vector[A]" class="extmbr" name="scala.Vector">Vector</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@toVector:Vector[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Iterator1#withFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="withFilter(p:A=&gt;Boolean):Iterator[A]"></a>
+      <a id="withFilter((A)⇒Boolean):Iterator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withFilter</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@withFilter(p:A=&gt;Boolean):Iterator[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Return an iterator with only the elements satisfying the predicate.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#zip" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="zip[B](that:com.nicta.scoobi.core.Iterator1[B]):com.nicta.scoobi.core.Iterator1[(A,B)]"></a>
+      <a id="zip[B](Iterator1[B]):Iterator1[(A,B)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">zip</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.zip.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[(<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.zip.B">B</span>)]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@zip[B](that:com.nicta.scoobi.core.Iterator1[B]):com.nicta.scoobi.core.Iterator1[(A,B)]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Zip this iterator with the given iterator to produce an iterator of pairs.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#zipAll" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="zipAll[B,AA&gt;:A,BB&gt;:B](that:com.nicta.scoobi.core.Iterator1[B],thisElem:AA,thatElem:BB):com.nicta.scoobi.core.Iterator1[(AA,BB)]"></a>
+      <a id="zipAll[B,AA&gt;:A,BB&gt;:B](Iterator1[B],AA,BB):Iterator1[(AA,BB)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">zipAll</span><span class="tparams">[<span name="B">B</span>, <span name="AA">AA &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span></span>, <span name="BB">BB &gt;: <span class="extype" name="com.nicta.scoobi.core.Iterator1.zipAll.B">B</span></span>]</span><span class="params">(<span name="that">that: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.zipAll.B">B</span>]</span>, <span name="thisElem">thisElem: <span class="extype" name="com.nicta.scoobi.core.Iterator1.zipAll.AA">AA</span></span>, <span name="thatElem">thatElem: <span class="extype" name="com.nicta.scoobi.core.Iterator1.zipAll.BB">BB</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[(<span class="extype" name="com.nicta.scoobi.core.Iterator1.zipAll.AA">AA</span>, <span class="extype" name="com.nicta.scoobi.core.Iterator1.zipAll.BB">BB</span>)]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@zipAll[B,AA&gt;:A,BB&gt;:B](that:com.nicta.scoobi.core.Iterator1[B],thisElem:AA,thatElem:BB):com.nicta.scoobi.core.Iterator1[(AA,BB)]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Creates an iterator formed from this iterator and another iterator by combining corresponding elements in pairs.</p>
+    </li><li name="com.nicta.scoobi.core.Iterator1#zipWithIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="zipWithIndex:com.nicta.scoobi.core.Iterator1[(A,Int)]"></a>
+      <a id="zipWithIndex:Iterator1[(A,Int)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">zipWithIndex</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.Iterator1">Iterator1</a>[(<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>, <span class="extype" name="scala.Int">Int</span>)]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.core.Iterator1@zipWithIndex:com.nicta.scoobi.core.Iterator1[(A,Int)]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Zip this iterator with the infinite iterator from 0 incrementing by 1, to produce an iterator of pairs.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.collection.TraversableOnce">
+              <h3>Inherited from <span class="extype" name="scala.collection.TraversableOnce">TraversableOnce</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</h3>
+            </div><div class="parent" name="scala.collection.GenTraversableOnce">
+              <h3>Inherited from <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="com.nicta.scoobi.core.Iterator1.A">A</span>]</h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

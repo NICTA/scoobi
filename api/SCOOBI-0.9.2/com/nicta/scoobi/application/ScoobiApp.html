@@ -1,0 +1,2105 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>ScoobiApp - com.nicta.scoobi.application.ScoobiApp</title>
+          <meta name="description" content="ScoobiApp - com.nicta.scoobi.application.ScoobiApp" />
+          <meta name="keywords" content="ScoobiApp com.nicta.scoobi.application.ScoobiApp" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.nicta.scoobi.application.ScoobiApp';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <img src="../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.application">application</a></p>
+        <h1>ScoobiApp</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="com.nicta.scoobi.application">package application</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ScoobiApp</span><span class="result"> extends <a href="ScoobiCommandLineArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">ScoobiCommandLineArgs</a> with <a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a> with <a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a> with <a href="HadoopLogFactoryInitialisation.html" class="extype" name="com.nicta.scoobi.application.HadoopLogFactoryInitialisation">HadoopLogFactoryInitialisation</a> with <a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This trait can be extended to create an application running Scoobi code.</p><p>Command-line arguments are available in the args attribute (minus the hadoop specific ones) and a default
+implicit ScoobiConfiguration is also accessible to create DLists.</p><p>A ScoobiApp will be used in 2 different contexts:</p><ol class="decimal"><li>with the hadoop script</li></ol><p> In that case you will use hadoop default configuration files or you will need to tell this script where to find the configuration
+ files.</p><p> 2. within sbt</p><p> In that case the cluster location can be either defined by:</p><ul><li>overriding the 'fs' and 'jobTracker' methods</li><li>using the 'useconfdir' command line argument to add the configuration files found in $HADOOP_HOME/conf</li></ul><p>Then, if it can be determined that the execution will not be local but on the cluster (@see locally), the ScoobiApp
+trait will attempt to load the dependent jars to the libjars directory on the cluster
+(if not already there, @see LibJars for the details). This behavior can be switched off by overriding the <code>upload</code>
+method: <code>override def upload = false</code> or by passing the 'nolibjars' argument on the command line
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a>, <a href="HadoopLogFactoryInitialisation.html" class="extype" name="com.nicta.scoobi.application.HadoopLogFactoryInitialisation">HadoopLogFactoryInitialisation</a>, <a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a>, <a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a>, <a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a>, <a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a>, <a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a>, <a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a>, <span class="extype" name="com.nicta.scoobi.impl.control.SystemProperties">SystemProperties</span>, <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a>, <a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a>, <a href="Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a>, <a href="ScoobiCommandLineArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">ScoobiCommandLineArgs</a>, <span class="extype" name="scala.DelayedInit">DelayedInit</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="ScoobiInterpreter.html" class="extype" name="com.nicta.scoobi.application.ScoobiInterpreter">ScoobiInterpreter</a>, <a href="ScoobiRepl$.html" class="extype" name="com.nicta.scoobi.application.ScoobiRepl">ScoobiRepl</a></div>
+          </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.nicta.scoobi.application.ScoobiApp"><span>ScoobiApp</span></li><li class="in" name="com.nicta.scoobi.application.Persist"><span>Persist</span></li><li class="in" name="com.nicta.scoobi.application.HadoopLogFactoryInitialisation"><span>HadoopLogFactoryInitialisation</span></li><li class="in" name="com.nicta.scoobi.application.Hadoop"><span>Hadoop</span></li><li class="in" name="com.nicta.scoobi.application.LibJars"><span>LibJars</span></li><li class="in" name="com.nicta.scoobi.application.LocalHadoop"><span>LocalHadoop</span></li><li class="in" name="com.nicta.scoobi.application.InMemoryHadoop"><span>InMemoryHadoop</span></li><li class="in" name="com.nicta.scoobi.application.ScoobiUserArgs"><span>ScoobiUserArgs</span></li><li class="in" name="com.nicta.scoobi.application.ScoobiAppConfiguration"><span>ScoobiAppConfiguration</span></li><li class="in" name="com.nicta.scoobi.impl.control.SystemProperties"><span>SystemProperties</span></li><li class="in" name="com.nicta.scoobi.application.ScoobiArgs"><span>ScoobiArgs</span></li><li class="in" name="com.nicta.scoobi.application.ClusterConfiguration"><span>ClusterConfiguration</span></li><li class="in" name="com.nicta.scoobi.application.Cluster"><span>Cluster</span></li><li class="in" name="com.nicta.scoobi.application.ScoobiCommandLineArgs"><span>ScoobiCommandLineArgs</span></li><li class="in" name="scala.DelayedInit"><span>DelayedInit</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.application.Persist.PersistableList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="PersistableList[A]extendsAnyRef"></a>
+      <a id="PersistableList[A]:PersistableList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Persist$PersistableList.html"><span class="name">PersistableList</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.Persist@PersistableList[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist.PersistableObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="PersistableObject[A]extendsAnyRef"></a>
+      <a id="PersistableObject[A]:PersistableObject[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Persist$PersistableObject.html"><span class="name">PersistableObject</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.Persist@PersistableObject[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist.RunnableDList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RunnableDList[T]extendsProductwithSerializable"></a>
+      <a id="RunnableDList[T]:RunnableDList[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Persist$RunnableDList.html"><span class="name">RunnableDList</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.RunnableDList.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.Persist@RunnableDList[T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist.RunnableDObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RunnableDObject[T]extendsProductwithSerializable"></a>
+      <a id="RunnableDObject[T]:RunnableDObject[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Persist$RunnableDObject.html"><span class="name">RunnableDObject</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="o">o: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.RunnableDObject.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.Persist@RunnableDObject[T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.nicta.scoobi.application.ScoobiApp#run" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="run():Unit"></a>
+      <a id="run():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">this method needs to be overridden and define the code to be executed</p>
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@##():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_COMMAND" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="HADOOP_COMMAND:Option[String]"></a>
+      <a id="HADOOP_COMMAND:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HADOOP_COMMAND</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@HADOOP_COMMAND:Option[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_CONF_DIR" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="HADOOP_CONF_DIR:Option[String]"></a>
+      <a id="HADOOP_CONF_DIR:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HADOOP_CONF_DIR</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@HADOOP_CONF_DIR:Option[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_HOME" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="HADOOP_HOME:Option[String]"></a>
+      <a id="HADOOP_HOME:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HADOOP_HOME</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@HADOOP_HOME:Option[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#args" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="args:Seq[String]"></a>
+      <a id="args:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">args</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@args:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">shortcut name for command-line arguments, after extraction of the hadoop and scoobi ones</p>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#asRunnableDList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asRunnableDList[T](list:com.nicta.scoobi.core.DList[T]):Persist.this.RunnableDList[T]"></a>
+      <a id="asRunnableDList[T](DList[T]):RunnableDList[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRunnableDList</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.asRunnableDList.T">T</span>]</span>)</span><span class="result">: <a href="#RunnableDList[T]extendsProductwithSerializable" class="extmbr" name="com.nicta.scoobi.application.Persist.RunnableDList">RunnableDList</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.asRunnableDList.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@asRunnableDList[T](list:com.nicta.scoobi.core.DList[T]):Persist.this.RunnableDList[T]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">make a DList runnable, executing the computation and returning the values</p><div class="fullcomment"><div class="comment cmt"><p>make a DList runnable, executing the computation and returning the values</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#asRunnableDObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asRunnableDObject[T](o:com.nicta.scoobi.core.DObject[T]):Persist.this.RunnableDObject[T]"></a>
+      <a id="asRunnableDObject[T](DObject[T]):RunnableDObject[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRunnableDObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="o">o: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.asRunnableDObject.T">T</span>]</span>)</span><span class="result">: <a href="#RunnableDObject[T]extendsProductwithSerializable" class="extmbr" name="com.nicta.scoobi.application.Persist.RunnableDObject">RunnableDObject</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.asRunnableDObject.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@asRunnableDObject[T](o:com.nicta.scoobi.core.DObject[T]):Persist.this.RunnableDObject[T]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">make a DObject runnable, executing the computation and returning the values</p><div class="fullcomment"><div class="comment cmt"><p>make a DObject runnable, executing the computation and returning the values</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#categories" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="categories:String"></a>
+      <a id="categories:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">categories</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@categories:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the categories to show when logging, as a regular expression</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Hadoop#classDirs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="classDirs:Seq[String]"></a>
+      <a id="classDirs:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">classDirs</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@classDirs:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the classes directories to include on a job classpath</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiCommandLineArgs#commandLineArguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="commandLineArguments:Seq[String]"></a>
+      <a id="commandLineArguments:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">commandLineArguments</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@commandLineArguments:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="ScoobiCommandLineArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">ScoobiCommandLineArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#configuration" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configuration:com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="configuration:ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configuration</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configuration:com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">store the value of the configuration in a lazy val, so that it can be updated and still be referenced</p><div class="fullcomment"><div class="comment cmt"><p>store the value of the configuration in a lazy val, so that it can be updated and still be referenced</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a> → <a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFilesDiagnostic" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configurationFilesDiagnostic:Unit"></a>
+      <a id="configurationFilesDiagnostic:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configurationFilesDiagnostic</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configurationFilesDiagnostic:Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFromConfigurationDirectory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configurationFromConfigurationDirectory(conf:org.apache.hadoop.conf.Configuration):org.apache.hadoop.conf.Configuration"></a>
+      <a id="configurationFromConfigurationDirectory(Configuration):Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configurationFromConfigurationDirectory</span><span class="params">(<span name="conf">conf: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configurationFromConfigurationDirectory(conf:org.apache.hadoop.conf.Configuration):org.apache.hadoop.conf.Configuration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration object set with the properties found in the hadoop directories</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#configureArguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configureArguments(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="configureArguments(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureArguments</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configureArguments(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">set command-line arguments on the configuration object</p><div class="fullcomment"><div class="comment cmt"><p>set command-line arguments on the configuration object</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Hadoop#configureForCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configureForCluster(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="configureForCluster(ScoobiConfiguration):ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureForCluster</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configureForCluster(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with cluster setup
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#configureForInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configureForInMemory(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="configureForInMemory(ScoobiConfiguration):ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureForInMemory</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configureForInMemory(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with memory setup
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LocalHadoop#configureForLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configureForLocal(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="configureForLocal(ScoobiConfiguration):ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureForLocal</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configureForLocal(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.ScoobiConfiguration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with local setup
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#configureJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configureJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="configureJars(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@configureJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiCommandLineArgs#delayedInit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="delayedInit(x:=&gt;Unit):Unit"></a>
+      <a id="delayedInit(⇒Unit):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">delayedInit</span><span class="params">(<span name="x">x: ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@delayedInit(x:=&gt;Unit):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiCommandLineArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">ScoobiCommandLineArgs</a> → DelayedInit</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#deleteJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="deleteJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="deleteJars(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@deleteJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>delete the remote jars currently on the cluster
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#deleteLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="deleteLibJars:Boolean"></a>
+      <a id="deleteLibJars:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deleteLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@deleteLibJars:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the libjars must be deleted before the Scoobi job runs</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#displayTime" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="displayTime(prefix:String):com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit"></a>
+      <a id="displayTime(String):(SimpleTimer)⇒Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">displayTime</span><span class="params">(<span name="prefix">prefix: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.impl.time.SimpleTimer">SimpleTimer</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@displayTime(prefix:String):com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a function to display execution times. The default uses log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#executeInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="executeInMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="executeInMemory[T](⇒T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">executeInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.executeInMemory.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.executeInMemory.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@executeInMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">execute some code locally</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Hadoop#executeOnCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="executeOnCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="executeOnCluster[T](⇒T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">executeOnCluster</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.executeOnCluster.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.executeOnCluster.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@executeOnCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">execute some code on the cluster, setting the filesystem / jobtracker addresses and setting up the classpath
+</p><div class="fullcomment"><div class="comment cmt"><p>execute some code on the cluster, setting the filesystem / jobtracker addresses and setting up the classpath
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LocalHadoop#executeOnLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="executeOnLocal[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="executeOnLocal[T](⇒T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">executeOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.executeOnLocal.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.executeOnLocal.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@executeOnLocal[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">execute some code locally</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ClusterConfiguration#frameworkName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="frameworkName:String"></a>
+      <a id="frameworkName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">frameworkName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@frameworkName:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the framework name: yarn, classic or local. This is only relevant for CDH5</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a> → <a href="Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ClusterConfiguration#fs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fs:String"></a>
+      <a id="fs:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fs</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@fs:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the filesystem address</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a> → <a href="Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#fss" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fss:com.nicta.scoobi.impl.io.FileSystems"></a>
+      <a id="fss:FileSystems"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fss</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.io.FileSystems">FileSystems</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@fss:com.nicta.scoobi.impl.io.FileSystems" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.control.SystemProperties#get" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="get(name:String):Option[String]"></a>
+      <a id="get(String):Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">get</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@get(name:String):Option[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SystemProperties</dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.control.SystemProperties#getEnv" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getEnv(name:String):Option[String]"></a>
+      <a id="getEnv(String):Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getEnv</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@getEnv(name:String):Option[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SystemProperties</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#hadoopArgs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hadoopArgs:Array[String]"></a>
+      <a id="hadoopArgs:Array[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hadoopArgs</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@hadoopArgs:Array[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#hadoopConfDirs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hadoopConfDirs:Seq[String]"></a>
+      <a id="hadoopConfDirs:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hadoopConfDirs</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@hadoopConfDirs:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#hadoopHomeDir" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hadoopHomeDir:Option[String]"></a>
+      <a id="hadoopHomeDir:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hadoopHomeDir</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@hadoopHomeDir:Option[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#inMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="inMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="inMemory[T](⇒T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">inMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.inMemory.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.inMemory.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@inMemory[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">execute some code in memory, using a collection backend, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code in memory, using a collection backend, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Hadoop#includeLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="includeLibJars:Boolean"></a>
+      <a id="includeLibJars:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">includeLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@includeLibJars:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if you want to include the library jars in the jar that is sent to the cluster for each job</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isCluster:Boolean"></a>
+      <a id="isCluster:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCluster</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@isCluster:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isClusterOnly" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isClusterOnly:Boolean"></a>
+      <a id="isClusterOnly:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isClusterOnly</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@isClusterOnly:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the cluster argument is specified and the local argument is not</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#isHadoopConfigured" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isHadoopConfigured:Boolean"></a>
+      <a id="isHadoopConfigured:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isHadoopConfigured</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@isHadoopConfigured:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if there are some configuration directories for hadoop</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInMemory:Boolean"></a>
+      <a id="isInMemory:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInMemory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@isInMemory:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isLocal:Boolean"></a>
+      <a id="isLocal:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isLocal</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@isLocal:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#isLocalOnly" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isLocalOnly:Boolean"></a>
+      <a id="isLocalOnly:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isLocalOnly</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@isLocalOnly:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">alias for locally</p><div class="fullcomment"><div class="comment cmt"><p>alias for locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#jars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="jars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[java.net.URL]"></a>
+      <a id="jars(ScoobiConfiguration):Seq[URL]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="java.net.URL">URL</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@jars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[java.net.URL]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of library jars to upload
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ClusterConfiguration#jobTracker" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="jobTracker:String"></a>
+      <a id="jobTracker:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jobTracker</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@jobTracker:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the jobtracker address</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a> → <a href="Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#keepFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="keepFiles:Boolean"></a>
+      <a id="keepFiles:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">keepFiles</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@keepFiles:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false if temporary files and working directory must be cleaned-up after job execution</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#level" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="level:com.nicta.scoobi.application.Levels.Level"></a>
+      <a id="level:Level"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">level</span><span class="result">: <a href="Levels$$Level.html" class="extype" name="com.nicta.scoobi.application.Levels.Level">Level</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@level:com.nicta.scoobi.application.Levels.Level" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the log level to use when logging</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#libjarsDirectory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="libjarsDirectory(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):String"></a>
+      <a id="libjarsDirectory(ScoobiConfiguration):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">libjarsDirectory</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@libjarsDirectory(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path of the directory to use when loading jars to the filesystem.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#locally" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="locally:Boolean"></a>
+      <a id="locally:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">locally</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@locally:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">the execution is local if the file system is local, as determined by the configuration files loaded by the hadoop script
+or if &quot;local&quot; is passed on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>the execution is local if the file system is local, as determined by the configuration files loaded by the hadoop script
+or if &quot;local&quot; is passed on the command line.</p><p>if locally returns true then we might attempt to upload the dependent jars to the cluster and to add them to the classpath</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the Scoobi job must be run locally</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#main" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="main(arguments:Array[String]):Unit"></a>
+      <a id="main(Array[String]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">main</span><span class="params">(<span name="arguments">arguments: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@main(arguments:Array[String]):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">parse the command-line argument and:</p><div class="fullcomment"><div class="comment cmt"><p>parse the command-line argument and:</p><ul><li>upload the dependent jars on the cluster</li><li>execute the user code
+</li></ul></div></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#mainJarContainsDependencies" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mainJarContainsDependencies:Boolean"></a>
+      <a id="mainJarContainsDependencies:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mainJarContainsDependencies</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@mainJarContainsDependencies:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the main jar contains all the dependencies for this application
+        by default this is delegated to the Classes trait which looks for the presence of a scoobi_* jar or
+        for com/nicta/scoobi jar entries in the main jar
+</p></dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#noLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="noLibJars:Boolean"></a>
+      <a id="noLibJars:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">noLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@noLibJars:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false if libjars are used</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Hadoop#onCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="onCluster[T](⇒T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onCluster</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.onCluster.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.onCluster.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@onCluster[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">execute some code on the cluster, possibly showing the execution time</p><div class="fullcomment"><div class="comment cmt"><p>execute some code on the cluster, possibly showing the execution time</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Hadoop#onHadoop" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onHadoop[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="onHadoop[T](⇒T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onHadoop</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.onHadoop.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.onHadoop.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@onHadoop[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">execute some code, either locally or on the cluster, depending on the local argument being passed on the commandline</p><div class="fullcomment"><div class="comment cmt"><p>execute some code, either locally or on the cluster, depending on the local argument being passed on the commandline</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LocalHadoop#onLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onLocal[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="onLocal[T](⇒T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.onLocal.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.onLocal.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@onLocal[T](t:=&gt;T)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">execute some code locally, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#parseHadoopArguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parseHadoopArguments(arguments:Array[String]):Unit"></a>
+      <a id="parseHadoopArguments(Array[String]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parseHadoopArguments</span><span class="params">(<span name="arguments">arguments: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@parseHadoopArguments(arguments:Array[String]):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#persist" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="persist(ps:com.nicta.scoobi.core.Persistent[_]*)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Seq[com.nicta.scoobi.core.Persistent[_]]"></a>
+      <a id="persist(Persistent[_]*)(ScoobiConfiguration):Seq[Persistent[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">persist</span><span class="params">(<span name="ps">ps: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@persist(ps:com.nicta.scoobi.core.Persistent[_]*)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Seq[com.nicta.scoobi.core.Persistent[_]]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#persist" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="persist[A](list:com.nicta.scoobi.core.DList[A])(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="persist[A](DList[A])(ScoobiConfiguration):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.persist.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.persist.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@persist[A](list:com.nicta.scoobi.core.DList[A])(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.DList[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#persist" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="persist[A](o:com.nicta.scoobi.core.DObject[A])(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):A"></a>
+      <a id="persist[A](DObject[A])(ScoobiConfiguration):A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="o">o: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.persist.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Persist.persist.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@persist[A](o:com.nicta.scoobi.core.DObject[A])(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Persisting</p><div class="fullcomment"><div class="comment cmt"><p>Persisting</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#persistableList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="persistableList[A](list:com.nicta.scoobi.core.DList[A]):Persist.this.PersistableList[A]"></a>
+      <a id="persistableList[A](DList[A]):PersistableList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">persistableList</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.persistableList.A">A</span>]</span>)</span><span class="result">: <a href="#PersistableList[A]extendsAnyRef" class="extmbr" name="com.nicta.scoobi.application.Persist.PersistableList">PersistableList</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.persistableList.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@persistableList[A](list:com.nicta.scoobi.core.DList[A]):Persist.this.PersistableList[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">allow to call <code>list.persist</code></p><div class="fullcomment"><div class="comment cmt"><p>allow to call <code>list.persist</code></p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#persistableObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="persistableObject[A](o:com.nicta.scoobi.core.DObject[A]):Persist.this.PersistableObject[A]"></a>
+      <a id="persistableObject[A](DObject[A]):PersistableObject[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">persistableObject</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="o">o: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.persistableObject.A">A</span>]</span>)</span><span class="result">: <a href="#PersistableObject[A]extendsAnyRef" class="extmbr" name="com.nicta.scoobi.application.Persist.PersistableObject">PersistableObject</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.persistableObject.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@persistableObject[A](o:com.nicta.scoobi.core.DObject[A]):Persist.this.PersistableObject[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">allow to call <code>object.persist</code></p><div class="fullcomment"><div class="comment cmt"><p>allow to call <code>object.persist</code></p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#quiet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="quiet:Boolean"></a>
+      <a id="quiet:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">quiet</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@quiet:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to suppress log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3,T4,T5,T6,T7,T8,T9,T10](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7],p8:com.nicta.scoobi.core.Persistent[T8],p9:com.nicta.scoobi.core.Persistent[T9],p10:com.nicta.scoobi.core.Persistent[T10])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8,T9,T10)"></a>
+      <a id="run[T1,T2,T3,T4,T5,T6,T7,T8,T9,T10](Persistent[T1],Persistent[T2],Persistent[T3],Persistent[T4],Persistent[T5],Persistent[T6],Persistent[T7],Persistent[T8],Persistent[T9],Persistent[T10])(ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8,T9,T10)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>, <span name="T8">T8</span>, <span name="T9">T9</span>, <span name="T10">T10</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>, <span name="p4">p4: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>]</span>, <span name="p5">p5: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>]</span>, <span name="p6">p6: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>]</span>, <span name="p7">p7: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>]</span>, <span name="p8">p8: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T8">T8</span>]</span>, <span name="p9">p9: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T9">T9</span>]</span>, <span name="p10">p10: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T10">T10</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T8">T8</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T9">T9</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T10">T10</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3,T4,T5,T6,T7,T8,T9,T10](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7],p8:com.nicta.scoobi.core.Persistent[T8],p9:com.nicta.scoobi.core.Persistent[T9],p10:com.nicta.scoobi.core.Persistent[T10])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8,T9,T10)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3,T4,T5,T6,T7,T8,T9](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7],p8:com.nicta.scoobi.core.Persistent[T8],p9:com.nicta.scoobi.core.Persistent[T9])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8,T9)"></a>
+      <a id="run[T1,T2,T3,T4,T5,T6,T7,T8,T9](Persistent[T1],Persistent[T2],Persistent[T3],Persistent[T4],Persistent[T5],Persistent[T6],Persistent[T7],Persistent[T8],Persistent[T9])(ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8,T9)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>, <span name="T8">T8</span>, <span name="T9">T9</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>, <span name="p4">p4: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>]</span>, <span name="p5">p5: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>]</span>, <span name="p6">p6: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>]</span>, <span name="p7">p7: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>]</span>, <span name="p8">p8: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T8">T8</span>]</span>, <span name="p9">p9: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T9">T9</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T8">T8</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T9">T9</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3,T4,T5,T6,T7,T8,T9](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7],p8:com.nicta.scoobi.core.Persistent[T8],p9:com.nicta.scoobi.core.Persistent[T9])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8,T9)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3,T4,T5,T6,T7,T8](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7],p8:com.nicta.scoobi.core.Persistent[T8])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8)"></a>
+      <a id="run[T1,T2,T3,T4,T5,T6,T7,T8](Persistent[T1],Persistent[T2],Persistent[T3],Persistent[T4],Persistent[T5],Persistent[T6],Persistent[T7],Persistent[T8])(ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>, <span name="T8">T8</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>, <span name="p4">p4: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>]</span>, <span name="p5">p5: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>]</span>, <span name="p6">p6: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>]</span>, <span name="p7">p7: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>]</span>, <span name="p8">p8: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T8">T8</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T8">T8</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3,T4,T5,T6,T7,T8](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7],p8:com.nicta.scoobi.core.Persistent[T8])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7,T8)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3,T4,T5,T6,T7](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7)"></a>
+      <a id="run[T1,T2,T3,T4,T5,T6,T7](Persistent[T1],Persistent[T2],Persistent[T3],Persistent[T4],Persistent[T5],Persistent[T6],Persistent[T7])(ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>, <span name="p4">p4: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>]</span>, <span name="p5">p5: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>]</span>, <span name="p6">p6: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>]</span>, <span name="p7">p7: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T7">T7</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3,T4,T5,T6,T7](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6],p7:com.nicta.scoobi.core.Persistent[T7])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6,T7)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3,T4,T5,T6](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6)"></a>
+      <a id="run[T1,T2,T3,T4,T5,T6](Persistent[T1],Persistent[T2],Persistent[T3],Persistent[T4],Persistent[T5],Persistent[T6])(ScoobiConfiguration):(T1,T2,T3,T4,T5,T6)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>, <span name="p4">p4: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>]</span>, <span name="p5">p5: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>]</span>, <span name="p6">p6: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T6">T6</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3,T4,T5,T6](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5],p6:com.nicta.scoobi.core.Persistent[T6])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5,T6)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3,T4,T5](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5)"></a>
+      <a id="run[T1,T2,T3,T4,T5](Persistent[T1],Persistent[T2],Persistent[T3],Persistent[T4],Persistent[T5])(ScoobiConfiguration):(T1,T2,T3,T4,T5)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>, <span name="p4">p4: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>]</span>, <span name="p5">p5: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T5">T5</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3,T4,T5](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4],p5:com.nicta.scoobi.core.Persistent[T5])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4,T5)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3,T4](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4)"></a>
+      <a id="run[T1,T2,T3,T4](Persistent[T1],Persistent[T2],Persistent[T3],Persistent[T4])(ScoobiConfiguration):(T1,T2,T3,T4)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>, <span name="p4">p4: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T4">T4</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3,T4](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3],p4:com.nicta.scoobi.core.Persistent[T4])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3,T4)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2,T3](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3)"></a>
+      <a id="run[T1,T2,T3](Persistent[T1],Persistent[T2],Persistent[T3])(ScoobiConfiguration):(T1,T2,T3)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>, <span name="p3">p3: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T3">T3</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2,T3](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2],p3:com.nicta.scoobi.core.Persistent[T3])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2,T3)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T1,T2](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2)"></a>
+      <a id="run[T1,T2](Persistent[T1],Persistent[T2])(ScoobiConfiguration):(T1,T2)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="params">(<span name="p1">p1: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>]</span>, <span name="p2">p2: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.Persist.run.T1">T1</span>, <span class="extype" name="com.nicta.scoobi.application.Persist.run.T2">T2</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T1,T2](p1:com.nicta.scoobi.core.Persistent[T1],p2:com.nicta.scoobi.core.Persistent[T2])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):(T1,T2)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Persist#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run[T](p:com.nicta.scoobi.core.Persistent[T])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T"></a>
+      <a id="run[T](Persistent[T])(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="p">p: <a href="../core/Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.application.Persist.run.T">T</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Persist.run.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@run[T](p:com.nicta.scoobi.core.Persistent[T])(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">run a list.</p><div class="fullcomment"><div class="comment cmt"><p>run a list.</p><p>This is equivalent to:
+  <code><code><code>
+   val obj = list.materialise
+   run(obj)
+  </code></code></code>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#runInMemory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="runInMemory[T](t:=&gt;T):T"></a>
+      <a id="runInMemory[T](⇒T):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">runInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.runInMemory.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.runInMemory.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@runInMemory[T](t:=&gt;T):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the result of the in-memory run
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.Hadoop#runOnCluster" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="runOnCluster[T](t:=&gt;T):T"></a>
+      <a id="runOnCluster[T](⇒T):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">runOnCluster</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.Hadoop.runOnCluster.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.Hadoop.runOnCluster.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@runOnCluster[T](t:=&gt;T):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the cluster evaluation of t
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LocalHadoop#runOnLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="runOnLocal[T](t:=&gt;T):T"></a>
+      <a id="runOnLocal[T](⇒T):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">runOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.runOnLocal.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.LocalHadoop.runOnLocal.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@runOnLocal[T](t:=&gt;T):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the result of the local run
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#scoobiArgs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scoobiArgs:Seq[String]"></a>
+      <a id="scoobiArgs:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiArgs</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@scoobiArgs:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">this provides the arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...</p><div class="fullcomment"><div class="comment cmt"><p>this provides the arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd><dt>See also</dt><dd><span class="cmt"><p>ScoobiUserArgs
+</p></span></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiCommandLineArgs#scoobiArguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scoobiArguments:Seq[String]"></a>
+      <a id="scoobiArguments:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiArguments</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@scoobiArguments:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="ScoobiCommandLineArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">ScoobiCommandLineArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration#setConfiguration" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setConfiguration(c:org.apache.hadoop.conf.Configuration):org.apache.hadoop.conf.Configuration"></a>
+      <a id="setConfiguration(Configuration):Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setConfiguration</span><span class="params">(<span name="c">c: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@setConfiguration(c:org.apache.hadoop.conf.Configuration):org.apache.hadoop.conf.Configuration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">set the default configuration, depending on the arguments</p><div class="fullcomment"><div class="comment cmt"><p>set the default configuration, depending on the arguments</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#setLogFactory" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setLogFactory(name:String):Unit"></a>
+      <a id="setLogFactory(String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setLogFactory</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">classOf[HadoopLogFactory].getName</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@setLogFactory(name:String):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Static setup to use a testing log factory
+</p><div class="fullcomment"><div class="comment cmt"><p>Static setup to use a testing log factory
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#showPlanOnly" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="showPlanOnly:Boolean"></a>
+      <a id="showPlanOnly:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">showPlanOnly</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@showPlanOnly:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the debug logs must show the computation graph and not evaluate it</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#showTime" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="showTime[T](t:=&gt;T)(display:com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit):T"></a>
+      <a id="showTime[T](⇒T)((SimpleTimer)⇒Unit):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">showTime</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.showTime.T">T</span></span>)</span><span class="params">(<span name="display">display: (<span class="extype" name="com.nicta.scoobi.impl.time.SimpleTimer">SimpleTimer</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.showTime.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@showTime[T](t:=&gt;T)(display:com.nicta.scoobi.impl.time.SimpleTimer=&gt;Unit):T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">measure the time taken by some executed code and display the time with a specific display function
+</p><div class="fullcomment"><div class="comment cmt"><p>measure the time taken by some executed code and display the time with a specific display function
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#showTimes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="showTimes:Boolean"></a>
+      <a id="showTimes:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">showTimes</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@showTimes:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to display execution times for each job</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#sysProps" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sysProps:com.nicta.scoobi.impl.control.SystemProperties"></a>
+      <a id="sysProps:SystemProperties"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sysProps</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.control.SystemProperties">SystemProperties</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@sysProps:com.nicta.scoobi.impl.control.SystemProperties" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@toString():String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#upload" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="upload:Boolean"></a>
+      <a id="upload:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">upload</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@upload:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">upload the jars unless 'nolibjars' has been set on the command-line'</p><div class="fullcomment"><div class="comment cmt"><p>upload the jars unless 'nolibjars' has been set on the command-line'</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#uploadLibJarsFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="uploadLibJarsFiles(deleteLibJarsFirst:Boolean)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="uploadLibJarsFiles(Boolean)(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uploadLibJarsFiles</span><span class="params">(<span name="deleteLibJarsFirst">deleteLibJarsFirst: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@uploadLibJarsFiles(deleteLibJarsFirst:Boolean)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">upload the jars which don't exist yet in the library directory on the cluster
+</p><div class="fullcomment"><div class="comment cmt"><p>upload the jars which don't exist yet in the library directory on the cluster
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.LibJars#uploadedJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="uploadedJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[org.apache.hadoop.fs.Path]"></a>
+      <a id="uploadedJars(ScoobiConfiguration):Seq[Path]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uploadedJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@uploadedJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[org.apache.hadoop.fs.Path]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the remote jars currently on the cluster
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiUserArgs#useHadoopConfDir" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="useHadoopConfDir:Boolean"></a>
+      <a id="useHadoopConfDir:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">useHadoopConfDir</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@useHadoopConfDir:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if cluster configuration must be loaded from Hadoop's configuration directory</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiCommandLineArgs#userArguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="userArguments:Seq[String]"></a>
+      <a id="userArguments:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userArguments</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@userArguments:Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="ScoobiCommandLineArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">ScoobiCommandLineArgs</a></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InMemoryHadoop#withTimer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="withTimer[T](t:=&gt;T):(T,com.nicta.scoobi.impl.time.SimpleTimer)"></a>
+      <a id="withTimer[T](⇒T):(T,SimpleTimer)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withTimer</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ <span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.withTimer.T">T</span></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.application.InMemoryHadoop.withTimer.T">T</span>, <span class="extype" name="com.nicta.scoobi.impl.time.SimpleTimer">SimpleTimer</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.nicta.scoobi.application.ScoobiApp@withTimer[T](t:=&gt;T):(T,com.nicta.scoobi.impl.time.SimpleTimer)" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the time for the execution of a piece of code
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="com.nicta.scoobi.application.Persist">
+              <h3>Inherited from <a href="Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.HadoopLogFactoryInitialisation">
+              <h3>Inherited from <a href="HadoopLogFactoryInitialisation.html" class="extype" name="com.nicta.scoobi.application.HadoopLogFactoryInitialisation">HadoopLogFactoryInitialisation</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.Hadoop">
+              <h3>Inherited from <a href="Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.LibJars">
+              <h3>Inherited from <a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.LocalHadoop">
+              <h3>Inherited from <a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.InMemoryHadoop">
+              <h3>Inherited from <a href="InMemoryHadoop.html" class="extype" name="com.nicta.scoobi.application.InMemoryHadoop">InMemoryHadoop</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.ScoobiUserArgs">
+              <h3>Inherited from <a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.ScoobiAppConfiguration">
+              <h3>Inherited from <a href="ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.impl.control.SystemProperties">
+              <h3>Inherited from <span class="extype" name="com.nicta.scoobi.impl.control.SystemProperties">SystemProperties</span></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.ScoobiArgs">
+              <h3>Inherited from <a href="ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.ClusterConfiguration">
+              <h3>Inherited from <a href="ClusterConfiguration.html" class="extype" name="com.nicta.scoobi.application.ClusterConfiguration">ClusterConfiguration</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.Cluster">
+              <h3>Inherited from <a href="Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">
+              <h3>Inherited from <a href="ScoobiCommandLineArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiCommandLineArgs">ScoobiCommandLineArgs</a></h3>
+            </div><div class="parent" name="scala.DelayedInit">
+              <h3>Inherited from <span class="extype" name="scala.DelayedInit">DelayedInit</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

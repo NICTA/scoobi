@@ -1,0 +1,293 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>source - com.nicta.scoobi.impl.plan.source</title>
+          <meta name="description" content="source - com.nicta.scoobi.impl.plan.source" />
+          <meta name="keywords" content="source com.nicta.scoobi.impl.plan.source" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.nicta.scoobi.impl.plan.source.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a></p>
+        <h1>source</h1><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">source</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.impl.plan.source.FunctionInput" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="FunctionInputextendsAnyRef"></a>
+      <a id="FunctionInput:FunctionInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="FunctionInput.html"><span class="name">FunctionInput</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@FunctionInputextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Smart function for creating a distributed lists from a Scala function.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="FunctionInputFormat[A]:FunctionInputFormat[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="FunctionInputFormat.html"><span class="name">FunctionInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInputFormat.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@FunctionInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">InputFormat for producing values based on a function.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionInputSplit[A]extendsInputSplitwithWritable"></a>
+      <a id="FunctionInputSplit[A]:FunctionInputSplit[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="FunctionInputSplit.html"><span class="name">FunctionInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@FunctionInputSplit[A]extendsInputSplitwithWritable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">InputSplit for a range of values produced by a function.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionRecordReader[A]extendsRecordReader[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="FunctionRecordReader[A]:FunctionRecordReader[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="FunctionRecordReader.html"><span class="name">FunctionRecordReader</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@FunctionRecordReader[A]extendsRecordReader[org.apache.hadoop.io.NullWritable,A]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">RecordReader for producing values based on a function.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LazySeqInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="LazySeqInputFormat[A]:LazySeqInputFormat[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LazySeqInputFormat.html"><span class="name">LazySeqInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@LazySeqInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">InputFormat for producing values based on a lazy sequence.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="SeqInputextendsAnyRef"></a>
+      <a id="SeqInput:SeqInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqInput.html"><span class="name">SeqInput</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@SeqInputextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Function for creating a distributed lists from a scala.collection.Seq</p><div class="fullcomment"><div class="comment cmt"><p>Function for creating a distributed lists from a scala.collection.Seq</p><p>The code is very similar to the FunctionInput code but it was impossible to refactor due to the impossibility to
+parameterize InputFormat with values (only classes can be declared in a DataSource)
+</p></div></div>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="SeqInputFormat[A]:SeqInputFormat[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqInputFormat.html"><span class="name">SeqInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInputFormat.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@SeqInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">InputFormat for producing values based on a sequence.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqInputSplit[A]extendsInputSplitwithWritablewithConfigured"></a>
+      <a id="SeqInputSplit[A]:SeqInputSplit[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqInputSplit.html"><span class="name">SeqInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span> with <a href="../../rtt/Configured.html" class="extype" name="com.nicta.scoobi.impl.rtt.Configured">Configured</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@SeqInputSplit[A]extendsInputSplitwithWritablewithConfigured" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">InputSplit for a range of values produced by a sequence.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqRecordReader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqRecordReader[A]extendsRecordReader[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="SeqRecordReader[A]:SeqRecordReader[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqRecordReader.html"><span class="name">SeqRecordReader</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqRecordReader.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@SeqRecordReader[A]extendsRecordReader[org.apache.hadoop.io.NullWritable,A]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">RecordReader for producing sequences</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.nicta.scoobi.impl.plan.source.FunctionInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionInput"></a>
+      <a id="FunctionInput:FunctionInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="FunctionInput$.html"><span class="name">FunctionInput</span></a><span class="result"> extends <a href="FunctionInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInput">FunctionInput</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@FunctionInput" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqInput"></a>
+      <a id="SeqInput:SeqInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqInput$.html"><span class="name">SeqInput</span></a><span class="result"> extends <a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.nicta.scoobi.impl.plan.source.package@SeqInput" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
