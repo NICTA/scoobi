@@ -30,7 +30,7 @@ object dependencies {
   def scoobi(scalaVersion: String) = Seq(
     "org.scala-lang"                    %  "scala-compiler"            % scalaVersion,
     "org.apache.avro"                   %  "avro"                      % "1.7.4",
-    "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
+    "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.8"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
     "com.googlecode.kiama"              %% "kiama"                     % "1.6.0",
   if (scalaVersion.contains("2.10"))
