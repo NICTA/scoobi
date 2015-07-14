@@ -72,7 +72,7 @@ base=$(readlink -f ${BASH_SOURCE[0]} | xargs dirname)
 # classpath
 classpath=$base/scoobi-repl.jar:`hadoop classpath`
 if [ $user_classpath ]; then
-  classpath=$classpath:$user_classpath
+  classpath=$user_classpath:$classpath
 fi
 
 # launch
