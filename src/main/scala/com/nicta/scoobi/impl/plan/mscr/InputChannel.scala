@@ -250,7 +250,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
       .distinct
 
   lazy val bypassOutputNodes = {
-    val outsideUses = gbkMappers.flatMap(uses)
+    val outsideUses = gbkMappers.flatMap(transitiveUses).distinct
     // we first select all the mappers which are not in this channel and which are not dependent on the result of this channel
     // this allows to do as much mapping as possible inside the mapping phase, even if there is a reducer
     val outsideMappers = outsideUses.filter(u => !gbkMappers.contains(u) && !groupByKeys.exists(g => transitiveUses(g).contains(u))).collect(isAParallelDo)

@@ -33,8 +33,6 @@ class CountersSpec extends NictaSimpleJobs with Groups { def is = sequential ^ s
   + across several hadoop jobs
   + to get the number of values per mapper
   + to get the number of values per reducer
-  + no counter must be created by default
-
 """
 
   "counters" - new group {

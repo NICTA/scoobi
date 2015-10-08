@@ -222,4 +222,17 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
     DList("a", "b").valueToSequenceFile(path, overwrite = true).persist
     (DList[String]() ++ valueFromSequenceFile[String](path)).run.toList ==== List("a", "b")
   }
+
+  // counters are being used here to make sure that some mapper
+  // nodes are not being executed twice
+  "35. append + reduce from the same source" >> { implicit sc: SC =>
+    val list = DList(1 to 2: _*)
+    val even = list.filter(_ % 2 == 0).incrementCounter("group", "even")
+    val odd  = list.filter(_ % 2 == 1).incrementCounter("group", "odd")
+    val sum  = list.sum
+
+    persist(even ++ odd, sum)
+    (sc.counters.findCounter("group", "even").getValue must_== 1) and
+    (sc.counters.findCounter("group", "odd").getValue must_== 1)
+  }
 }
