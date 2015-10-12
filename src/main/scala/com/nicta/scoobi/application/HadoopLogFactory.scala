@@ -136,7 +136,7 @@ object HadoopLogFactory {
         FATAL   -> SimpleLog.LOG_LEVEL_FATAL,
         OFF     -> SimpleLog.LOG_LEVEL_OFF)
 
-  lazy val allLevels = levelsMappings.keys.map(_.toString).toSet
+  lazy val allLevels = levelsMappings.keys.map(_.level).toSet
 
 
   lazy val ALL  : Level = Level("ALL"  )

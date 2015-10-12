@@ -16,16 +16,15 @@
 package com.nicta.scoobi
 package acceptance
 
+import com.nicta.scoobi.lib.Relational._
 import org.apache.hadoop.fs.Path
 import testing.mutable.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.impl.plan.comp.factory._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
 import core.WireFormat._
-import com.nicta.scoobi.core.{Reduction}
 import core.Reduction.{Reduction => R}
-import scala.collection.JavaConversions._
+import scalaz.{DList => _,_}, Scalaz._
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unstable")
 
@@ -222,4 +221,30 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
     DList("a", "b").valueToSequenceFile(path, overwrite = true).persist
     (DList[String]() ++ valueFromSequenceFile[String](path)).run.toList ==== List("a", "b")
   }
+
+  // counters are being used here to make sure that some mapper
+  // nodes are not being executed twice
+  "35. append + reduce from the same source" >> { implicit sc: SC =>
+    val list = DList(1 to 2: _*)
+    val even = list.filter(_ % 2 == 0).incrementCounter("group", "even")
+    val odd  = list.filter(_ % 2 == 1).incrementCounter("group", "odd")
+    val sum  = list.sum
+
+    persist(even ++ odd, sum)
+    (sc.counters.findCounter("group", "even").getValue must_== 1) and
+    (sc.counters.findCounter("group", "odd").getValue must_== 1)
+  }
+
+  "36. joinFullOuter + sum" >> { implicit sc: SC =>
+    val list1 = DList((1,"one"),(2,"one")).map(i => i)
+    val list2 = DList((2,"two")).map(i => i)
+    val joined =
+      list1.map(i => (i._1, i)).distinct.joinFullOuter(list2.map(i => (i._1, i)))
+
+    val summed =
+      (list1.map(i => i) ++ list2 ++ joined.map { case (i, (Some(_), Some(_))) => (i,"joined"); case _ => (0,"joined") }).map(_._1).reduceOption(Reduction.semigroup[Int])
+
+    summed.run must_== Some(7)
+  }
+
 }

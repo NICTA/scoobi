@@ -141,18 +141,19 @@ trait MscrsDefinition extends Layering with Optimiser { outer =>
     val gbkChannels = gbkInputChannels(layer, graph)
     val inputs = inputNodes(layer.collect(isAProcessNode))
     val gbkMappers = gbkChannels.flatMap(_.mappers)
+    val gbkInputs  = gbkChannels.map(_.sourceNode)
 
     inputs.map { inputNode =>
       val mappers = transitiveUses(inputNode)
         .collect(isAParallelDo)
         .filter(layer.contains)
-        .filterNot(gbkMappers.contains)
+        .filter(p => !gbkMappers.contains(p) || !gbkInputs.contains(inputNode))
         .toVector
 
       // the "terminal" nodes for the input channel are all the ParallelDos on the last layer
       // and all the parallelDos going to a Root node or Materialise parent
       val layers = layersOf(mappers)
-      val lastLayerParallelDos = layers.lastOption.getOrElse(Vector()).collect(isAParallelDo)
+      val lastLayerParallelDos = mappers.filter(m => uses(m).collect(isAParallelDo).forall(u => !mappers.contains(u)))
       val outputParallelDos = layers.dropRight(1).map(_.filter(p => isParallelDo(p) && parent(p).exists(isRoot || isMaterialise))).flatten
       new FloatingInputChannel(inputNode, (lastLayerParallelDos ++ outputParallelDos).distinct, graph)
     }.filterNot(_.isEmpty)
