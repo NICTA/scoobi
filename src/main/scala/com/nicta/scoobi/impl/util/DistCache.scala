@@ -75,6 +75,7 @@ object DistCache {
     try serialiser(obj, dos)
     finally dos.close
     cache.addCacheFile(path.toUri, configuration)
+    path.getFileSystem(configuration).setReplication(path, configuration.getInt("mapreduce.client.submit.file.replication", 10).toShort)
     path
   }
 
